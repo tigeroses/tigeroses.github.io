@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>解决hexo博客文章太长导致的显示不全问题 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="blog," />
+  
+
+  <meta name="description" content="问题前两天准备发布上一篇介绍CLI11的文章,结果写好markdown之后本地测试发现问题:  文章最后内容突然缺失 导航栏,底部的返回顶部按钮均异常 查看网页源代码,发现内容消失的地方之后内容全部是空格  尝试解决问题,发现文章变短显示就正常,使用hexo新建blog,测试长文显示OK,换上同样的主题也没问题,说明是我的环境配置哪里出错. 解决折腾几天,重装hexo-xx相关库,更新hexo版本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决hexo博客文章太长导致的显示不全问题">
+<meta property="og:url" content="http://yoursite.com/2020/03/06/resolve-long-page-display-error/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="问题前两天准备发布上一篇介绍CLI11的文章,结果写好markdown之后本地测试发现问题:  文章最后内容突然缺失 导航栏,底部的返回顶部按钮均异常 查看网页源代码,发现内容消失的地方之后内容全部是空格  尝试解决问题,发现文章变短显示就正常,使用hexo新建blog,测试长文显示OK,换上同样的主题也没问题,说明是我的环境配置哪里出错. 解决折腾几天,重装hexo-xx相关库,更新hexo版本">
+<meta property="article:published_time" content="2020-03-06T10:10:51.000Z">
+<meta property="article:modified_time" content="2020-03-06T10:28:27.581Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题"><span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决"><span class="toc-text">解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他"><span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hexo-server报错"><span class="toc-text">hexo server报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hexo-generate报错"><span class="toc-text">hexo generate报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#检查hexo-相关库"><span class="toc-text">检查hexo 相关库</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-resolve-long-page-display-error" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">解决hexo博客文章太长导致的显示不全问题</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.03.06</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>前两天准备发布上一篇介绍<em>CLI11</em>的文章,结果写好markdown之后本地测试发现问题:</p>
+<ul>
+<li>文章最后内容突然缺失</li>
+<li>导航栏,底部的返回顶部按钮均异常</li>
+<li>查看网页源代码,发现内容消失的地方之后内容全部是空格</li>
+</ul>
+<p>尝试解决问题,发现文章变短显示就正常,使用hexo新建blog,测试长文显示OK,换上同样的主题也没问题,说明是我的环境配置哪里出错.</p>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>折腾几天,重装hexo-xx相关库,更新hexo版本,库版本,拿出错的配置和正常的去比较,终于发现问题出现在<br><em>package.json</em>的<strong>“hexo-browsersync”: “^0.3.0”,</strong> 将这一行注释掉或者删除就OK<br>然后来到这个库的github的issues,发现不少人也遇到了这个问题,可惜我是找了好久才发现<br><a href="https://github.com/hexojs/hexo-browsersync/issues/15" target="_blank" rel="noopener">https://github.com/hexojs/hexo-browsersync/issues/15</a></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>另外总结下其他遇到的问题</p>
+<h3 id="hexo-server报错"><a href="#hexo-server报错" class="headerlink" title="hexo server报错"></a>hexo server报错</h3><blockquote>
+<p>Cannot GET /</p>
+</blockquote>
+<p>解决方案:<code>npm audit fix</code> 查看缺少哪些模块,<code>npm install xxx</code> 安装</p>
+<h3 id="hexo-generate报错"><a href="#hexo-generate报错" class="headerlink" title="hexo generate报错"></a>hexo generate报错</h3><blockquote>
+<p>FATAL Something’s wrong. Maybe you can find the solution here:<a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">https://hexo.io/docs/troubleshooting.html</a><br>TypeError [ERR_INVALID_URL]: Invalid URL: <code>http://host:port/data/</code>这个网络资源上。</p>
+</blockquote>
+<p>经测试是某篇文章出现了<code>http://host:port/data/</code>字段,在某些版本hexo库下格式不对,<br>将其当作代码引起来就可以了.</p>
+<h3 id="检查hexo-相关库"><a href="#检查hexo-相关库" class="headerlink" title="检查hexo 相关库"></a>检查hexo 相关库</h3><ul>
+<li>npm install -g npm-check</li>
+<li>npm-check</li>
+<li>npm install -g npm-upgrade</li>
+<li>npm-upgrade</li>
+<li>npm install hexo –save</li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/03/04/introduce-CLI11/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-03-06T10:05:10.474Z</updated>
+  <updated>2020-03-06T10:28:27.581Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>解决hexo博客文章太长导致的显示不全问题</title>
+    <link href="http://yoursite.com/2020/03/06/resolve-long-page-display-error/"/>
+    <id>http://yoursite.com/2020/03/06/resolve-long-page-display-error/</id>
+    <published>2020-03-06T10:10:51.000Z</published>
+    <updated>2020-03-06T10:28:27.581Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>前两天准备发布上一篇介绍<em>CLI11</em>的文章,结果写好markdown之后本地测试发现问题:</p><ul><li>文章最后内容突然缺失</li><li>导航栏,底部的返回顶部按钮均异常</li><li>查看网页源代码,发现内容消失的地方之后内容全部是空格</li></ul><p>尝试解决问题,发现文章变短显示就正常,使用hexo新建blog,测试长文显示OK,换上同样的主题也没问题,说明是我的环境配置哪里出错.</p><h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>折腾几天,重装hexo-xx相关库,更新hexo版本,库版本,拿出错的配置和正常的去比较,终于发现问题出现在<br><em>package.json</em>的<strong>“hexo-browsersync”: “^0.3.0”,</strong> 将这一行注释掉或者删除就OK<br>然后来到这个库的github的issues,发现不少人也遇到了这个问题,可惜我是找了好久才发现<br><a href="https://github.com/hexojs/hexo-browsersync/issues/15" target="_blank" rel="noopener">https://github.com/hexojs/hexo-browsersync/issues/15</a></p><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>另外总结下其他遇到的问题</p><h3 id="hexo-server报错"><a href="#hexo-server报错" class="headerlink" title="hexo server报错"></a>hexo server报错</h3><blockquote><p>Cannot GET /</p></blockquote><p>解决方案:<code>npm audit fix</code> 查看缺少哪些模块,<code>npm install xxx</code> 安装</p><h3 id="hexo-generate报错"><a href="#hexo-generate报错" class="headerlink" title="hexo generate报错"></a>hexo generate报错</h3><blockquote><p>FATAL Something’s wrong. Maybe you can find the solution here:<a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">https://hexo.io/docs/troubleshooting.html</a><br>TypeError [ERR_INVALID_URL]: Invalid URL: <code>http://host:port/data/</code>这个网络资源上。</p></blockquote><p>经测试是某篇文章出现了<code>http://host:port/data/</code>字段,在某些版本hexo库下格式不对,<br>将其当作代码引起来就可以了.</p><h3 id="检查hexo-相关库"><a href="#检查hexo-相关库" class="headerlink" title="检查hexo 相关库"></a>检查hexo 相关库</h3><ul><li>npm install -g npm-check</li><li>npm-check</li><li>npm install -g npm-upgrade</li><li>npm-upgrade</li><li>npm install hexo –save</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;问题&quot;&gt;&lt;a href=&quot;#问题&quot; class=&quot;headerlink&quot; title=&quot;问题&quot;&gt;&lt;/a&gt;问题&lt;/h2&gt;&lt;p&gt;前两天准备发布上一篇介绍&lt;em&gt;CLI11&lt;/em&gt;的文章,结果写好markdown之后本地测试发现问题:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;文章最
+      
+    
+    </summary>
+    
+    
+    
+      <category term="blog" scheme="http://yoursite.com/tags/blog/"/>
+    
+  </entry>
   
   <entry>
     <title>C++命令行解析库CLI11介绍</title>
@@ -505,34 +531,6 @@
       
       
         &lt;h2 id=&quot;第１１章-连接到近端或远端的进程：服务器与Socket-套接字&quot;&gt;&lt;a href=&quot;#第１１章-连接到近端或远端的进程：服务器与Socket-套接字&quot; class=&quot;headerlink&quot; title=&quot;第１１章　连接到近端或远端的进程：服务器与Socket(套接
-      
-    
-    </summary>
-    
-    
-      <category term="programming" scheme="http://yoursite.com/categories/programming/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="C" scheme="http://yoursite.com/tags/C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix-Linux编程实践教程-chapter10-io</title>
-    <link href="http://yoursite.com/2016/08/01/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter10-io/"/>
-    <id>http://yoursite.com/2016/08/01/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter10-io/</id>
-    <published>2016-08-01T14:44:47.000Z</published>
-    <updated>2020-03-05T13:31:41.826Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="第１０章-I-O重定向和管道"><a href="#第１０章-I-O重定向和管道" class="headerlink" title="第１０章　I/O重定向和管道"></a>第１０章　I/O重定向和管道</h2><p>输入/输出重定向允许完成特定功能的程序通过交换数据来进行相互协作</p><p>Unix默认规定程序从文件描述符０读取数据，写数据到文件描述符１，将<br>错误信息输出到文件描述符２．这三个文件描述符称为标准输入，标准输出<br>和标准错误输出</p><p>当登陆到Unix系统中，登陆程序设置文件描述符０，１，２．所有的连接，<br>文件描述符都会从父进程传递到子进程．他们也会在调用exec时被传递</p><p>创建文件描述符的系统调用总是使用最低可用文件描述符号</p><p>重定向标准输入，输出以及错误输出意味着改变文件描述符０，１，２的<br>连接．有很多种技术来重定向标准I/O</p><p>管道是内核中的一个数据队列，其每一端连接一个文件描述符．程序通过<br>使用pipe系统调用创建管道</p><p>当父进程调用fork的时候，管道的两端都被复制到子进程中</p><p>只有有共同父进程的进程之间才可以使用管道连接</p><p>两个进程都可以读写管道，但是当一个进程读，另一个进程写的时候，管道的使用效率最高</p><h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * pipe.c</span></span><br><span class="line"><span class="comment"> * Demonstrates how to create a pipeline from on process to another</span></span><br><span class="line"><span class="comment"> *  Takes two args, each a command, and connects</span></span><br><span class="line"><span class="comment"> *  av[1]'s ouput to input of av[2]</span></span><br><span class="line"><span class="comment"> *  usage: pipe cmd1 cmd2</span></span><br><span class="line"><span class="comment"> *  effect: cmd1 | cmd2</span></span><br><span class="line"><span class="comment"> *  Limitations: commands do not take arguements</span></span><br><span class="line"><span class="comment"> *  uses execlp() since known number of args</span></span><br><span class="line"><span class="comment"> *  Note: exchange child and parent and watch fun</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> oops(m,x)   &#123;perror(m); exit(x);&#125;</span></span><br><span class="line"></span><br><span class="line">main(<span class="keyword">int</span> ac, <span class="keyword">char</span> ** av)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> thepipe[<span class="number">2</span>], newfd, pid;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ac != <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"usage: pipe cmd1 cmd2\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (pipe(thepipe) == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"Cannot get a pipe"</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*--------------------------------------------------*/</span></span><br><span class="line">    <span class="comment">/* now we have a pipe, now let's get two processes  */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((pid = fork()) == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"Cannot fork"</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*--------------------------------------------------*/</span></span><br><span class="line">    <span class="comment">/* Right Here, there are two processes */</span></span><br><span class="line">    <span class="comment">/*              parent will read from pipe */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pid &gt; <span class="number">0</span>)                                <span class="comment">// parent will exec av[2]</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">close</span>(thepipe[<span class="number">1</span>]);                      <span class="comment">// parent doesn't write to pipe</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (dup2(thepipe[<span class="number">0</span>], <span class="number">0</span>) == <span class="number">-1</span>)</span><br><span class="line">            oops(<span class="string">"could not redirect stdin"</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">close</span>(thepipe[<span class="number">0</span>]);</span><br><span class="line">        execlp(av[<span class="number">2</span>], av[<span class="number">2</span>], <span class="literal">NULL</span>);</span><br><span class="line">        oops(av[<span class="number">2</span>], <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* child execs av[1] and writes into pipe */</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">close</span>(thepipe[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (dup2(thepipe[<span class="number">1</span>], <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"could not redirect stdout"</span>, <span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">close</span>(thepipe[<span class="number">1</span>]);</span><br><span class="line">    execlp(av[<span class="number">1</span>], av[<span class="number">1</span>], <span class="literal">NULL</span>);</span><br><span class="line">    oops(av[<span class="number">1</span>], <span class="number">5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;第１０章-I-O重定向和管道&quot;&gt;&lt;a href=&quot;#第１０章-I-O重定向和管道&quot; class=&quot;headerlink&quot; title=&quot;第１０章　I/O重定向和管道&quot;&gt;&lt;/a&gt;第１０章　I/O重定向和管道&lt;/h2&gt;&lt;p&gt;输入/输出重定向允许完成特定功能的程序通过交
       
     
     </summary>
