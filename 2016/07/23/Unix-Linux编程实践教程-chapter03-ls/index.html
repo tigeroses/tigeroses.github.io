@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unix-Linux编程实践教程-chapter03-ls | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,C," />
+  
+
+  <meta name="description" content="第三章　目录与文件属性：编写ls磁盘上有文件和目录，文件和目录都有目录和属性．文件的内容可以是任意的数据，目录的内容只能是文件名或者子目录名的属性 目录中的文件名和子目录名指向文件和其他的目录，内核提供了系统调用来读取目录的内容，读取和修改文件的属性 文件类型，文件的访问权限和特殊属性被编码存储在一个１６位整数中，可以通过掩码技术来读取这些信息 文件所有者和组信息是以ＩＤ的形式保存的，它们与用户名">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix-Linux编程实践教程-chapter03-ls">
+<meta property="og:url" content="http://yoursite.com/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter03-ls/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="第三章　目录与文件属性：编写ls磁盘上有文件和目录，文件和目录都有目录和属性．文件的内容可以是任意的数据，目录的内容只能是文件名或者子目录名的属性 目录中的文件名和子目录名指向文件和其他的目录，内核提供了系统调用来读取目录的内容，读取和修改文件的属性 文件类型，文件的访问权限和特殊属性被编码存储在一个１６位整数中，可以通过掩码技术来读取这些信息 文件所有者和组信息是以ＩＤ的形式保存的，它们与用户名">
+<meta property="article:published_time" content="2016-07-23T08:31:16.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.824Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#第三章-目录与文件属性：编写ls"><span class="toc-text">第三章　目录与文件属性：编写ls</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-text">code</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Unix-Linux编程实践教程-chapter03-ls" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Unix-Linux编程实践教程-chapter03-ls</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.07.23</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="第三章-目录与文件属性：编写ls"><a href="#第三章-目录与文件属性：编写ls" class="headerlink" title="第三章　目录与文件属性：编写ls"></a>第三章　目录与文件属性：编写ls</h2><p>磁盘上有文件和目录，文件和目录都有目录和属性．文件的内容可以是任意的数据，<br>目录的内容只能是文件名或者子目录名的属性</p>
+<p>目录中的文件名和子目录名指向文件和其他的目录，内核提供了系统调用来读取目录的<br>内容，读取和修改文件的属性</p>
+<p>文件类型，文件的访问权限和特殊属性被编码存储在一个１６位整数中，可以通过<br>掩码技术来读取这些信息</p>
+<p>文件所有者和组信息是以ＩＤ的形式保存的，它们与用户名和组名的联系保存在<br>passwd和group数据库中</p>
+<p>自己编写ls,需要掌握三点：<br>如何读取目录的内容<br>如何读取并显示文件的属性<br>给出一个名字，如何判断是目录还是文件</p>
+<p>把多种信息编码到不同的字段是一种常用的技术，如电话号码，ＩＰ字段等</p>
+<p>为了比较，把不需要的地方置为０，这种技术称为掩码</p>
+<p>将二进制数的每三位分为一组来操作，这就是八进制</p>
+<p>结构stat 中的st_mode 成员包含１６位，其中四位用作文件类型，九位用作许可权限，<br>剩下的三位用作文件特殊属性<br>set-user-ID s 使用它来给某些程序提供额外的权限，比如系统中的打印队列<br>set-group-ID s<br>sticky 它告诉内核，即使没有人使用程序，也要把它放在交换空间中，因为加载速度<br>比从硬盘空间快<br>在许可权限部分，用户的ｘ被替换成ｓ，代表set-user-ID 被设置<br>组用户的ｘ被替换成ｓ，代表set-group-ID被设置<br>其他用户的ｘ被替换成ｔ，代表sticky被设置</p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* ls2.c</span></span><br><span class="line"><span class="comment"> * purpose list contents of directory or directories</span></span><br><span class="line"><span class="comment"> * action if no args, use . else list files in args</span></span><br><span class="line"><span class="comment"> * note uses stat and pwd.h and grp.h</span></span><br><span class="line"><span class="comment"> * <span class="doctag">BUG:</span> try ls2 /tmp</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">do_ls</span><span class="params">(<span class="keyword">char</span> [])</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dostat</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_file_info</span><span class="params">(<span class="keyword">char</span> *, struct stat *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mode_to_letters</span><span class="params">(<span class="keyword">int</span> , <span class="keyword">char</span> [])</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">uid_to_name</span><span class="params">(<span class="keyword">uid_t</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">gid_to_name</span><span class="params">(<span class="keyword">gid_t</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">main(<span class="keyword">int</span> ac, <span class="keyword">char</span> * av[])</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (ac == <span class="number">1</span>)</span><br><span class="line">        do_ls(<span class="string">"."</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">while</span> (--ac)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%s:\n"</span>, * ++av);</span><br><span class="line">            do_ls(*av);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">do_ls</span><span class="params">(<span class="keyword">char</span> dirname[])</span></span></span><br><span class="line"><span class="function"><span class="comment">/* </span></span></span><br><span class="line"><span class="function"><span class="comment"> * list files in directory called dirname</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    DIR *dir_ptr;           <span class="comment">// the directory</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> * <span class="title">direntp</span>;</span><span class="comment">// each entry</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((dir_ptr = opendir(dirname)) == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"ls1: cannot open %s\n"</span>, dirname);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span> ((direntp = readdir(dir_ptr)) != <span class="literal">NULL</span>)</span><br><span class="line">            dostat(direntp-&gt;d_name);</span><br><span class="line">        closedir(dir_ptr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dostat</span><span class="params">(<span class="keyword">char</span> *filename)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">info</span>;</span></span><br><span class="line">    <span class="keyword">if</span> (stat(filename, &amp;info) == <span class="number">-1</span>)        <span class="comment">// cannot stat</span></span><br><span class="line">        perror(filename);                   <span class="comment">// say why</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        show_file_info(filename, &amp;info);    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_file_info</span><span class="params">(<span class="keyword">char</span> *filename, struct stat * info_p)</span></span></span><br><span class="line"><span class="function"><span class="comment">/* </span></span></span><br><span class="line"><span class="function"><span class="comment"> * display the info about filename.</span></span></span><br><span class="line"><span class="function"><span class="comment"> * the info is stored in struct at * info_p</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    char * uid_to_name(), *ctime(), *gid_to_name(), *filemode();</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">mode_to_letters</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="keyword">char</span> modestr[<span class="number">11</span>];</span><br><span class="line"></span><br><span class="line">    mode_to_letters(info_p-&gt;st_mode, modestr);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s"</span>, modestr);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%4d "</span>, (<span class="keyword">int</span>)info_p-&gt;st_nlink);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%-8s "</span>, uid_to_name(info_p-&gt;st_uid));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%-8s "</span>, gid_to_name(info_p-&gt;st_gid));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%8ld "</span>, (<span class="keyword">long</span>)info_p-&gt;st_size);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%.12s "</span>, <span class="number">4</span>+ctime(&amp;info_p-&gt;st_mtime));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, filename);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * utility functions</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * This function takes a mode value and a char array</span></span><br><span class="line"><span class="comment"> * and puts into the char array the file type and the</span></span><br><span class="line"><span class="comment"> * nine letters that correspnd to the bits in mode.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">NOTE:</span> It does not code setuid, setgid, and sticky</span></span><br><span class="line"><span class="comment"> * codes</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mode_to_letters</span><span class="params">(<span class="keyword">int</span> mode, <span class="keyword">char</span> str[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">strcpy</span>(str, <span class="string">"----------"</span>);  <span class="comment">// default = no perms</span></span><br><span class="line">    <span class="keyword">if</span> (S_ISDIR(mode)) str[<span class="number">0</span>] = <span class="string">'d'</span>;    <span class="comment">// directory</span></span><br><span class="line">    <span class="keyword">if</span> (S_ISCHR(mode)) str[<span class="number">0</span>] = <span class="string">'c'</span>;    <span class="comment">// char devices</span></span><br><span class="line">    <span class="keyword">if</span> (S_ISBLK(mode)) str[<span class="number">0</span>] = <span class="string">'l'</span>;    <span class="comment">// block device</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IRUSR) str[<span class="number">1</span>] = <span class="string">'r'</span>;   <span class="comment">// 3 bits for user</span></span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IWUSR) str[<span class="number">2</span>] = <span class="string">'w'</span>;</span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IXUSR) str[<span class="number">3</span>] = <span class="string">'x'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IRGRP) str[<span class="number">4</span>] = <span class="string">'r'</span>;   <span class="comment">// 3 bits for group</span></span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IWGRP) str[<span class="number">5</span>] = <span class="string">'w'</span>;</span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IXGRP) str[<span class="number">6</span>] = <span class="string">'x'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IROTH) str[<span class="number">7</span>] = <span class="string">'r'</span>;   <span class="comment">// 3 bits for other</span></span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IWOTH) str[<span class="number">8</span>] = <span class="string">'w'</span>;</span><br><span class="line">    <span class="keyword">if</span> (mode &amp; S_IXOTH) str[<span class="number">9</span>] = <span class="string">'x'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pwd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">uid_to_name</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span></span><br><span class="line"><span class="function"><span class="comment">/* </span></span></span><br><span class="line"><span class="function"><span class="comment"> * returns pointer to username associated with uid, uses getpw()</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    struct passwd * getpwuid(), *pw_ptr;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">char</span> numstr[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((pw_ptr = getpwuid(uid)) == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">sprintf</span>(numstr, <span class="string">"%d"</span>, uid);</span><br><span class="line">        <span class="keyword">return</span> numstr;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> pw_ptr-&gt;pw_name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;grp.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">gid_to_name</span><span class="params">(<span class="keyword">gid_t</span> gid)</span></span></span><br><span class="line"><span class="function"><span class="comment">/*</span></span></span><br><span class="line"><span class="function"><span class="comment"> * returns pointer to group number gid, used getgrid(3)</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    struct group * getgrpid(), *grp_ptr;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">char</span> numstr[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((grp_ptr = getgrgid(gid)) == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">sprintf</span>(numstr, <span class="string">"%d"</span>, gid);</span><br><span class="line">        <span class="keyword">return</span> numstr;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> grp_ptr-&gt;gr_name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter02-who/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter04-pwd/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

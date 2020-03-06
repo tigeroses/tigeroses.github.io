@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unix-Linux编程实践教程-chapter10-io | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,C," />
+  
+
+  <meta name="description" content="第１０章　I&#x2F;O重定向和管道输入&#x2F;输出重定向允许完成特定功能的程序通过交换数据来进行相互协作 Unix默认规定程序从文件描述符０读取数据，写数据到文件描述符１，将错误信息输出到文件描述符２．这三个文件描述符称为标准输入，标准输出和标准错误输出 当登陆到Unix系统中，登陆程序设置文件描述符０，１，２．所有的连接，文件描述符都会从父进程传递到子进程．他们也会在调用exec时被传递 创建文件描述符的系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix-Linux编程实践教程-chapter10-io">
+<meta property="og:url" content="http://yoursite.com/2016/08/01/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter10-io/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="第１０章　I&#x2F;O重定向和管道输入&#x2F;输出重定向允许完成特定功能的程序通过交换数据来进行相互协作 Unix默认规定程序从文件描述符０读取数据，写数据到文件描述符１，将错误信息输出到文件描述符２．这三个文件描述符称为标准输入，标准输出和标准错误输出 当登陆到Unix系统中，登陆程序设置文件描述符０，１，２．所有的连接，文件描述符都会从父进程传递到子进程．他们也会在调用exec时被传递 创建文件描述符的系">
+<meta property="article:published_time" content="2016-08-01T14:44:47.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.826Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#第１０章-I-O重定向和管道"><span class="toc-text">第１０章　I&#x2F;O重定向和管道</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-text">code</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Unix-Linux编程实践教程-chapter10-io" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Unix-Linux编程实践教程-chapter10-io</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.08.01</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="第１０章-I-O重定向和管道"><a href="#第１０章-I-O重定向和管道" class="headerlink" title="第１０章　I/O重定向和管道"></a>第１０章　I/O重定向和管道</h2><p>输入/输出重定向允许完成特定功能的程序通过交换数据来进行相互协作</p>
+<p>Unix默认规定程序从文件描述符０读取数据，写数据到文件描述符１，将<br>错误信息输出到文件描述符２．这三个文件描述符称为标准输入，标准输出<br>和标准错误输出</p>
+<p>当登陆到Unix系统中，登陆程序设置文件描述符０，１，２．所有的连接，<br>文件描述符都会从父进程传递到子进程．他们也会在调用exec时被传递</p>
+<p>创建文件描述符的系统调用总是使用最低可用文件描述符号</p>
+<p>重定向标准输入，输出以及错误输出意味着改变文件描述符０，１，２的<br>连接．有很多种技术来重定向标准I/O</p>
+<p>管道是内核中的一个数据队列，其每一端连接一个文件描述符．程序通过<br>使用pipe系统调用创建管道</p>
+<p>当父进程调用fork的时候，管道的两端都被复制到子进程中</p>
+<p>只有有共同父进程的进程之间才可以使用管道连接</p>
+<p>两个进程都可以读写管道，但是当一个进程读，另一个进程写的时候，管道的使用效率最高</p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * pipe.c</span></span><br><span class="line"><span class="comment"> * Demonstrates how to create a pipeline from on process to another</span></span><br><span class="line"><span class="comment"> *  Takes two args, each a command, and connects</span></span><br><span class="line"><span class="comment"> *  av[1]'s ouput to input of av[2]</span></span><br><span class="line"><span class="comment"> *  usage: pipe cmd1 cmd2</span></span><br><span class="line"><span class="comment"> *  effect: cmd1 | cmd2</span></span><br><span class="line"><span class="comment"> *  Limitations: commands do not take arguements</span></span><br><span class="line"><span class="comment"> *  uses execlp() since known number of args</span></span><br><span class="line"><span class="comment"> *  Note: exchange child and parent and watch fun</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> oops(m,x)   &#123;perror(m); exit(x);&#125;</span></span><br><span class="line"></span><br><span class="line">main(<span class="keyword">int</span> ac, <span class="keyword">char</span> ** av)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> thepipe[<span class="number">2</span>], newfd, pid;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ac != <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"usage: pipe cmd1 cmd2\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (pipe(thepipe) == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"Cannot get a pipe"</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*--------------------------------------------------*/</span></span><br><span class="line">    <span class="comment">/* now we have a pipe, now let's get two processes  */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((pid = fork()) == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"Cannot fork"</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*--------------------------------------------------*/</span></span><br><span class="line">    <span class="comment">/* Right Here, there are two processes */</span></span><br><span class="line">    <span class="comment">/*              parent will read from pipe */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pid &gt; <span class="number">0</span>)                                <span class="comment">// parent will exec av[2]</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">close</span>(thepipe[<span class="number">1</span>]);                      <span class="comment">// parent doesn't write to pipe</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (dup2(thepipe[<span class="number">0</span>], <span class="number">0</span>) == <span class="number">-1</span>)</span><br><span class="line">            oops(<span class="string">"could not redirect stdin"</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">close</span>(thepipe[<span class="number">0</span>]);</span><br><span class="line">        execlp(av[<span class="number">2</span>], av[<span class="number">2</span>], <span class="literal">NULL</span>);</span><br><span class="line">        oops(av[<span class="number">2</span>], <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* child execs av[1] and writes into pipe */</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">close</span>(thepipe[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (dup2(thepipe[<span class="number">1</span>], <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"could not redirect stdout"</span>, <span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">close</span>(thepipe[<span class="number">1</span>]);</span><br><span class="line">    execlp(av[<span class="number">1</span>], av[<span class="number">1</span>], <span class="literal">NULL</span>);</span><br><span class="line">    oops(av[<span class="number">1</span>], <span class="number">5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/07/31/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter09-shell/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/08/03/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter11-socket/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

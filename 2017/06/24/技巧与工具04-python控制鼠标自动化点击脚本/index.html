@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>技巧与工具04-python控制鼠标自动化点击脚本 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="python,pyautogui," />
+  
+
+  <meta name="description" content="python控制鼠标自动化点击脚本事情起因今天是DNF九周年活动，出了新职业圣职者，为了快速升级需要获取疲劳药，可以用活动送的黑钻来抽奖，每抽一次需要分别点击三次，而我能抽奖500多次，所以不想手动来点击，刚好前几天在微信公众号看了一个简短的文章，是关于python的pyautogui库可以自动化键盘和鼠标的操作，因此就开始动手做；台式机以前新装的系统，因此需要下载python。 环境搭建 下载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="技巧与工具04-python控制鼠标自动化点击脚本">
+<meta property="og:url" content="http://yoursite.com/2017/06/24/%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%B7%A5%E5%85%B704-python%E6%8E%A7%E5%88%B6%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96%E7%82%B9%E5%87%BB%E8%84%9A%E6%9C%AC/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="python控制鼠标自动化点击脚本事情起因今天是DNF九周年活动，出了新职业圣职者，为了快速升级需要获取疲劳药，可以用活动送的黑钻来抽奖，每抽一次需要分别点击三次，而我能抽奖500多次，所以不想手动来点击，刚好前几天在微信公众号看了一个简短的文章，是关于python的pyautogui库可以自动化键盘和鼠标的操作，因此就开始动手做；台式机以前新装的系统，因此需要下载python。 环境搭建 下载">
+<meta property="article:published_time" content="2017-06-24T09:04:28.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.830Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="pyautogui">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#python控制鼠标自动化点击脚本"><span class="toc-text">python控制鼠标自动化点击脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#事情起因"><span class="toc-text">事情起因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#环境搭建"><span class="toc-text">环境搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#熟悉pyautogui库"><span class="toc-text">熟悉pyautogui库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#脚本编写"><span class="toc-text">脚本编写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题总结"><span class="toc-text">问题总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参考文档"><span class="toc-text">参考文档</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-技巧与工具04-python控制鼠标自动化点击脚本" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">技巧与工具04-python控制鼠标自动化点击脚本</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.06.24</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/tools/">tools</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="python控制鼠标自动化点击脚本"><a href="#python控制鼠标自动化点击脚本" class="headerlink" title="python控制鼠标自动化点击脚本"></a>python控制鼠标自动化点击脚本</h2><h3 id="事情起因"><a href="#事情起因" class="headerlink" title="事情起因"></a>事情起因</h3><p>今天是DNF九周年活动，出了新职业圣职者，为了快速升级需要获取疲劳药，可以用活动送的<br>黑钻来抽奖，每抽一次需要分别点击三次，而我能抽奖500多次，所以不想手动来点击，刚好<br>前几天在微信公众号看了一个简短的文章，是关于python的pyautogui库可以自动化键盘和鼠标<br>的操作，因此就开始动手做；台式机以前新装的系统，因此需要下载python。</p>
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><ul>
+<li>下载 <strong>python2.7</strong> 并安装</li>
+<li>配置python环境变量，包括python目录和scripts目录(为了pip)</li>
+<li><strong>pip install pyautogui</strong> 安装这个控制鼠标和键盘的库</li>
+</ul>
+<h3 id="熟悉pyautogui库"><a href="#熟悉pyautogui库" class="headerlink" title="熟悉pyautogui库"></a>熟悉pyautogui库</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui <span class="keyword">as</span> pg <span class="comment">#导入库 </span></span><br><span class="line">pg.size() <span class="comment">#返回窗口大小，比如(1920,1080)</span></span><br><span class="line">pg.position() <span class="comment">#返回鼠标当前位置</span></span><br><span class="line">pg.moveTo(<span class="number">100</span>, <span class="number">100</span>) <span class="comment">#移动鼠标</span></span><br><span class="line">pg.click(<span class="number">100</span>, <span class="number">100</span>) <span class="comment">#移动鼠标并单击</span></span><br><span class="line">pg.press(<span class="string">'enter'</span>) <span class="comment">#按下回车键</span></span><br><span class="line">pg.keyDown(<span class="string">'esc'</span>) <span class="comment">#按下退出键</span></span><br><span class="line">pg.keyUp(<span class="string">'esc'</span>) <span class="comment">#松开退出键</span></span><br><span class="line">pg.typewrite(<span class="string">'hello'</span>) <span class="comment">#文本输入</span></span><br><span class="line">pg.dragTo(<span class="number">100</span>, <span class="number">100</span>) <span class="comment">#鼠标拖拽</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="脚本编写"><a href="#脚本编写" class="headerlink" title="脚本编写"></a>脚本编写</h3><p>脚本的逻辑很简单，首先10秒的时间用来让我放置鼠标到起始的位置，也就是黑钻售货机,<br>进行第一次点击;之后会进入循环，即每次点击三次，分别是按钮“启动”，“停止”，“确定”，<br>其中三次的位置均不同，但是dnf会自动将鼠标移动到下一个需要点击的位置，为了给dnf<br>这个移动的时间，中间有sleep操作。</p>
+<p>最终抽奖完成，但是程序会一直运行下去，这时需要将鼠标移动到左上角，这样程序会抛出<br>异常，从而捕获异常，终止程序；至于为什么不用click()函数，而是用dragTo()这个鼠标<br>拖拽函数，下面会提到。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#/usr/bin/env python</span></span><br><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pyautogui <span class="keyword">as</span> pg</span><br><span class="line"><span class="keyword">import</span> pytweening</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_click</span><span class="params">()</span>:</span></span><br><span class="line">    l_pos, r_pos =  pg.position()</span><br><span class="line">    pg.dragTo(l_pos+<span class="number">1</span>, r_pos+<span class="number">1</span>, duration = <span class="number">0.5</span>, button=<span class="string">'left'</span>)</span><br><span class="line">    sleep(<span class="number">0.1</span>)</span><br><span class="line">            </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># get current position</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Place your mouse in the starting position within then seconds."</span></span><br><span class="line">    sleep(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        my_click()</span><br><span class="line">        times = <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">            my_click()</span><br><span class="line">            my_click()</span><br><span class="line">            sleep(<span class="number">0.5</span>)</span><br><span class="line">            my_click()</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"click %03d"</span> % times</span><br><span class="line">            times += <span class="number">1</span></span><br><span class="line">    <span class="keyword">except</span> pg.FailSafeException <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"Error: %s"</span> % e</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"Over"</span></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"Error: %s"</span> % e</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"Over"</span></span><br><span class="line">                </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<h3 id="问题总结"><a href="#问题总结" class="headerlink" title="问题总结"></a>问题总结</h3><ul>
+<li>经过测试，使用pyautogui可进行按键和文本输入，但是无法进行鼠标的单击,即click()在dnf的窗口无效</li>
+<li>怀疑是游戏方有监控鼠标的滑行轨迹，如果是直线的就进行过滤，这应该算是防止作弊的一种手段</li>
+<li>还好试了dragTo()，先按下鼠标再松开是可以，否则要考虑使用非直线来进行鼠标的移动，这可能要用到<br>  其他的库，pyautogui中没有找到对应的方法</li>
+</ul>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="http://www.tuicool.com/articles/U73A7zz" target="_blank" rel="noopener">PyAutoGUI——让所有GUI都自动化</a></li>
+<li>微信公众号 <strong>Python程序员</strong></li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/10/26/%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%B7%A5%E5%85%B703-%E8%B0%83%E7%94%A8%E7%99%BE%E5%BA%A6%E7%BF%BB%E8%AF%91API%E8%BF%9B%E8%A1%8C%E4%B8%AD%E8%8B%B1%E6%96%87%E7%BF%BB%E8%AF%91/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/07/03/markdown%E5%B7%A5%E5%85%B7Mou%E5%B0%8F%E6%8A%84/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

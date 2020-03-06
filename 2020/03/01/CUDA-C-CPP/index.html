@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>CUDA C/C++总结 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="CUDA C," />
+  
+
+  <meta name="description" content="本篇为学习笔记,学习内容为2019年参加英伟达GTC会议的课程 需要提下学习CUDA的目的,就是为了加速自己的应用,相比于CPU-only的应用程序,可以用GPU实现较大加速,当然程序首先是计算密集型而非IO密集型 基础GPU加速系统,又被称异构系统(Heterogeneous),由CPU和GPU组成 如果熟悉C编程,可以很快上手CUDA编程,两者在代码形式上有很多类似地方,一个比较重要概念是GP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CUDA C&#x2F;C++总结">
+<meta property="og:url" content="http://yoursite.com/2020/03/01/CUDA-C-CPP/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="本篇为学习笔记,学习内容为2019年参加英伟达GTC会议的课程 需要提下学习CUDA的目的,就是为了加速自己的应用,相比于CPU-only的应用程序,可以用GPU实现较大加速,当然程序首先是计算密集型而非IO密集型 基础GPU加速系统,又被称异构系统(Heterogeneous),由CPU和GPU组成 如果熟悉C编程,可以很快上手CUDA编程,两者在代码形式上有很多类似地方,一个比较重要概念是GP">
+<meta property="article:published_time" content="2020-03-01T13:51:37.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.823Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="CUDA C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础"><span class="toc-text">基础</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#统一内存管理"><span class="toc-text">统一内存管理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#流异步和性能分析"><span class="toc-text">流异步和性能分析</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-CUDA-C-CPP" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">CUDA C/C++总结</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.03.01</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>本篇为学习笔记,学习内容为2019年参加英伟达GTC会议的课程</p>
+<p>需要提下学习CUDA的目的,就是为了加速自己的应用,相比于CPU-only的应用程序,可以用GPU实现较大加速,当然程序首先是计算密集型而非IO密集型</p>
+<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>GPU加速系统,又被称<strong>异构系统</strong>(Heterogeneous),由CPU和GPU组成</p>
+<p>如果熟悉C编程,可以很快上手CUDA编程,两者在代码形式上有很多类似地方,一个比较重要概念是GPU的<em>launch kernel</em></p>
+<p>C代码用gcc编译,cuda代码用<em>nvcc</em>编译,nvcc内部会调用gcc</p>
+<p>启动核函数的配置 &lt;&lt;&lt;blocks,threads&gt;&gt;&gt; thread是最小执行单位,由threads组成block,多个block组成grid;kernel只能运行在一个grid</p>
+<p>一般最简单的加速示例就是一个CPU的循环,执行简单的算术运算;主要是暗示我们什么类型的程序适合GPU加速</p>
+<p>关于threads:</p>
+<ul>
+<li>每个block中的threads个数上限是1024</li>
+<li>一个block中的threads个数由内置变量<em>blockDim.x<em>给出,多个block中计算thread索引公式为:</em>threadIdx.x + blockIdx.x * blockDim.x</em></li>
+<li>grid中block的个数<em>gridDim.x</em>,因此一个grid的线程总数就是<em>gridDim.x * blockDim.x</em></li>
+<li>一般一个thread一次处理一个数据</li>
+<li>注意数据与threads个数很多时候都不是一一对应的,所以要特别注意索引越界问题;一般方式是将数组长度N传入kernel,算出thread索引,与N比较</li>
+<li>block中的threads个数为32的倍数时最优化</li>
+<li>当多个block的threads总数依然无法覆盖待处理数据长度时,在kernel中用loop来重复利用threads处理后续数据;如数据有2048个,线程总数只有1024,则每一个线程处理两个数据</li>
+</ul>
+<p>cuda6之后的版本可以分配出CPU/GPU都能访问的内存,API接口为:<em>cudaMallocManaged</em></p>
+<p>关于异常处理:</p>
+<ul>
+<li>一些cuda函数的返回值类型为cudaError_t, 可用来检查错误<em>cudaGetErrorString(err)</em></li>
+<li>无返回值的kernel, 使用<em>cudaGetLastError()</em> 返回cudaError_t类型</li>
+<li>另外,如果有一组kernel出错,因为kernel执行是异步的,为了排查错误,可以调用同步函数如cudaDeviceSynchronize() 会返回kernel执行的错误</li>
+<li>自己封装一个宏来进行错误检查是有必要的</li>
+</ul>
+<h1 id="统一内存管理"><a href="#统一内存管理" class="headerlink" title="统一内存管理"></a>统一内存管理</h1><p>迭代设计过程:</p>
+<p>APOD:Assess Parallelize Optimize Deploy</p>
+<p>评估-&gt;并行-&gt;优化-&gt;部署</p>
+<p>使用Nsight命令行工具<strong>nsys</strong>来评估性能,确定优化机会</p>
+<p>nsys基本用法: nsys profile –stats=true exe</p>
+<p>它会生成qdrep报告,包含诸多信息:API统计,kernel执行统计,内存拷贝的大小和时间等</p>
+<p>程序优化方法之一:更改kernel launch的<strong>配置参数</strong></p>
+<p>Streaming Multiprocessor 流处理单元SM</p>
+<ul>
+<li>一个block中的threads被调度到SM上执行;多个block可以被调度到同一个SM上</li>
+<li>为了尽可能并行,提高性能:将grid size设置为给定GPU上的SM个数的倍数,防止不对齐导致的资源浪费</li>
+<li>SMs创建,管理,调度和执行的单位是一个block中的一组32个threads,叫做wraps;由有half-wrap的概念,16个线程为一组,更细粒度的并行</li>
+</ul>
+<p>为了获取SM的数量,调用API:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> deviceId;</span><br><span class="line">cudaGetDevice(&amp;deviceId);</span><br><span class="line">cudaDeviceProp props;</span><br><span class="line">cudaGetDeviceProperties(&amp;props, deviceId);</span><br><span class="line">SMs = props.multiProcessorCount;</span><br></pre></td></tr></table></figure>
+
+<p>基础知识:CUDA’s Unified Memory</p>
+<ul>
+<li>关于Unified Memory,当UM分配之后,不管host还是device都无法访问,访问时会发生page fault,然后触发内存的迁移,将需要的数据按batches迁移</li>
+<li>使用UM要注意避免不必要的时间开销,比如需要大的连续内存块,避免页错误</li>
+</ul>
+<p>Asynchronous Memory Prefetching<br>异步内存预取:减小页错误和按需内存迁移的间接开销的技术,提高性能</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cudaMemPrefetchAsync(pointerToSomeUMData, <span class="built_in">size</span>, deviceId);        <span class="comment">// Prefetch to GPU device.</span></span><br><span class="line">cudaMemPrefetchAsync(pointerToSomeUMData, <span class="built_in">size</span>, cudaCpuDeviceId); <span class="comment">// Prefetch to host. `cudaCpuDeviceId`</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="流异步和性能分析"><a href="#流异步和性能分析" class="headerlink" title="流异步和性能分析"></a>流异步和性能分析</h1><p>Nsight Systems 可视化的性能分析工具,其可以直接打开nsys生成的qdrep文件</p>
+<p>Concurrent CUDA Streams 并发流;流是一系列顺序执行的命令,kernel的执行,和许多内存迁移都是发生在流内,不指定的情况下使用default stream</p>
+<p>关于控制流的几个规则:</p>
+<ul>
+<li>流内的操作是顺序的</li>
+<li>不同流内的操作相互之间不保证有任何顺序,即可认为不相关</li>
+<li>默认流执行前会阻塞直到其他所有流都执行完成,反之亦然,默认流执行的时候其他流也被阻塞</li>
+</ul>
+<p>API:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cudaStream_t stream;       <span class="comment">// CUDA streams are of type `cudaStream_t`.</span></span><br><span class="line">cudaStreamCreate(&amp;stream); <span class="comment">// Note that a pointer must be passed to `cudaCreateStream`.</span></span><br><span class="line"></span><br><span class="line">someKernel&lt;&lt;&lt;number_of_blocks, threads_per_block, <span class="number">0</span>, stream&gt;&gt;&gt;(); <span class="comment">// `stream` is passed as 4th EC argument.</span></span><br><span class="line"></span><br><span class="line">cudaStreamDestroy(stream); <span class="comment">// Note that a value, not a pointer, is passed to `cudaDestroyStream`.</span></span><br></pre></td></tr></table></figure>
+
+<p>第三个参数是每个block允许使用的shared memory的bytes,默认为0</p>
+<p>profile driven and iterative 配置文件驱动和迭代</p>
+<p>当确定数据只在device使用,最好只分配device的内存,减小数据迁移的开销,API:</p>
+<ul>
+<li>cudaMalloc()  only GPU</li>
+<li>cudaMallocHost() only CPU 锁页内存,允许异步拷贝到GPU;过多的锁页内存会影响CPU性能,使用 cudaFreeHost()来释放</li>
+<li>cudaMemcpy() device与host相互拷贝</li>
+</ul>
+<p>Using Streams to Overlap data transfers and code execution</p>
+<p>只要CPU内存是锁页内存,就可以使用cudaMemcpyAsync()来进行异步拷贝,另一个条件就是使用非默认流</p>
+<p>默认情况下GPU函数执行时对CPU函数是异步的,而异步拷贝,不仅对CPU,对GPU的kernel也是异步的,可以达到边计算边拷贝数据的目的,从而掩盖数据传输时间,尽量挖掘GPU计算能力</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/03/01/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E8%BF%9E%E6%8E%A5%E6%8A%A5%E9%94%99/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2020/03/04/introduce-CLI11/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unix-Linux编程实践教程-chapter08-sh | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,C," />
+  
+
+  <meta name="description" content="##第８章　进程和程序：编写命令解释器sh Unix通过将可执行代码装入进程并执行它来运行一个程序．进程是一个程序所需的内存空间和其他资源的集合 每个运行中的程序在自己的进程中运行．每个进程都有一个唯一的进程ID,所有者，大小及其他属性 系统调用fork通过复制进程来建立一个几乎和原来进程完全相同的副本进程．这个新建的进程被称为子进程 一个程序通过调用exec函数族在当前进程中执行一个新的程序 一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix-Linux编程实践教程-chapter08-sh">
+<meta property="og:url" content="http://yoursite.com/2016/07/28/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter08-sh/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="##第８章　进程和程序：编写命令解释器sh Unix通过将可执行代码装入进程并执行它来运行一个程序．进程是一个程序所需的内存空间和其他资源的集合 每个运行中的程序在自己的进程中运行．每个进程都有一个唯一的进程ID,所有者，大小及其他属性 系统调用fork通过复制进程来建立一个几乎和原来进程完全相同的副本进程．这个新建的进程被称为子进程 一个程序通过调用exec函数族在当前进程中执行一个新的程序 一">
+<meta property="article:published_time" content="2016-07-28T15:04:08.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.825Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-text">code</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Unix-Linux编程实践教程-chapter08-sh" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Unix-Linux编程实践教程-chapter08-sh</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.07.28</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>##第８章　进程和程序：编写命令解释器sh</p>
+<p>Unix通过将可执行代码装入进程并执行它来运行一个程序．进程是<br>一个程序所需的内存空间和其他资源的集合</p>
+<p>每个运行中的程序在自己的进程中运行．每个进程都有一个唯一的<br>进程ID,所有者，大小及其他属性</p>
+<p>系统调用fork通过复制进程来建立一个几乎和原来进程完全相同的<br>副本进程．这个新建的进程被称为子进程</p>
+<p>一个程序通过调用exec函数族在当前进程中执行一个新的程序</p>
+<p>一个程序能通过调用wait来等待子进程的结束</p>
+<p>调用程序能将一个字符串列表传给新程序的main函数．新的程序能通过<br>调用exit来回传一个８位长的值</p>
+<p>Unix shell通过调用fork, exec, wait来运行程序</p>
+<p>一个程序是存储在文件中的机器指令集合．一般它是由编译器将源代码<br>编译成二进制格式的代码．运行一个程序意味着将这个机器指令序列载入<br>内存然后让处理器逐条执行这些指令</p>
+<p>可以通过命令ps(process status)来学习进程</p>
+<p>shell 是如何运行程序的：<br>1　用户键入a.out<br>2  shell建立一个新的进程来运行程序<br>3  shell将程序从磁盘载入<br>4  程序在它的进程中运行直到结束</p>
+<p>要学会写shell,需要学会：<br>1 运行一个程序<br>2 建立一个进程<br>3 等待exit()</p>
+<p>一个程序运行另一个程序:<br>调用execvp<br>内核将新程序载入到当前进程，替代当前进程的代码和数据，因此最好<br>还是fork一个子进程，然后子进程来调用execvp</p>
+<p>如何建立新进程：<br>fork<br>系统调用fork正是解决shell只能运行一条命令这个问题所需要的</p>
+<p>父进程等待子进程结束：<br>进程调用wait等待子进程结束　pid = wait(&amp;status);<br>wait暂停调用它的进程直到子进程结束　最终子进程会结束任务并调用<br>exit(n)</p>
+<p>键盘信号发给所有连接的进程</p>
+<p>execvp/exit &lt;=&gt; call/return<br>这种通过参数和返回值在拥有私有数据的函数间通信的模式是结构化程序<br>设计的基础</p>
+<p>全局变量和fork/exec<br>全局变量会破坏封装原则，但有时候去掉会更糟糕．Unix提供方法来建立<br>全局变量，环境是一些传递给进程的字符串型变量集合</p>
+<p>execvp不是一个系统调用，而是一个库函数，这个函数通过execve来<br>调用内核服务</p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * prompting shell version 2</span></span><br><span class="line"><span class="comment"> * Solves the 'one-shot' problem of version 1</span></span><br><span class="line"><span class="comment"> * Uses execvp(), but fork()s first so that the</span></span><br><span class="line"><span class="comment"> * shell waits around to perform another command</span></span><br><span class="line"><span class="comment"> * New problem: shell catches signals. Run vi, press ^c</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXARGS 20      <span class="comment">// cmdline args</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ARGLEN  100     <span class="comment">// token length</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *arglist[MAXARGS + <span class="number">1</span>]; <span class="comment">// an array of ptrs</span></span><br><span class="line">    <span class="keyword">int</span> numargs;                <span class="comment">// index into array</span></span><br><span class="line">    <span class="keyword">char</span> argbuf[ARGLEN];        <span class="comment">// read stuff here</span></span><br><span class="line">    <span class="function"><span class="keyword">char</span> * <span class="title">makestring</span><span class="params">()</span></span>;        <span class="comment">// malloc etc</span></span><br><span class="line"></span><br><span class="line">    numargs = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (numargs &lt; MAXARGS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Arg[%d]?"</span>, numargs);</span><br><span class="line">        <span class="keyword">if</span> (fgets(argbuf, ARGLEN, <span class="built_in">stdin</span>) &amp;&amp; *argbuf != <span class="string">'\n'</span>)</span><br><span class="line">            arglist[numargs ++] = makestring(argbuf);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (numargs &gt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                arglist[numargs] = <span class="literal">NULL</span>;    <span class="comment">// close list</span></span><br><span class="line">                execute(arglist);</span><br><span class="line">                numargs = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execute</span><span class="params">(<span class="keyword">char</span> *arglist[])</span></span></span><br><span class="line"><span class="function"><span class="comment">/*</span></span></span><br><span class="line"><span class="function"><span class="comment"> * use fork and execvp and wait to do it</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pid, exitstatus;</span><br><span class="line"></span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">switch</span>(pid)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">-1</span>:</span><br><span class="line">            perror(<span class="string">"fork failed"</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            execvp(arglist[<span class="number">0</span>], arglist);</span><br><span class="line">            perror(<span class="string">"execvp failed"</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">while</span> (wait(&amp;exitstatus) != pid)</span><br><span class="line">                ;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"child exited with status %d, %d\n"</span>,</span><br><span class="line">                    exitstatus&gt;&gt;<span class="number">8</span>, exitstatus &amp; <span class="number">0377</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">makestring</span><span class="params">(<span class="keyword">char</span> *buf)</span></span></span><br><span class="line"><span class="function"><span class="comment">/*</span></span></span><br><span class="line"><span class="function"><span class="comment"> * trim off newline and create storage for the string</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *cp, *<span class="built_in">malloc</span>();</span><br><span class="line"></span><br><span class="line">    buf[<span class="built_in">strlen</span>(buf) - <span class="number">1</span>] = <span class="string">'\0'</span>;    <span class="comment">// trim newline</span></span><br><span class="line">    cp = <span class="built_in">malloc</span>(<span class="built_in">strlen</span>(buf) + <span class="number">1</span>);   <span class="comment">// get memory</span></span><br><span class="line">    <span class="keyword">if</span> (cp == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"no memory\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">strcpy</span>(cp, buf);</span><br><span class="line">    <span class="keyword">return</span> cp;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter07-vediogame/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/07/31/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter09-shell/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unix-Linux编程实践教程-chapter01-more | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,C," />
+  
+
+  <meta name="description" content="第一章　Unix系统编程概述程序中所有对设备的操作都是通过内核进行的 在登陆过程中，当用户名和密码通过验证后，系统会启动一个叫做shell的进程，然后把用户交给这个进程，由这个进程处理用户的请求，每个用户都有属于自己的shell进程 ps命令可以列出系统中运行的所有进程 自己动手实践一个more，用来查看文件 Unix编程不是很难，但也不是轻而易举的事情 计算机系统中包含了很多系统资源，如硬盘，内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix-Linux编程实践教程-chapter01-more">
+<meta property="og:url" content="http://yoursite.com/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter01-more/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="第一章　Unix系统编程概述程序中所有对设备的操作都是通过内核进行的 在登陆过程中，当用户名和密码通过验证后，系统会启动一个叫做shell的进程，然后把用户交给这个进程，由这个进程处理用户的请求，每个用户都有属于自己的shell进程 ps命令可以列出系统中运行的所有进程 自己动手实践一个more，用来查看文件 Unix编程不是很难，但也不是轻而易举的事情 计算机系统中包含了很多系统资源，如硬盘，内">
+<meta property="article:published_time" content="2016-07-23T08:09:39.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.823Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#第一章-Unix系统编程概述"><span class="toc-text">第一章　Unix系统编程概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-text">code</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Unix-Linux编程实践教程-chapter01-more" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Unix-Linux编程实践教程-chapter01-more</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.07.23</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="第一章-Unix系统编程概述"><a href="#第一章-Unix系统编程概述" class="headerlink" title="第一章　Unix系统编程概述"></a>第一章　Unix系统编程概述</h2><p>程序中所有对设备的操作都是通过内核进行的</p>
+<p>在登陆过程中，当用户名和密码通过验证后，系统会启动一个叫做shell的进程，然后把<br>用户交给这个进程，由这个进程处理用户的请求，每个用户都有属于自己的shell进程</p>
+<p>ps命令可以列出系统中运行的所有进程</p>
+<p>自己动手实践一个more，用来查看文件</p>
+<p>Unix编程不是很难，但也不是轻而易举的事情</p>
+<p>计算机系统中包含了很多系统资源，如硬盘，内存，外围设备，网络连接等，程序利用<br>这些资源来对数据进行存储，转换和处理</p>
+<p>多用户系统需要一个中央管理程序，Unix的内核就是这样的程序，它可以对程序和资源进行管理</p>
+<p>用户程序访问设备必须通过内核</p>
+<p>一些Unix的系统功能是由多个程序的协作而实现的</p>
+<p>要编写系统程序，必须对系统调用和相关的数据结构有深入的理解</p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PAGELEN 24</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LINELEN 512</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">do_more</span><span class="params">(FILE *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">see_more</span><span class="params">(FILE *)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE * fp;</span><br><span class="line">    <span class="keyword">if</span> (argc == <span class="number">1</span>)</span><br><span class="line">        do_more(<span class="built_in">stdin</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">while</span>(--argc)</span><br><span class="line">            <span class="keyword">if</span> ((fp = fopen(* ++argv, <span class="string">"r"</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                do_more(fp);</span><br><span class="line">                fclose(fp);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">do_more</span><span class="params">(FILE * fp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> <span class="built_in">line</span>[LINELEN];</span><br><span class="line">    <span class="keyword">int</span> num_of_lines = <span class="number">0</span>;</span><br><span class="line">    int see_more(FILE *), reply;</span><br><span class="line">    FILE * fp_tty;</span><br><span class="line">    fp_tty = fopen(<span class="string">"/dev/tty"</span>, <span class="string">"r"</span>);</span><br><span class="line">    <span class="keyword">if</span> (fp_tty == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">while</span>(fgets(<span class="built_in">line</span>, LINELEN, fp))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (num_of_lines == PAGELEN)</span><br><span class="line">        &#123;</span><br><span class="line">            reply = see_more(fp_tty);</span><br><span class="line">            <span class="keyword">if</span> (reply == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            num_of_lines -= reply;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">fputs</span>(<span class="built_in">line</span>, <span class="built_in">stdout</span>) == EOF)</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        num_of_lines++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">see_more</span><span class="params">(FILE * cmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\033[7m more? \033[m"</span>);</span><br><span class="line">    <span class="keyword">while</span> ((c = getc(cmd)) != EOF)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'q'</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">' '</span>)</span><br><span class="line">            <span class="keyword">return</span> PAGELEN;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'\n'</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/05/03/python%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%80%9A%E4%BF%A1/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter02-who/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

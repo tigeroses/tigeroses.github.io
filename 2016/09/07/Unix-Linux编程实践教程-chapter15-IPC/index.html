@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unix-Linux编程实践教程-chapter15-IPC | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,C," />
+  
+
+  <meta name="description" content="第15章　进程间通信(IPC)许多程序都包含一个或多个进程．进程间通过共享数据或传递数据进行通信．举例来说，两个人通过使用Unix的talk命令进行对话，他们就运行了两个进程，将数据从键盘和socket传输到屏幕和socket 某些进程需要从多个源端接受数据，并将数据送到多个目的地．select和poll调用允许进程等待多个文件描述符的输入 Unix提供了许多方法来进行数据在进程间传输，命名管道和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix-Linux编程实践教程-chapter15-IPC">
+<meta property="og:url" content="http://yoursite.com/2016/09/07/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter15-IPC/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="第15章　进程间通信(IPC)许多程序都包含一个或多个进程．进程间通过共享数据或传递数据进行通信．举例来说，两个人通过使用Unix的talk命令进行对话，他们就运行了两个进程，将数据从键盘和socket传输到屏幕和socket 某些进程需要从多个源端接受数据，并将数据送到多个目的地．select和poll调用允许进程等待多个文件描述符的输入 Unix提供了许多方法来进行数据在进程间传输，命名管道和">
+<meta property="article:published_time" content="2016-09-07T15:26:58.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.827Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#第15章-进程间通信-IPC"><span class="toc-text">第15章　进程间通信(IPC)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-text">code</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Unix-Linux编程实践教程-chapter15-IPC" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Unix-Linux编程实践教程-chapter15-IPC</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.09.07</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="第15章-进程间通信-IPC"><a href="#第15章-进程间通信-IPC" class="headerlink" title="第15章　进程间通信(IPC)"></a>第15章　进程间通信(IPC)</h2><p>许多程序都包含一个或多个进程．进程间通过共享数据或传递数据进行通信．举例来说，<br>两个人通过使用Unix的talk命令进行对话，他们就运行了两个进程，将数据从键盘和socket<br>传输到屏幕和socket</p>
+<p>某些进程需要从多个源端接受数据，并将数据送到多个目的地．select和poll调用允许进程<br>等待多个文件描述符的输入</p>
+<p>Unix提供了许多方法来进行数据在进程间传输，命名管道和共享内存是同一机器上的进程间<br>通信使用的两种技术．通信方法的区别在于他们的速度，所传输的消息类型，需要的范围，<br>限制访问权限的能力以及防止数据冲突的能力</p>
+<p>文件锁是进程间使用的避免对文件访问冲突的技术</p>
+<p>信号量是进程合作时所使用的系统级的变量．进程挂起等待另一进程改变信号量的值</p>
+<p>纵观IPC:<br>fork-execv-argv, exit-wait<br>用于使用一组参数来调用某个程序，被调用函数将一个整形值返回给其调用者<br>面向消息，只能用在相关的进程中，且只能单机上使用</p>
+<p>environ<br>系统调用exec通过environ这个全局变量自动将一组字符串复制给新程序，子进程无法改变<br>父进程的运行环境<br>面向对象，单向，只能用在相关进程，且只能在单机上使用</p>
+<p>pipe<br>管道是由进程创建的单向数据流<br>面向流，单向，相关进程，单机</p>
+<p>kill-signal<br>信号是一条从一个进程发往另一个进程的整形消息<br>面向消息，单向，进程必须有相同的用户ID，单机</p>
+<p>Internet sockets<br>字节流通过socket进行传输，从一个进程到另一个进程<br>面向消息，面向流，双向传输，可以在无关进程中使用，可通过网络传输</p>
+<p>Named Sockets<br>命名socket,使用文件名作为地址而不是主机名－端口号对<br>面向消息，面向流，双向传输，可以在无关进程中使用，单机</p>
+<p>Named Pipes(FIFOs)<br>命令管道工作方式类似于常规管道，但是可以连接两个无关进程<br>单向，面向流，可以连接无关进程，单机</p>
+<p>File Locks<br>文件锁<br>面向消息，多个无关进程可同时交互，单机</p>
+<p>Shared Memory<br>每个进程有自己的数据空间，进程可以通过shmget shmat调用来创建可以被多个进程共享的内存段<br>面向随即访问，多个无关进程同时交互，单机</p>
+<p>Semaphores<br>信号量是系统级的变量，程序之间可以通过信号量进行通信<br>面向消息，多个无关进程同时交互，单机</p>
+<p>Message Queues<br>消息队列工作原理类似FIFO<br>面向消息，单向传输，单机</p>
+<p>Files<br>文件可以被多个进程在同一时刻打开<br>面向随即访问，多个无关进程同时交互，网络文件系统(NFS)可以支持跨机器的多进程通信</p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * shm_ts.c</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * the time server using shared memory, a bizarre application</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/shm.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TIME_MEM_KEY 99</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SEG_SIZE ((size_t)100)</span></span><br><span class="line"></span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> seg_id;</span><br><span class="line">    <span class="keyword">char</span> * mem_ptr, *ctime();</span><br><span class="line">    <span class="keyword">long</span> now;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// create a shared memory segment</span></span><br><span class="line">    seg_id = shmget(TIME_MEM_KEY, SEG_SIZE, IPC_CREAT|<span class="number">0777</span>);</span><br><span class="line">    <span class="keyword">if</span> (seg_id == <span class="number">-1</span>) </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"error"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// attach to it and get a pointer to where it attaches</span></span><br><span class="line">    mem_ptr = shmat(seg_id, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (mem_ptr == (<span class="keyword">void</span> *)<span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"error"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// run for a minute</span></span><br><span class="line">    <span class="keyword">for</span> (n = <span class="number">0</span>; n &lt; <span class="number">60</span>; n++)</span><br><span class="line">    &#123;</span><br><span class="line">        time(&amp;now);</span><br><span class="line">        <span class="built_in">strcpy</span>(mem_ptr, ctime(&amp;now));</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// remove it</span></span><br><span class="line">    shmctl(seg_id, IPC_RMID, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * shm_tc.c</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/shm.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TIME_MEM_KEY 99</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SEG_SIZE ((size_t)100)</span></span><br><span class="line"></span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> seg_id;</span><br><span class="line">    <span class="keyword">char</span> * mem_ptr, *ctime();</span><br><span class="line">    <span class="keyword">long</span> now;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// create a shared memory segment</span></span><br><span class="line">    seg_id = shmget(TIME_MEM_KEY, SEG_SIZE, <span class="number">0777</span>);</span><br><span class="line">    <span class="keyword">if</span> (seg_id == <span class="number">-1</span>) </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"error"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// attach to it and get a pointer to where it attaches</span></span><br><span class="line">    mem_ptr = shmat(seg_id, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (mem_ptr == (<span class="keyword">void</span> *)<span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"error"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Time is %s"</span>, mem_ptr);</span><br><span class="line"></span><br><span class="line">    shmdt(mem_ptr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/09/06/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter14-thread/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/10/21/%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%B7%A5%E5%85%B701-Linux%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

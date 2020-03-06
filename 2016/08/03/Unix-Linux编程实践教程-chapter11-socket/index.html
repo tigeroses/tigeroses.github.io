@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unix-Linux编程实践教程-chapter11-socket | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,C," />
+  
+
+  <meta name="description" content="第１１章　连接到近端或远端的进程：服务器与Socket(套接字)一些程序被作为单独的进程建立起来来接受和发送数据．在客户&#x2F;服务器模型中，服务器进程为客户进程提供处理或数据服务 客户&#x2F;服务器系统包含通信系统和协议．客户和服务器通过管道或socket进行通信．协议是会话过程中一系列规则的集合 popen库函数可以将任何shell程序嵌入服务器程序并且让对服务器的访问就像访问缓存文件一样 管道是一对相连">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix-Linux编程实践教程-chapter11-socket">
+<meta property="og:url" content="http://yoursite.com/2016/08/03/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter11-socket/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="第１１章　连接到近端或远端的进程：服务器与Socket(套接字)一些程序被作为单独的进程建立起来来接受和发送数据．在客户&#x2F;服务器模型中，服务器进程为客户进程提供处理或数据服务 客户&#x2F;服务器系统包含通信系统和协议．客户和服务器通过管道或socket进行通信．协议是会话过程中一系列规则的集合 popen库函数可以将任何shell程序嵌入服务器程序并且让对服务器的访问就像访问缓存文件一样 管道是一对相连">
+<meta property="article:published_time" content="2016-08-02T16:51:07.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.826Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#第１１章-连接到近端或远端的进程：服务器与Socket-套接字"><span class="toc-text">第１１章　连接到近端或远端的进程：服务器与Socket(套接字)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-text">code</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Unix-Linux编程实践教程-chapter11-socket" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Unix-Linux编程实践教程-chapter11-socket</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.08.03</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="第１１章-连接到近端或远端的进程：服务器与Socket-套接字"><a href="#第１１章-连接到近端或远端的进程：服务器与Socket-套接字" class="headerlink" title="第１１章　连接到近端或远端的进程：服务器与Socket(套接字)"></a>第１１章　连接到近端或远端的进程：服务器与Socket(套接字)</h2><p>一些程序被作为单独的进程建立起来来接受和发送数据．在客户/服务器模型中，<br>服务器进程为客户进程提供处理或数据服务</p>
+<p>客户/服务器系统包含通信系统和协议．客户和服务器通过管道或socket进行通信．<br>协议是会话过程中一系列规则的集合</p>
+<p>popen库函数可以将任何shell程序嵌入服务器程序并且让对服务器的访问就像访问<br>缓存文件一样</p>
+<p>管道是一对相连接的文件描述符．socket是一个未连接的通信端点，也是一个潜在<br>的文件描述符．客户进程通过把自己的socket和服务器端的socket相连来创建一个<br>通信连接</p>
+<p>sockets之间的连接可以扩展到另一台机器上．每个socket以机器地址和端口来标识</p>
+<p>到管道和socket的连接使用文件描述符．文件描述符为程序提供了与文件，设备和<br>其他的进程通信的统一编程接口</p>
+<p>Unix中的计算器:bc<br>bc在内部启动了dc计算器程序，并通过管道与其进行通信</p>
+<p>从bc方法中得到的思想：<br>１　客户/服务器模型<br>    bc/dc程序对是客户/服务器模型程序设计的一个实例．bc通过用户界面，<br>    并使用dc提供的服务．这里bc被称为dc的客户<br>２　双向通信<br>    客户/服务器模型不同于生产线的数据处理模型，他要求一个进程既跟另<br>    一个进程的标准输入也要和他的标准输出进行通信<br>３　永久性服务<br>    bc让单一的dc进程处于运行状态，也就是bc不断的与dc的同一个实例进行<br>    通信，而shell对每一个命令都创建一个新的进程<br>    bc/dc对被称之为协同进程(coroutines)以用来区别于子程序(subroutines)<br>    两个程序都持续运行，当其中的一个程序完成自己的工作后将把控制权传给<br>    另一个程序</p>
+<p>bc的流程：<br>１　创建两个管道<br>２  创建一个进程来运行dc<br>３  在新创建的进程中，重定向标准输入和标准输出到管道，然后运行exec dc<br>４  在父进程中，读取并分析用户的输入，将命令传给dc,dc读取响应，并把<br>    响应传给用户</p>
+<p>如果知道文件名，可以用fopen打开设备文件<br>如果只知道文件描述符，可以用fdopen命令:W</p>
+<p>fopen打开一个指向文件的带缓冲的连接<br>FILE * fp;<br>fp = fopen(“file”, “r”);<br>c = getc(fp);<br>fgets(buf, len, fp);<br>fscanf(fp, “%d%d%s”, &amp;x, &amp;y, &amp;z);<br>fclose(fp);</p>
+<p>popen打开一个指向进程的带缓冲的连接<br>FILE * fp;<br>fp = popen(“ls”, “r”);<br>fgets(buf, len, fp);<br>pclose(fp);</p>
+<p>如果不关闭，进程会变成僵尸进程．pclose中调用了wait函数等待进程的结束</p>
+<p>访问数据：文件，应用程序接口，服务器<br>文件<br>    依赖于特定的文件格式和结构体中特定的成员名称<br>函数<br>    就算底层存储结构改变，接口程序依然可用<br>进程<br>    使用进程，也就是调用独立的程序来获取数据，而不是自己写的程序</p>
+<p>管道使得进程对其他进程发送数据就像向文件发送数据一样容易，但是因为管道<br>在进程中被创建，通过fork来实现共享，所以管道只能连接位于同一台主机上的<br>进程，而要与远端进程连接，需要使用socket</p>
+<p>客户和服务器<br>    服务器是提供服务的程序，是一个进程，等待请求，处理请求，然后循环回去<br>    等下一个请求．客户端进程只要建立连接，与服务器交换数据即可</p>
+<p>主机名和端口<br>    运行于因特网上的服务器其实是某台计算器上运行的一个进程．服务器在该<br>    主机拥有一个端口．主机和端口的组合才标识了一个服务器</p>
+<p>协议<br>    协议是服务器和客户之间交互的规则．每个客户/服务器模型都必须定义一个<br>    协议并遵守,只要两者相互认可就行，比如约定数据的格式等</p>
+<p>/etc/services中定义了常用的服务器端口列表</p>
+<p>socket中服务器流程：<br>１　向内核申请一个socket<br>    socket是一个通信端点　系统调用socket创建一个socket<br>２  绑定地址到socket上，地址包括主机，端口<br>    bind调用把一个地址分配给socket<br>３  在socket上，允许接入呼叫并设置队列长度<br>    使用listen 监听端口<br>４　等待/接收呼叫<br>    使用accept来接收调用，accept阻塞当前进程，直到指定socket上的接入连接<br>    被建立起来，然后返回文件描述符进行读写操作<br>５  传输数据<br>６  关闭连接<br>    close系统调用</p>
+<p>socket中客户端流程：<br>１　向内核申请建立socket<br>２  与服务器连接<br>    connect系统调用<br>３  传送数据<br>４  关闭连接</p>
+<p>对于任何运行参数中所含的命令或从因特网上获取数据的服务器，在编写时都要格外<br>小心，比如收到用户参数里有”;rm *”</p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><p>使用管道实现进程间通信,bc dc计算器的实现</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * tinybc.c</span></span><br><span class="line"><span class="comment"> * a tiny calculator that uses dc to do its work</span></span><br><span class="line"><span class="comment"> * demonstrates bidirectional pipes</span></span><br><span class="line"><span class="comment"> * input looks like number op number which</span></span><br><span class="line"><span class="comment"> * tinybc converts into number \n number \n op \n p</span></span><br><span class="line"><span class="comment"> * and passes result back to stdout</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * program outline:</span></span><br><span class="line"><span class="comment"> * a. get two pipes</span></span><br><span class="line"><span class="comment"> * b. fork(get another process)</span></span><br><span class="line"><span class="comment"> * c. in the dc-to-be process,</span></span><br><span class="line"><span class="comment"> *      connect stdin and out to pipes</span></span><br><span class="line"><span class="comment"> *      then execl dc</span></span><br><span class="line"><span class="comment"> * d. in the tinybc-process, no plumbing to do</span></span><br><span class="line"><span class="comment"> *      just talk to human via normal i/o</span></span><br><span class="line"><span class="comment"> *      and send stuff via pipe</span></span><br><span class="line"><span class="comment"> * e. close pipe and dc dies</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * note: does not handle multiline answers</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> oops(m,x) &#123;perror(m); exit(x);&#125;</span></span><br><span class="line"></span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> pid, todc[<span class="number">2</span>], fromdc[<span class="number">2</span>];            <span class="comment">// equipment</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// make two pipes</span></span><br><span class="line">    <span class="keyword">if</span> (pipe(todc) == <span class="number">-1</span> || pipe(fromdc) == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"pipe failed"</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// get a process for user interface</span></span><br><span class="line">    <span class="keyword">if</span> ((pid = fork()) == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"cannot fork"</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>)                           <span class="comment">// child is dc</span></span><br><span class="line">        be_dc(todc, fromdc);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        be_bc(todc, fromdc);                <span class="comment">// parent is ui</span></span><br><span class="line">        wait(<span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">be_dc(<span class="keyword">int</span> in[<span class="number">2</span>], <span class="keyword">int</span> out[<span class="number">2</span>])</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * set up stdin and stdout, then execl dc</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// setup stdin from pipein</span></span><br><span class="line">    <span class="keyword">if</span> (dup2(in[<span class="number">0</span>], <span class="number">0</span>) == <span class="number">-1</span>)              <span class="comment">// copy read end to 0</span></span><br><span class="line">        oops(<span class="string">"dc:cannot redirect stdin"</span>, <span class="number">3</span>);</span><br><span class="line">    <span class="built_in">close</span>(in[<span class="number">0</span>]);                           <span class="comment">// moved to fd 0</span></span><br><span class="line">    <span class="built_in">close</span>(in[<span class="number">1</span>]);                           <span class="comment">// won't write here</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// setup stdout from pipeout</span></span><br><span class="line">    <span class="keyword">if</span> (dup2(out[<span class="number">1</span>], <span class="number">1</span>) == <span class="number">-1</span>)              <span class="comment">// copy write end to 1</span></span><br><span class="line">        oops(<span class="string">"dc:cannot redirect stdin"</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="built_in">close</span>(out[<span class="number">1</span>]);                           <span class="comment">// moved to fd 1</span></span><br><span class="line">    <span class="built_in">close</span>(out[<span class="number">0</span>]);                           <span class="comment">// won't read from here</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// now execl dc with the - option</span></span><br><span class="line">    execlp(<span class="string">"dc"</span>, <span class="string">"dc"</span>, <span class="string">"-"</span>, <span class="literal">NULL</span>);</span><br><span class="line">    oops(<span class="string">"Cannot run dc"</span>, <span class="number">5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">be_bc(<span class="keyword">int</span> todc[<span class="number">2</span>], <span class="keyword">int</span> fromdc[<span class="number">2</span>])</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * read from stdin and convert into to RPN, send down pipe</span></span><br><span class="line"><span class="comment"> * then read from other pipe and print to user</span></span><br><span class="line"><span class="comment"> * Uses fdopen() to convert a file descriptor to a stream</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> num1, num2;</span><br><span class="line">    <span class="keyword">char</span> operation[BUFSIZ], message[BUFSIZ], *fgets();</span><br><span class="line">    FILE *fpout, *fpin, *fdopen();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// setup</span></span><br><span class="line">    <span class="built_in">close</span>(todc[<span class="number">0</span>]);                     <span class="comment">// won't read from pipe to dc</span></span><br><span class="line">    <span class="built_in">close</span>(fromdc[<span class="number">1</span>]);                     <span class="comment">// won't write to pipe from dc</span></span><br><span class="line"></span><br><span class="line">    fpout = fdopen(todc[<span class="number">1</span>], <span class="string">"w"</span>);</span><br><span class="line">    fpin = fdopen(fromdc[<span class="number">0</span>], <span class="string">"r"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (fpout == <span class="literal">NULL</span> || fpin == <span class="literal">NULL</span>)</span><br><span class="line">        fatal(<span class="string">"Error convering pipes to streams"</span>);</span><br><span class="line">    <span class="comment">// main loop</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">printf</span>(<span class="string">"tinybc: "</span>), fgets(message, BUFSIZ, <span class="built_in">stdin</span>) != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// parse input</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">sscanf</span>(message, <span class="string">"%d%[-+*/^]%d"</span>,</span><br><span class="line">                    &amp;num1, operation, &amp;num2) != <span class="number">3</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"syntax error\n"</span>);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">fprintf</span>(fpout, <span class="string">"%d\n%d\n%c\np\n"</span>, num1, num2, *operation) == EOF)</span><br><span class="line">            fatal(<span class="string">"Error writing"</span>);</span><br><span class="line"></span><br><span class="line">        fflush(fpout);</span><br><span class="line">        <span class="keyword">if</span> (fgets(message, BUFSIZ, fpin) == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d %c %d = %s"</span>, num1, *operation, num2, message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fclose(fpout);                  <span class="comment">// close pipe</span></span><br><span class="line">    fclose(fpin);                   <span class="comment">// dc will see EOF</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fatal(<span class="keyword">char</span> *mess[])</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Error: %s\n"</span>, mess);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用socket实现服务器客户端远程通信</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * timeserv.c - a socket based time of day server</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;strings.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PORTNUM 13000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HOSTLEN 256</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> oops(msg)   &#123;perror(msg); exit(1);&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> ac, <span class="keyword">char</span> *av[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span>  <span class="title">saddr</span>;</span>      <span class="comment">// build our address here</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">hostent</span>  *<span class="title">hp</span>;</span>            <span class="comment">// this is part of our address</span></span><br><span class="line">    <span class="keyword">char</span> hostname[HOSTLEN];</span><br><span class="line">    <span class="keyword">int</span> sock_id, sock_fd;</span><br><span class="line">    FILE *sock_fp;</span><br><span class="line">    <span class="function"><span class="keyword">char</span> *<span class="title">ctime</span><span class="params">()</span></span>;                  <span class="comment">// convert secs to string</span></span><br><span class="line">    <span class="keyword">time_t</span>  thetime;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Step1: ask kernel for a socket</span></span><br><span class="line">    sock_id = socket(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (sock_id == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"socket"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Step2: bind address to socket. Address is host, port</span></span><br><span class="line">    bzero((<span class="keyword">void</span> *)&amp;saddr, <span class="keyword">sizeof</span>(saddr));       <span class="comment">// clear out struct</span></span><br><span class="line"></span><br><span class="line">    gethostname(hostname, HOSTLEN);</span><br><span class="line">    hp = gethostbyname(hostname);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// fill in host part</span></span><br><span class="line">    bcopy((<span class="keyword">void</span> *)hp-&gt;h_addr, (<span class="keyword">void</span> *)&amp;saddr.sin_addr, hp-&gt;h_length);</span><br><span class="line">    saddr.sin_port = htons(PORTNUM);        <span class="comment">// fill in socket port</span></span><br><span class="line">    saddr.sin_family = AF_INET;             <span class="comment">// fill in addr family</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bind(sock_id, (struct sockaddr *)&amp;saddr, <span class="keyword">sizeof</span>(saddr)) != <span class="number">0</span>)</span><br><span class="line">        oops(<span class="string">"bind"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Step3: allow incoming calls with Qsize=1 on socket</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">listen</span>(sock_id, <span class="number">1</span>) != <span class="number">0</span>)</span><br><span class="line">        oops(<span class="string">"listen"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// main loop: accept(), write(), close()</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        sock_fd = accept(sock_id, <span class="literal">NULL</span>, <span class="literal">NULL</span>);      <span class="comment">// wait for a call</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Wow! got a call!\n"</span>);</span><br><span class="line">        <span class="keyword">if</span> (sock_fd == <span class="number">-1</span>)</span><br><span class="line">            oops(<span class="string">"accept"</span>);</span><br><span class="line"></span><br><span class="line">        sock_fp = fdopen(sock_fd, <span class="string">"w"</span>);             <span class="comment">// wirte to the socket as a stream</span></span><br><span class="line">        <span class="keyword">if</span> (sock_fp == <span class="literal">NULL</span>)</span><br><span class="line">            oops(<span class="string">"fdopen"</span>);</span><br><span class="line"></span><br><span class="line">        thetime = time(<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">fprintf</span>(sock_fp, <span class="string">"The time here is .."</span>);</span><br><span class="line">        <span class="built_in">fprintf</span>(sock_fp, <span class="string">"%s"</span>, ctime(&amp;thetime));</span><br><span class="line"></span><br><span class="line">        fclose(sock_fp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * timeclnt.c - a client for timeserv.c</span></span><br><span class="line"><span class="comment"> * usage: timeclnt hostname protnumber</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> oops(msg)   &#123;perror(msg); exit(1);&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> ac, <span class="keyword">char</span> *av[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span>  <span class="title">servadd</span>;</span>     </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">hostent</span>  *<span class="title">hp</span>;</span>            </span><br><span class="line">    <span class="keyword">int</span> sock_id, sock_fd;</span><br><span class="line">    <span class="keyword">char</span> message[BUFSIZ];</span><br><span class="line">    <span class="keyword">int</span> messlen;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Step1: get a socket</span></span><br><span class="line">    sock_id = socket(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (sock_id == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"socket"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Step2: connect to server</span></span><br><span class="line">    <span class="comment">//          need to build address(host,port) of server first</span></span><br><span class="line">    bzero(&amp;servadd, <span class="keyword">sizeof</span>(servadd));       <span class="comment">// clear out struct</span></span><br><span class="line"></span><br><span class="line">    hp = gethostbyname(av[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">if</span> (hp == <span class="literal">NULL</span>)</span><br><span class="line">        oops(av[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// fill in host part</span></span><br><span class="line">    bcopy(hp-&gt;h_addr, (struct sockaddr *)&amp;servadd.sin_addr, hp-&gt;h_length);</span><br><span class="line">    servadd.sin_port = htons(atoi(av[<span class="number">2</span>]));        <span class="comment">// fill in socket port</span></span><br><span class="line">    servadd.sin_family = AF_INET;             <span class="comment">// fill in addr family</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">connect</span>(sock_id, (struct sockaddr *)&amp;servadd, <span class="keyword">sizeof</span>(servadd)) != <span class="number">0</span>)</span><br><span class="line">        oops(<span class="string">"connect"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Step3: transfer data from server, then hangup</span></span><br><span class="line">    messlen = <span class="built_in">read</span>(sock_id, message, BUFSIZ);</span><br><span class="line">    <span class="keyword">if</span> (messlen == <span class="number">-1</span>)</span><br><span class="line">        oops(<span class="string">"read"</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">write</span>(<span class="number">1</span>, message, messlen) != messlen)</span><br><span class="line">        oops(<span class="string">"write"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">close</span>(sock_id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/08/01/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter10-io/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/08/25/pyinstaller%E6%89%93%E5%8C%85flask%E4%BB%A3%E7%A0%81%E6%8A%A5%E9%94%99/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unix-Linux编程实践教程-chapter06-signal | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,C," />
+  
+
+  <meta name="description" content="第６章　为用户编程：终端控制和信号有些程序处理从特定设备来的数据．这些与特定设备相关的程序必须控制与设备的链接．Ｕｎｉｘ系统中最常见的设备是终端 终端驱动程序有很多设置．各个设置的特定值决定了终端驱动程序的模式．为用户编写的程序通常需要设置终端驱动程序为特定的模式 键盘输入分为三类，终端驱动程序对这些输入做不同的处理．大多数键代表常规数据，他们从驱动程序传输到程序，有些键调用驱动程序中的编辑函数．">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix-Linux编程实践教程-chapter06-signal">
+<meta property="og:url" content="http://yoursite.com/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter06-signal/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="第６章　为用户编程：终端控制和信号有些程序处理从特定设备来的数据．这些与特定设备相关的程序必须控制与设备的链接．Ｕｎｉｘ系统中最常见的设备是终端 终端驱动程序有很多设置．各个设置的特定值决定了终端驱动程序的模式．为用户编写的程序通常需要设置终端驱动程序为特定的模式 键盘输入分为三类，终端驱动程序对这些输入做不同的处理．大多数键代表常规数据，他们从驱动程序传输到程序，有些键调用驱动程序中的编辑函数．">
+<meta property="article:published_time" content="2016-07-23T08:31:47.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.825Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#第６章-为用户编程：终端控制和信号"><span class="toc-text">第６章　为用户编程：终端控制和信号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-text">code</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Unix-Linux编程实践教程-chapter06-signal" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Unix-Linux编程实践教程-chapter06-signal</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.07.23</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="第６章-为用户编程：终端控制和信号"><a href="#第６章-为用户编程：终端控制和信号" class="headerlink" title="第６章　为用户编程：终端控制和信号"></a>第６章　为用户编程：终端控制和信号</h2><p>有些程序处理从特定设备来的数据．这些与特定设备相关的程序<br>必须控制与设备的链接．Ｕｎｉｘ系统中最常见的设备是终端</p>
+<p>终端驱动程序有很多设置．各个设置的特定值决定了终端驱动程序的模式．<br>为用户编写的程序通常需要设置终端驱动程序为特定的模式</p>
+<p>键盘输入分为三类，终端驱动程序对这些输入做不同的处理．大多数键<br>代表常规数据，他们从驱动程序传输到程序，有些键调用驱动程序中的编辑<br>函数．如果按下删除键，驱动程序将前一个字符从他的行缓冲中删除，并将<br>命令发送到终端屏幕，使之从显示器中删除字符．最后，有些键调用处理<br>控制函数．Ｃｔｒｌ－Ｃ键告诉驱动程序调用内核中某个函数，这个函数给进程<br>发送一个信号．终端驱动程序支持若干种处理控制函数，他们都通过发送信号到<br>进程来实现控制</p>
+<p>信号是从内核发送给进程的一种简短消息．信号可能来自用户，其他进程，或<br>内核本身．进程可以告诉内核，在他收到信号时需要做出怎样的响应</p>
+<p>终端模式：<br>１　规范模式<br>    常见模式，驱动程序输入的字符保存在缓冲，接收到回车才发送到程序</p>
+<p>２　非规范模式<br>    缓冲和编辑功能被关闭．stty -icanon</p>
+<p>３　ｒａｗ模式<br>    每个处理步骤都被一个独立的位控制</p>
+<p>由进程的某个操作产生的信号被称为同步信号 synchronous signals<br>由像用户击键这样的进程外的事件引起的信号被称为异步信号　asynchronous signals</p>
+<p>进程如何处理信号：<br>１　接受默认处理<br>２  忽略信号<br>３  调用一个函数</p>
+<p>大多数signal都可以被捕获或者忽略，但有两个无法被忽略，是SIGKILL SIGSTOP</p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * play_again3.c</span></span><br><span class="line"><span class="comment"> * purpose: ask if user wants another transaction</span></span><br><span class="line"><span class="comment"> * method: set tty into chr-by-chr mode and no-echo mode</span></span><br><span class="line"><span class="comment"> *          set tty into no-delay mode</span></span><br><span class="line"><span class="comment"> *          read char, return result</span></span><br><span class="line"><span class="comment"> * returns: 0 =&gt; yes, 1 =&gt; no, 2=&gt; timeout</span></span><br><span class="line"><span class="comment"> * better: reset terminal mode on Interrupt</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ASK <span class="meta-string">"Do you want another transaction"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TRIES 3     <span class="comment">// max tries</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SLEEPTIME 2 <span class="comment">// time per try</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BEEP putchar(<span class="meta-string">'\a'</span>)  <span class="comment">// alert user</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> response;</span><br><span class="line">    tty_mode(<span class="number">0</span>);                        <span class="comment">// save tty mode</span></span><br><span class="line">    set_cr_noecho_mode();               <span class="comment">// set -icanon, -echo</span></span><br><span class="line">    set_nodelay_mode();                 <span class="comment">// noinput =&gt; EOF</span></span><br><span class="line">    response = get_response(ASK, TRIES);</span><br><span class="line">    tty_mode(<span class="number">1</span>);                        <span class="comment">// restore tty mode</span></span><br><span class="line">    <span class="keyword">return</span> response;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_response</span><span class="params">(<span class="keyword">char</span> * question, <span class="keyword">int</span> maxtries)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> input;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s (y/n)?"</span>, question);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);                 <span class="comment">// force output</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        sleep(SLEEPTIME);               <span class="comment">// wait a bit</span></span><br><span class="line">        input = <span class="built_in">tolower</span>(get_ok_char()); <span class="comment">// get next chr</span></span><br><span class="line">        <span class="keyword">if</span> (input == <span class="string">'y'</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (input == <span class="string">'n'</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (maxtries-- == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">        BEEP;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// skip over non-legal chars and return y,Y,n,N or EOF</span></span><br><span class="line">get_ok_char()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">    <span class="keyword">while</span> ((c = getchar()) != EOF &amp;&amp; <span class="built_in">strchr</span>(<span class="string">"yYnN"</span>, c) == <span class="literal">NULL</span>)</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">set_cr_noecho_mode()</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * purpose: put file descriptior 0 into chr-by-chr mode and noecho mode</span></span><br><span class="line"><span class="comment"> * method: use bits in termios</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">ttystate</span>;</span></span><br><span class="line">    tcgetattr(<span class="number">0</span>, &amp;ttystate);        <span class="comment">// read curr. setting</span></span><br><span class="line">    ttystate.c_lflag &amp;= ~ICANON;    <span class="comment">// no buffering</span></span><br><span class="line">    ttystate.c_lflag &amp;= ~ECHO;      <span class="comment">// no echo either</span></span><br><span class="line">    ttystate.c_cc[VMIN] = <span class="number">1</span>;        <span class="comment">// get one char at a time</span></span><br><span class="line">    tcsetattr(<span class="number">0</span>, TCSANOW, &amp;ttystate);   <span class="comment">// install setting</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">set_nodelay_mode()</span><br><span class="line"><span class="comment">/* purose: put file descriptor 0 into no-delay mode</span></span><br><span class="line"><span class="comment"> * method: use fcntl to set bits</span></span><br><span class="line"><span class="comment"> * notes: tcsetattr() will do something similar, but it is complicated</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> termflags;</span><br><span class="line">    termflags = fcntl(<span class="number">0</span>, F_GETFL);      <span class="comment">// read curr. settings</span></span><br><span class="line">    termflags |= O_NDELAY;              <span class="comment">// flip on nodelay bit</span></span><br><span class="line">    fcntl(<span class="number">0</span>, F_SETFL, termflags);       <span class="comment">// and install 'em</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// how == 0 =&gt; save currentmode</span></span><br><span class="line"><span class="comment">// how == 1 =&gt; restore mode</span></span><br><span class="line"><span class="comment">// this version handles termios and fcntl flags</span></span><br><span class="line">tty_mode(<span class="keyword">int</span> how)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">original_mode</span>;</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> original_flags;</span><br><span class="line">    <span class="keyword">if</span> (how == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        tcgetattr(<span class="number">0</span>, &amp;original_mode);</span><br><span class="line">        original_flags = fcntl(<span class="number">0</span>, F_GETFL);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        tcsetattr(<span class="number">0</span>, TCSANOW, &amp;original_mode);</span><br><span class="line">        fcntl(<span class="number">0</span>, F_SETFL, original_flags);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter05-stty/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter07-vediogame/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

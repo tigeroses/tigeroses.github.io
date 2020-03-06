@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>python-parseXML | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="python,xml," />
+  
+
+  <meta name="description" content="以前有使用过python 解析xml的内容的两种方法，先贴出来代码，具体的含义之后搞仔细了再补充上来。 xml 文件： 12345678910111213&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;utf-8&quot;?&gt;&lt;collection&gt;&lt;Cycle1&gt;	&lt;Number&gt;628398&lt;&#x2F;Number&gt;	&lt;Signal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python-parseXML">
+<meta property="og:url" content="http://yoursite.com/2016/03/28/python-parseXML/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="以前有使用过python 解析xml的内容的两种方法，先贴出来代码，具体的含义之后搞仔细了再补充上来。 xml 文件： 12345678910111213&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;utf-8&quot;?&gt;&lt;collection&gt;&lt;Cycle1&gt;	&lt;Number&gt;628398&lt;&#x2F;Number&gt;	&lt;Signal">
+<meta property="article:published_time" content="2016-03-28T14:40:33.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.828Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="xml">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-python-parseXML" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">python-parseXML</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.03.28</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>以前有使用过python 解析xml的内容的两种方法，先贴出来代码，具体的含义之后搞仔细了再补充上来。</p>
+<p>xml 文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">collection</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Cycle1</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">Number</span>&gt;</span>628398<span class="tag">&lt;/<span class="name">Number</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">Signal</span>&gt;</span>15168.389648 19429.083984 24276.886719 18786.134766 <span class="tag">&lt;/<span class="name">Signal</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">Background</span>&gt;</span>-739.025574 -691.423401 -794.166931 -1007.662659 <span class="tag">&lt;/<span class="name">Background</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Cycle1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Cycle2</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">Number</span>&gt;</span>482765<span class="tag">&lt;/<span class="name">Number</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">Signal</span>&gt;</span>10683.573242 14735.889648 19846.058594 13917.609375 <span class="tag">&lt;/<span class="name">Signal</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">Background</span>&gt;</span>-445.148132 -482.349854 -625.839417 -890.880981 <span class="tag">&lt;/<span class="name">Background</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Cycle2</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用DOM 解析xml：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parseDOM.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> xml.dom.minidom <span class="keyword">import</span> parse</span><br><span class="line"><span class="keyword">import</span> xml.dom.minidom</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用minidom解析器打开 XML 文档</span></span><br><span class="line">DOMTree = xml.dom.minidom.parse(<span class="string">"test.xml"</span>)</span><br><span class="line">collection = DOMTree.documentElement</span><br><span class="line"></span><br><span class="line">trans = &#123;<span class="string">'Number'</span>: <span class="string">'NUMBER'</span>, <span class="string">'Signal'</span>: <span class="string">'SIGNAL'</span>, <span class="string">'Background'</span>: <span class="string">'BACKGROUND'</span>&#125;</span><br><span class="line">resultDict = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> cycle <span class="keyword">in</span> xrange(<span class="number">1</span>, <span class="number">3</span>):</span><br><span class="line">	cycleData = collection.getElementsByTagName(<span class="string">"Cycle%d"</span> % cycle)</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> cycleData: <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> trans:</span><br><span class="line">                    value = cycleData[<span class="number">0</span>].getElementsByTagName(k)[<span class="number">0</span>]</span><br><span class="line">                    value = value.childNodes[<span class="number">0</span>].data</span><br><span class="line">                    value = value.strip().split()</span><br><span class="line"></span><br><span class="line">                    resultDict.setdefault(trans[k], []).extend(map(float, value))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> resultDict:</span><br><span class="line">	<span class="keyword">print</span> k, resultDict[k]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line">tigerose@pc ~/github/parseXml</span><br><span class="line">$python parseDOM.py </span><br><span class="line">SIGNAL [<span class="number">15168.389648</span>, <span class="number">19429.083984</span>, <span class="number">24276.886719</span>, <span class="number">18786.134766</span>, <span class="number">10683.573242</span>, <span class="number">14735.889648</span>, <span class="number">19846.058594</span>, <span class="number">13917.609375</span>]</span><br><span class="line">NUMBER [<span class="number">628398.0</span>, <span class="number">482765.0</span>]</span><br><span class="line">BACKGROUND [<span class="number">-739.025574</span>, <span class="number">-691.423401</span>, <span class="number">-794.166931</span>, <span class="number">-1007.662659</span>, <span class="number">-445.148132</span>, <span class="number">-482.349854</span>, <span class="number">-625.839417</span>, <span class="number">-890.880981</span>]</span><br></pre></td></tr></table></figure>
+
+<p>使用 SAX解析xml</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parseSAX.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> xml.sax</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">XmlHandler</span><span class="params">( xml.sax.ContentHandler )</span>:</span></span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">      self.CurrentData = <span class="string">""</span></span><br><span class="line">      self.Number = <span class="string">""</span></span><br><span class="line">      self.Signal = <span class="string">""</span></span><br><span class="line">      self.Background = <span class="string">""</span></span><br><span class="line"></span><br><span class="line">   <span class="comment"># 元素开始事件处理</span></span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">startElement</span><span class="params">(self, tag, attributes)</span>:</span></span><br><span class="line">      self.CurrentData = tag</span><br><span class="line">      <span class="keyword">if</span> tag.startswith(<span class="string">'Cycle'</span>):</span><br><span class="line">         <span class="keyword">print</span> <span class="string">"*****%s*****"</span> % tag</span><br><span class="line">         <span class="comment">#title = attributes["Number"]</span></span><br><span class="line">         <span class="comment">#print "Title:", title</span></span><br><span class="line"></span><br><span class="line">   <span class="comment"># 元素结束事件处理</span></span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">endElement</span><span class="params">(self, tag)</span>:</span></span><br><span class="line">      <span class="keyword">if</span> self.CurrentData == <span class="string">"Number"</span>:</span><br><span class="line">         <span class="keyword">print</span> <span class="string">"NUMber:"</span>, self.Number</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">"Signal"</span>:</span><br><span class="line">         <span class="keyword">print</span> <span class="string">"SIGNAL:"</span>, self.Signal</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">"Background"</span>:</span><br><span class="line">         <span class="keyword">print</span> <span class="string">"BACKGROUND:"</span>, self.Background</span><br><span class="line">      self.CurrentData = <span class="string">""</span></span><br><span class="line"></span><br><span class="line">   <span class="comment"># 内容事件处理</span></span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">characters</span><span class="params">(self, content)</span>:</span></span><br><span class="line">      <span class="keyword">if</span> self.CurrentData == <span class="string">"Number"</span>:</span><br><span class="line">         self.Number = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">"Signal"</span>:</span><br><span class="line">         self.Signal = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">"Background"</span>:</span><br><span class="line">         self.Background = content</span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> ( __name__ == <span class="string">"__main__"</span>):</span><br><span class="line">   <span class="comment"># 创建一个 XMLReader</span></span><br><span class="line">   parser = xml.sax.make_parser()</span><br><span class="line">   <span class="comment"># turn off namepsaces</span></span><br><span class="line">   parser.setFeature(xml.sax.handler.feature_namespaces, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">   <span class="comment"># 重写 ContextHandler</span></span><br><span class="line">   Handler = XmlHandler()</span><br><span class="line">   parser.setContentHandler( Handler )</span><br><span class="line">   </span><br><span class="line">   parser.parse(<span class="string">"test.xml"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line">tigerose@pc ~/github/parseXml</span><br><span class="line">$python parseSAX.py </span><br><span class="line">*****Cycle1*****</span><br><span class="line">NUMber: <span class="number">628398</span></span><br><span class="line">SIGNAL: <span class="number">15168.389648</span> <span class="number">19429.083984</span> <span class="number">24276.886719</span> <span class="number">18786.134766</span> </span><br><span class="line">BACKGROUND: <span class="number">-739.025574</span> <span class="number">-691.423401</span> <span class="number">-794.166931</span> <span class="number">-1007.662659</span> </span><br><span class="line">*****Cycle2*****</span><br><span class="line">NUMber: <span class="number">482765</span></span><br><span class="line">SIGNAL: <span class="number">10683.573242</span> <span class="number">14735.889648</span> <span class="number">19846.058594</span> <span class="number">13917.609375</span> </span><br><span class="line">BACKGROUND: <span class="number">-445.148132</span> <span class="number">-482.349854</span> <span class="number">-625.839417</span> <span class="number">-890.880981</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/03/28/python-pil/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/03/31/%E7%BC%96%E5%86%99%E7%95%8C%E9%9D%A2%E7%A8%8B%E5%BA%8F/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

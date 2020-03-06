@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>C++命令行解析库CLI11介绍 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="C++ CLI11 命令行解析," />
+  
+
+  <meta name="description" content="本篇文章主要提炼自github上CLI11的官方文档,取出自己感兴趣的内容,记录下来方便以后使用 简单介绍CLI11是一个基于C++开发的命令行解析库,目前最新版本1.9 其优点:  使用很方便,只需要#include &lt;CLI11.hpp&gt;,当然也可以使用cmake编译版本 跨平台,支持广泛(不需要C++11以上的版本支持) 支持subcommand;支持重复options  关于编">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++命令行解析库CLI11介绍">
+<meta property="og:url" content="http://yoursite.com/2020/03/04/introduce-CLI11/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="本篇文章主要提炼自github上CLI11的官方文档,取出自己感兴趣的内容,记录下来方便以后使用 简单介绍CLI11是一个基于C++开发的命令行解析库,目前最新版本1.9 其优点:  使用很方便,只需要#include &lt;CLI11.hpp&gt;,当然也可以使用cmake编译版本 跨平台,支持广泛(不需要C++11以上的版本支持) 支持subcommand;支持重复options  关于编">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/prompt2.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/prompt1.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/prompt3.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/right1.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/right2.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/error3.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/error4.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/error1.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/error2.png">
+<meta property="og:image" content="http://yoursite.com/images/introduce_CLI11/error5.png">
+<meta property="article:published_time" content="2020-03-04T12:11:12.000Z">
+<meta property="article:modified_time" content="2020-03-06T10:05:10.474Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="C++ CLI11 命令行解析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/introduce_CLI11/prompt2.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简单介绍"><span class="toc-text">简单介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一个简单的例子"><span class="toc-text">一个简单的例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要功能"><span class="toc-text">主要功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#位置参数"><span class="toc-text">位置参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flags"><span class="toc-text">flags</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#options"><span class="toc-text">options</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vectors-of-options"><span class="toc-text">vectors of options</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改option属性"><span class="toc-text">修改option属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特殊选项"><span class="toc-text">特殊选项:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Validators-验证器"><span class="toc-text">Validators 验证器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#subcommand-子命令"><span class="toc-text">subcommand 子命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#添加子命令"><span class="toc-text">添加子命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#检查子命令是否被使用"><span class="toc-text">检查子命令是否被使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特殊模式"><span class="toc-text">特殊模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例"><span class="toc-text">实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他"><span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件"><span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#格式化帮助信息"><span class="toc-text">格式化帮助信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#subclassing"><span class="toc-text">subclassing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高级主题"><span class="toc-text">高级主题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#环境变量"><span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#option之间的依赖-互斥关系"><span class="toc-text">option之间的依赖&#x2F;互斥关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义"><span class="toc-text">自定义</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-introduce-CLI11" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">C++命令行解析库CLI11介绍</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.03.04</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>本篇文章主要提炼自github上CLI11的官方文档,取出自己感兴趣的内容,记录下来方便以后使用</p>
+<h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><p>CLI11是一个基于C++开发的命令行解析库,目前最新版本1.9</p>
+<p>其优点:</p>
+<ul>
+<li>使用很方便,只需要<code>#include &lt;CLI11.hpp&gt;</code>,当然也可以使用cmake编译版本</li>
+<li>跨平台,支持广泛(不需要C++11以上的版本支持)</li>
+<li>支持subcommand;支持重复options</li>
+</ul>
+<p>关于编译</p>
+<blockquote>
+<p><code>g++ -std=c++11 xx.cpp -I path_with_CLI11 -o app</code></p>
+</blockquote>
+<p>(path_with_CLI11是一个路径,其内有CLI11.hpp, app是编译后的可执行程序名)</p>
+<p>运行:</p>
+<p>需要提示信息的时候运行<code>./app -h</code></p>
+<h3 id="一个简单的例子"><a href="#一个简单的例子" class="headerlink" title="一个简单的例子"></a>一个简单的例子</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"CLI11.hpp"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    CLI::App app&#123;<span class="string">"App description"</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Define options</span></span><br><span class="line">    <span class="keyword">int</span> p = <span class="number">0</span>;</span><br><span class="line">    app.add_option(<span class="string">"-p"</span>, p, <span class="string">"Parameter"</span>);</span><br><span class="line"></span><br><span class="line">    CLI11_PARSE(app, argc, argv);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Parameter value: "</span> &lt;&lt; p &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只接受一个可选参数-p</p>
+<p>CLI::App 是与库的所有交互的基础</p>
+<p>CLI11_PARSE 宏内部执行app.parse(argc,argv)对命令行参数解析,出错时抛出ParseError,然后捕获异常,打印错误信息并退出程序</p>
+<h2 id="主要功能"><a href="#主要功能" class="headerlink" title="主要功能"></a>主要功能</h2><h3 id="位置参数"><a href="#位置参数" class="headerlink" title="位置参数"></a>位置参数</h3><p>即必须参数,使用方法是<em>add_xxx</em>方法的第一个参数如”-a” <strong>把”-“ 去掉</strong>,换成有意义的名字,如”outputDir”<br>位置参数就是没有这些参数就无法运行,没有默认值;多个位置参数按定义顺序传递</p>
+<h3 id="flags"><a href="#flags" class="headerlink" title="flags"></a>flags</h3><p>命令行输入只填flag名字就行,不接受参数;函数为<em>add_flag</em>,有以下三种类型:</p>
+<ul>
+<li><p>boolean flags</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> my_flag;</span><br><span class="line">app.add_flag(<span class="string">"-f"</span>, my_flag, <span class="string">"Optional description"</span>);</span><br></pre></td></tr></table></figure>
+<p>  绑定flag -f 到布尔变量my_flag,默认是flase,如果用户输入了-f 则为true</p>
+</li>
+<li><p>integer flags</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> my_flag;</span><br><span class="line">app.add_flag(<span class="string">"-f"</span>, my_flag, <span class="string">"Optional description"</span>);</span><br></pre></td></tr></table></figure>
+<p>  同样的绑定,范围变成整数</p>
+</li>
+<li><p>pure flags</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CLI::Option* my_flag = app.add_flag(<span class="string">"-f"</span>, <span class="string">"Optional description"</span>);</span><br></pre></td></tr></table></figure>
+<p>  使用my_flag-&gt;count()来确定值是true/false,默认为0则false,大于等于1次则true;也可以bool(*my_flag)来使用</p>
+<p>  所有add_* 格式的函数都返回CLI::Option类型,因此可以<strong>链式调用</strong>,使代码更简约</p>
+</li>
+<li><p>其他<br>  有callback flags,add_flag_function()可以打印每个参数输入了多少次</p>
+</li>
+</ul>
+<p>每个add_*方法的第一个参数,即指定的命令参数,可以有多个名字,逗号分隔即可,如”-a,–alpha,-b”;另外一个比较有用的是-&gt;ignore_case() 方法,忽略大小写,方便用户输入</p>
+<p>多个参数可以组合如”-i -a -b”等价于”-iab”</p>
+<h3 id="options"><a href="#options" class="headerlink" title="options"></a>options</h3><p>与flags区别就是<strong>接受参数</strong>;函数为<em>add_option</em></p>
+<p>基本形式:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> int_option = <span class="number">0</span>;</span><br><span class="line">app.add_option(<span class="string">"-i"</span>, int_option, <span class="string">"Optional description"</span>);</span><br></pre></td></tr></table></figure>
+<p>其行为:绑定选项-i到int_option,解析其后的数据转换为整型,类型不对会失败;如果没有此选项则使用初始值</p>
+<p>可接受类型包括:整型/浮点/字符串/vector/函数</p>
+<h3 id="vectors-of-options"><a href="#vectors-of-options" class="headerlink" title="vectors of options"></a>vectors of options</h3><p>接受多个值,直到下一个值不合法;也可以用-&gt;expected(N)指定需要几个值</p>
+<p>如果出现重复option,会进行组合,即”-v 1 2 -v 3 4”等同于”-v 1 2 3 4”(新版本才支持此功能)</p>
+<h3 id="修改option属性"><a href="#修改option属性" class="headerlink" title="修改option属性"></a>修改option属性</h3><p>链式使用,当作装饰器,可以同时添加多个装饰</p>
+<p>列举几个可能会常用到的:</p>
+<ul>
+<li>-&gt;required() 必须指定</li>
+<li>-&gt;expected(N) 参数个数</li>
+<li>-&gt;check(type)<ul>
+<li>CLI::ExistingFile 检查文件是否存在</li>
+<li>CLI::ExistingDirectory 目录是否存在</li>
+<li>CLI::NonexistentPath 需要目录不存在</li>
+<li>CLI::Range(min,max) 指定范围</li>
+</ul>
+</li>
+</ul>
+<h3 id="特殊选项"><a href="#特殊选项" class="headerlink" title="特殊选项:"></a>特殊选项:</h3><ul>
+<li><em>sets</em><br>  使用集合来限定输入范围;如果输入不在集合范围内,会打印提示信息  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> val;</span><br><span class="line">app.add_set(<span class="string">"--even"</span>, val, &#123;<span class="number">0</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><em>complex number</em> 复数,可接受1-2个参数,不给默认是0  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">complex</span>&lt;<span class="keyword">float</span>&gt; val;</span><br><span class="line">app.add_complex(<span class="string">"--cplx"</span>, val);</span><br></pre></td></tr></table></figure></li>
+<li><em>optional</em> 可选参数</li>
+<li><em>windows风格</em> /a /f …</li>
+</ul>
+<h3 id="Validators-验证器"><a href="#Validators-验证器" class="headerlink" title="Validators 验证器"></a>Validators 验证器</h3><p>验证器有两种形式</p>
+<ul>
+<li>transform 变异? 接受string,返回修改过的string</li>
+<li>check 非变异? <ul>
+<li>接受const string,返回修改过的string</li>
+<li>struct CLI::Validator的子类<br>常用check来检查路径/文件是否存在,以及输入是否在一个range内</li>
+</ul>
+</li>
+</ul>
+<h2 id="subcommand-子命令"><a href="#subcommand-子命令" class="headerlink" title="subcommand 子命令"></a>subcommand 子命令</h2><p>子命令就是包含了一系列选项的一个关键字,如git commit/clone 这里面的commit clone后面还可以跟各种选项,他们就是git程序的子命令</p>
+<p>子命令的类类型和App相同,因此可以任意嵌套</p>
+<p>关于App的功能</p>
+<ul>
+<li>使用它来创建options</li>
+<li>设置页脚,在-h下面展示,比如显示下个性签名 app.footer(“xx”)</li>
+<li>设置帮助信息</li>
+</ul>
+<h3 id="添加子命令"><a href="#添加子命令" class="headerlink" title="添加子命令"></a>添加子命令</h3><p><code>CLI::App* sub = app.add_subcommand(&quot;sub&quot;, &quot;This is a subcommand&quot;);</code></p>
+<p>第一个参数就是子命令的名字,第二个参数是描述</p>
+<h3 id="检查子命令是否被使用"><a href="#检查子命令是否被使用" class="headerlink" title="检查子命令是否被使用"></a>检查子命令是否被使用</h3><ul>
+<li>if(*sub) …</li>
+<li>if(sub-&gt;parsed()) …</li>
+<li>if(app.got_subcommand(sub)) …</li>
+<li>if(app.got_subcommand(“sub”)) …</li>
+</ul>
+<p>设置必须的子命令个数,只传一个参数则限定了个数<br>app.require_subcommand(/* min <em>/ 0, /</em> max */ 1);</p>
+<h3 id="特殊模式"><a href="#特殊模式" class="headerlink" title="特殊模式"></a>特殊模式</h3><ul>
+<li>allow_extras() 允许出现多余的option而不报错,多余的值保存到.remaining()</li>
+<li>fallthrough 将subcommand未匹配的option转给parnet command解析(默认不会fallthrough)</li>
+<li>prefix command 遇到未知option时停止解析,即使其他未知选项可以匹配,也将被忽略</li>
+</ul>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>编写个实例,把subcommand flag 各种option,check等常用功能都演示一遍</p>
+<p>代码:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//把CLI11.hpp放到当前目录下</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"CLI11.hpp"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    CLI::App app&#123;<span class="string">"App description"</span>&#125;; <span class="comment">// 软件描述出现在第一行打印</span></span><br><span class="line">    app.footer(<span class="string">"My footer"</span>); <span class="comment">// 最后一行打印</span></span><br><span class="line">    app.get_formatter()-&gt;column_width(<span class="number">40</span>); <span class="comment">// 列的宽度</span></span><br><span class="line">    app.require_subcommand(<span class="number">1</span>); <span class="comment">// 表示运行命令需要且仅需要一个子命令</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> sub1 = app.add_subcommand(<span class="string">"sub1"</span>, <span class="string">"subcommand1"</span>);</span><br><span class="line">    <span class="keyword">auto</span> sub2 = app.add_subcommand(<span class="string">"sub2"</span>, <span class="string">"subcommand1"</span>);</span><br><span class="line">    sub1-&gt;fallthrough(); <span class="comment">// 当出现的参数子命令解析不了时,返回上一级尝试解析</span></span><br><span class="line">    sub2-&gt;fallthrough();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义需要用到的参数</span></span><br><span class="line">    <span class="built_in">string</span> filename;</span><br><span class="line">    <span class="keyword">int</span> threads = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">int</span> mode = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; barcodes;</span><br><span class="line">    <span class="keyword">bool</span> reverse = <span class="literal">false</span>;</span><br><span class="line">    <span class="built_in">string</span> outPath;</span><br><span class="line">    <span class="keyword">if</span> (sub1)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 第一个参数不加-, 表示位置参数,位置参数按出现的顺序来解析</span></span><br><span class="line">        <span class="comment">// 这里还检查了文件是否存在,已经是必须参数</span></span><br><span class="line">        sub1-&gt;add_option(<span class="string">"file"</span>, filename, <span class="string">"Position paramter"</span>)-&gt;check(CLI::ExistingFile)-&gt;required();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 检查参数必须大于0</span></span><br><span class="line">        sub1-&gt;add_option(<span class="string">"-n,-N"</span>, threads, <span class="string">"Set thread number"</span>)-&gt;check(CLI::PositiveNumber);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (sub2)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 设置范围</span></span><br><span class="line">        sub2-&gt;add_option(<span class="string">"-e,-E"</span>, mode, <span class="string">"Set mode"</span>)-&gt;check(CLI::Range(<span class="number">0</span>,<span class="number">3</span>));</span><br><span class="line">        <span class="comment">// 将数据放到vector中,并限制可接受的长度</span></span><br><span class="line">        sub2-&gt;add_option(<span class="string">"-b"</span>, barcodes, <span class="string">"Barcodes info:start,len,mismatch"</span>)-&gt;expected(<span class="number">3</span>,<span class="number">6</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 添加flag,有就是true</span></span><br><span class="line">    app.add_flag(<span class="string">"-r,-R"</span>, reverse, <span class="string">"Apply reverse"</span>);</span><br><span class="line">    <span class="comment">// 检查目录是否存在</span></span><br><span class="line">    app.add_option(<span class="string">"-o"</span>, outPath, <span class="string">"Output path"</span>)-&gt;check(CLI::ExistingDirectory);</span><br><span class="line"></span><br><span class="line">    CLI11_PARSE(app, argc, argv);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断哪个子命令被使用</span></span><br><span class="line">    <span class="keyword">if</span> (sub1-&gt;parsed())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"Got sub1"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"filename:"</span>&lt;&lt;filename&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"threads:"</span>&lt;&lt;threads&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (sub2-&gt;parsed())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"Got sub2"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"mode:"</span>&lt;&lt;mode&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"barcodes:"</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; b : barcodes)</span><br><span class="line">            <span class="built_in">cout</span>&lt;&lt;b&lt;&lt;<span class="string">" "</span>;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"Comman paras"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"reverse:"</span>&lt;&lt;reverse&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"outPath:"</span>&lt;&lt;outPath&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译:<br><code>g++ -std=c++11  run.cpp -o myapp</code></p>
+<p>用的gcc4.8</p>
+<p>运行:</p>
+<p>-h 查看提示</p>
+<p><img src="/images/introduce_CLI11/prompt2.png" alt=""></p>
+<p><img src="/images/introduce_CLI11/prompt1.png" alt=""></p>
+<p><img src="/images/introduce_CLI11/prompt3.png" alt=""></p>
+<p>给正确的参数</p>
+<p><img src="/images/introduce_CLI11/right1.png" alt=""></p>
+<p><img src="/images/introduce_CLI11/right2.png" alt=""></p>
+<p>给错误参数</p>
+<p><img src="/images/introduce_CLI11/error3.png" alt=""></p>
+<p><img src="/images/introduce_CLI11/error4.png" alt=""></p>
+<p><img src="/images/introduce_CLI11/error1.png" alt=""></p>
+<p><img src="/images/introduce_CLI11/error2.png" alt=""></p>
+<p><img src="/images/introduce_CLI11/error5.png" alt=""></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>允许读写配置文件</p>
+<h3 id="格式化帮助信息"><a href="#格式化帮助信息" class="headerlink" title="格式化帮助信息"></a>格式化帮助信息</h3><p>允许定制自己的帮助打印信息<br>app.get_formatter() 获取当前格式</p>
+<ul>
+<li>column_width(width) 设置列的宽度</li>
+<li>lable(key, value) 将lable设置一个不同的值</li>
+<li>例子  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app.get_formatter()-&gt;column_width(<span class="number">40</span>);</span><br><span class="line">app.get_formatter()-&gt;label(<span class="string">"REQUIRED"</span>, <span class="string">"(MUST HAVE)"</span>);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="subclassing"><a href="#subclassing" class="headerlink" title="subclassing"></a>subclassing</h3><p>部分的替换格式</p>
+<h2 id="高级主题"><a href="#高级主题" class="headerlink" title="高级主题"></a>高级主题</h2><h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>作用是,如果命令行参数没有给定,则从环境变量中获取,如果存在的话</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> opt;</span><br><span class="line">app.add_option(<span class="string">"--my_option"</span>, opt)-&gt;envname(<span class="string">"MY_OPTION"</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="option之间的依赖-互斥关系"><a href="#option之间的依赖-互斥关系" class="headerlink" title="option之间的依赖/互斥关系"></a>option之间的依赖/互斥关系</h3><p>a-&gt;nees(b) a依赖b</p>
+<p>a-&gt;excludes(c) a与c不共存</p>
+<h3 id="自定义"><a href="#自定义" class="headerlink" title="自定义"></a>自定义</h3><p>custom option callbacks</p>
+<p>custom converters</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/03/01/CUDA-C-CPP/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

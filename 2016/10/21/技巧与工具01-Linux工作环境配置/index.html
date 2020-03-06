@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>技巧与工具01:Linux工作环境配置 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,配置," />
+  
+
+  <meta name="description" content="个人电脑系统是Ubuntu,也因为Linux环境工作效率更高，比较偏爱Linux系统，平时写代码主要使用Vim,故总结出工作环境的简单配置．">
+<meta property="og:type" content="article">
+<meta property="og:title" content="技巧与工具01:Linux工作环境配置">
+<meta property="og:url" content="http://yoursite.com/2016/10/21/%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%B7%A5%E5%85%B701-Linux%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="个人电脑系统是Ubuntu,也因为Linux环境工作效率更高，比较偏爱Linux系统，平时写代码主要使用Vim,故总结出工作环境的简单配置．">
+<meta property="article:published_time" content="2016-10-21T03:19:55.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.830Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="配置">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#bashrc"><span class="toc-text">~&#x2F;.bashrc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-completion-bash"><span class="toc-text">~&#x2F;.git-completion.bash</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gitconfig"><span class="toc-text">~&#x2F;.gitconfig</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#keymaprc"><span class="toc-text">~&#x2F;.keymaprc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vimrc"><span class="toc-text">~&#x2F;.vimrc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#windows环境cygwin环境安装"><span class="toc-text">windows环境cygwin环境安装</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-技巧与工具01-Linux工作环境配置" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">技巧与工具01:Linux工作环境配置</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.10.21</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/tools/">tools</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>个人电脑系统是Ubuntu,也因为Linux环境工作效率更高，比较偏爱Linux系统，<br>平时写代码主要使用Vim,故总结出工作环境的简单配置．</p>
+<a id="more"></a>
+
+<p>本篇所有的配置文件都已上传至github: <a href="https://github.com/tigerRose/experience.git" target="_blank" rel="noopener">https://github.com/tigerRose/experience.git</a> 可以直接拷贝到个人目录使用.</p>
+<h2 id="bashrc"><a href="#bashrc" class="headerlink" title="~/.bashrc"></a>~/.bashrc</h2><p>这个是Linux最主要的配置文件之一了．</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ~/.bashrc</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$TERM</span>=<span class="string">"xterm-256color"</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    PS1=<span class="string">'\[\033[01;38;5;61m\]\u@\h\[\033[01;38;5;107m\] \w\n\$\[\033[01;38;5;248m\]'</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">LS_OPTIONS=<span class="string">'--color'</span></span><br><span class="line"><span class="built_in">export</span> LS_OPTIONS</span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> ls=<span class="string">"ls <span class="variable">$LS_OPTIONS</span>"</span></span><br><span class="line"><span class="built_in">alias</span> l=<span class="string">"ls -lh"</span></span><br><span class="line"><span class="built_in">alias</span> ll=<span class="string">"ls -l"</span></span><br><span class="line"><span class="built_in">alias</span> la=<span class="string">'ls -alh'</span></span><br><span class="line"><span class="built_in">alias</span> c7=<span class="string">'chmod 777'</span></span><br><span class="line"><span class="built_in">alias</span> c5=<span class="string">'chmod 755'</span></span><br><span class="line"><span class="built_in">alias</span> c4=<span class="string">'chmod 644'</span></span><br><span class="line"><span class="built_in">alias</span> c0=<span class="string">'chmod 700'</span></span><br><span class="line"><span class="built_in">alias</span> c0f=<span class="string">'chmod 600'</span></span><br><span class="line"><span class="built_in">alias</span> dh=<span class="string">'du -h'</span></span><br><span class="line"><span class="built_in">alias</span> eb=<span class="string">'vi ~/.bashrc'</span></span><br><span class="line"><span class="built_in">alias</span> ep=<span class="string">'vi ~/.bash_profile'</span></span><br><span class="line"><span class="built_in">alias</span> sb=<span class="string">'source ~/.bashrc '</span></span><br><span class="line"><span class="built_in">alias</span> h=<span class="string">'head'</span></span><br><span class="line"><span class="built_in">alias</span> k9=<span class="string">'kill -9'</span></span><br><span class="line"><span class="built_in">alias</span> les=<span class="string">"less -RS"</span></span><br><span class="line"><span class="built_in">alias</span> le=<span class="string">'les'</span></span><br><span class="line"><span class="built_in">alias</span> ln=<span class="string">'ln -s'</span></span><br><span class="line"><span class="built_in">alias</span> wl=<span class="string">"wc -l"</span></span><br><span class="line"><span class="built_in">alias</span> a=<span class="string">"cd .. &amp;&amp; l"</span></span><br><span class="line"><span class="built_in">alias</span> b=<span class="string">'cd - &amp;&amp; l'</span></span><br><span class="line"><span class="built_in">alias</span> pp=<span class="string">"pu <span class="variable">$USER</span>"</span></span><br><span class="line"><span class="built_in">alias</span> i=<span class="string">'dirs -c &amp;&amp; pushd .'</span></span><br><span class="line"><span class="built_in">alias</span> o=<span class="string">'dirs -c'</span></span><br><span class="line"><span class="built_in">alias</span> p=<span class="string">'pushd'</span></span><br><span class="line"><span class="built_in">alias</span> rd=<span class="string">"rm -rf"</span></span><br><span class="line"><span class="built_in">alias</span> t=<span class="string">"tail"</span></span><br><span class="line"><span class="built_in">alias</span> vi=<span class="string">"/usr/bin/vim"</span></span><br><span class="line"><span class="built_in">alias</span> py=<span class="string">"python"</span></span><br></pre></td></tr></table></figure>
+<p>~/.bashrc主要是配置终端显示以及设置一些常用命令的重命名，减少频繁使用<br>的命令的按键次数，也可以指定所使用的程序，如<code>alias python=&quot;C:\python27\python.exe&quot;</code><br>这个就是我在windows系统下使用cygwin环境，调用windows安装的python的方法．<br>另外可以在这里加一些环境变量，如<code>export PYTHONPATH=&quot;xxx&quot;$PYTHONPATH</code></p>
+<h2 id="git-completion-bash"><a href="#git-completion-bash" class="headerlink" title="~/.git-completion.bash"></a>~/.git-completion.bash</h2><p>这个文件在网上可以下载，主要功能如名称所示，git的命令行补全，如输入:<br><code>git ch&lt;tab&gt;</code> 会出现<code>checkout　cherry　cherry-pick</code>供参考．使用前需要将如下<br>几行代码添加到~/.bashrc</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ~/.git-completion.bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># set git auto completion</span></span><br><span class="line"><span class="keyword">if</span> [ -f ~/.git-completion.bash ]; <span class="keyword">then</span></span><br><span class="line">    . ~/.git-completion.bash</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>然后输入命令source ~/.bashrc即可生效</p>
+<h2 id="gitconfig"><a href="#gitconfig" class="headerlink" title="~/.gitconfig"></a>~/.gitconfig</h2><p>此文件是git的简单配置，如用户名和邮箱</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ~/.gitconfig</span></span><br><span class="line"></span><br><span class="line">[user]</span><br><span class="line">	email = fuxiang_zhao@163.com</span><br><span class="line">	name = tigerRose</span><br><span class="line">[push]</span><br><span class="line">	default = matching</span><br></pre></td></tr></table></figure>
+
+<h2 id="keymaprc"><a href="#keymaprc" class="headerlink" title="~/.keymaprc"></a>~/.keymaprc</h2><p>这个是我自己定义的，用于交换键盘的按键，比如你某个键坏掉了，可以用一个平时不<br>常用的键来交换，土豪可以无视，直接买新的．我使用按键交换主要是因为习惯用Vim,<br>而又常用Esc,不常用Caps Lock,因此交换按键，减少手指运动量.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ~/.keymaprc</span></span><br><span class="line"></span><br><span class="line">remove Lock = Caps_Lock</span><br><span class="line">keysym Caps_Lock = Escape</span><br><span class="line">keysym Escape = Caps_Lock NoSymbol Caps_Lock</span><br></pre></td></tr></table></figure>
+<p><a href="http://tigerrose.me/2016/03/27/linux%E6%9B%B4%E6%94%B9%E9%94%AE%E7%9B%98%E6%98%A0%E5%B0%84/" target="_blank" rel="noopener">linux更改键盘映射</a>这个专门讲Linux环境改按键</p>
+<h2 id="vimrc"><a href="#vimrc" class="headerlink" title="~/.vimrc"></a>~/.vimrc</h2><p>此文件是Vim的配置，个人比较喜欢的风格</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"~/.vimrc</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">set nocompatible    "</span>Use Vim settings, rather <span class="keyword">then</span> Vi settings (much better!).</span><br><span class="line">syntax on           <span class="string">"show syntax</span></span><br><span class="line"><span class="string">set nu              "</span>show line number</span><br><span class="line"><span class="built_in">set</span> tabstop=4       <span class="string">"&lt;tab&gt; width</span></span><br><span class="line"><span class="string">filetype plugin indent on</span></span><br><span class="line"><span class="string">set autoindent      "</span><span class="built_in">set</span> automatic indent</span><br><span class="line"><span class="built_in">set</span> smartindent cinwords=<span class="keyword">if</span>,<span class="keyword">elif</span>,<span class="keyword">else</span>,<span class="keyword">for</span>,<span class="keyword">while</span>,try,except,finally,def,class</span><br><span class="line"><span class="built_in">set</span> softtabstop=4   </span><br><span class="line"><span class="built_in">set</span> expandtab       </span><br><span class="line"><span class="built_in">set</span> ruler</span><br><span class="line"><span class="built_in">set</span> shiftwidth=4    <span class="string">"autoindent width</span></span><br><span class="line"><span class="string">set cindent         "</span>C style indent</span><br><span class="line"><span class="built_in">set</span> sm              <span class="string">"show matched bracket</span></span><br><span class="line"><span class="string">set smarttab</span></span><br><span class="line"><span class="string">set fileformats=unix</span></span><br><span class="line"><span class="string">set backspace=indent,eol,start</span></span><br><span class="line"><span class="string">set incsearch</span></span><br><span class="line"><span class="string">set fencs=utf-8,ucs-bom,euc-jp,gb18030,gbk,gb2312,cp936 "</span><span class="built_in">set</span> coding</span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span> t_Co=256 <span class="string">"Use 256 color</span></span><br><span class="line"><span class="string">colorscheme lucius "</span><span class="built_in">set</span> ColorScheme</span><br><span class="line"><span class="built_in">set</span> viminfo=<span class="string">'1000,&lt;800</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"return the position last edit</span></span><br><span class="line"><span class="string">au BufReadPost * if line("'</span>\"<span class="string">") &gt; 0|if line("</span><span class="string">'\"") &lt;= line("$")|exe("norm '</span>\"<span class="string">")|else|exe "</span>norm $<span class="string">"|endif|endif</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">set hlsearch</span></span><br></pre></td></tr></table></figure>
+<p>配色方案放在~/.vim/colors 目录</p>
+<h2 id="windows环境cygwin环境安装"><a href="#windows环境cygwin环境安装" class="headerlink" title="windows环境cygwin环境安装"></a>windows环境cygwin环境安装</h2><p>cygwin是windows下使用linux环境的不二之选，安装也很简单，如果联网环境，可以勾选<br>自己想要的库和软件包;使用时候如果发现有软件没有安装，需要重新安装一遍，不过<br>已安装的不会再次下载．<br>不联网的环境，可以先找个联网的机器下载需要的安装目录，然后选择从本地来源安装即可．<br>cygwin.rar是我自己使用的一个安装包，包含了vim编辑器，gcc编译器以及python大多数库.</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/09/07/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter15-IPC/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/10/24/%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%B7%A5%E5%85%B702-MFC%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%85%B3/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

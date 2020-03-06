@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>简单工厂模式 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="python,design-partten," />
+  
+
+  <meta name="description" content="学习python有一年了，在工作中经常使用，不过多是一些基础操作和简单库的使用，受朋友打击，想学习一些深层次的内容，所以从本篇开始学习设计模式，首先是简单工厂模式。其实很早就将设计模式作为学习过程中的一环，不过以前基础薄弱，想来用不到高深的设计模式，所以并没有去学习相关知识，感觉现在可以了就开始看书，买了两本书《设计模式：可复用面向对象软件的基础》和《大话设计模式》，目前主要是顺序阅读《大话设计模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="简单工厂模式">
+<meta property="og:url" content="http://yoursite.com/2015/12/08/%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="学习python有一年了，在工作中经常使用，不过多是一些基础操作和简单库的使用，受朋友打击，想学习一些深层次的内容，所以从本篇开始学习设计模式，首先是简单工厂模式。其实很早就将设计模式作为学习过程中的一环，不过以前基础薄弱，想来用不到高深的设计模式，所以并没有去学习相关知识，感觉现在可以了就开始看书，买了两本书《设计模式：可复用面向对象软件的基础》和《大话设计模式》，目前主要是顺序阅读《大话设计模">
+<meta property="article:published_time" content="2015-12-08T14:12:35.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.831Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="design-partten">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#面向对象"><span class="toc-text">面向对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#简单工厂模式"><span class="toc-text">简单工厂模式</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-简单工厂模式" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">简单工厂模式</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2015.12.08</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/design/">design</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>学习python有一年了，在工作中经常使用，不过多是一些基础操作和简单库的使用，受朋友打击，想学习一些深层次的内容，所以从本篇开始学习设计模式，首先是简单工厂模式。<br>其实很早就将设计模式作为学习过程中的一环，不过以前基础薄弱，想来用不到高深的设计模式，所以并没有去学习相关知识，感觉现在可以了就开始看书，买了两本书《设计模式：可复用面向对象软件的基础》和《大话设计模式》，目前主要是顺序阅读《大话设计模式》并将其中C#代码用python实现，并调试通过。</p>
+<h2 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h2><p>面向对象编程思想，作者通过曹操的诗 “喝酒唱歌，人生真爽” 到改成 “对酒当歌，人生几何”，来解释面向对象的几个优点：可维护，可复用，可扩展，灵活性高。<br>学习面向对象编程思想，开始考虑通过封装，继承，多态把程序耦合度降低，再用设计模式使程序更加灵活，容易修改，并且易于复用。</p>
+<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><p>简单工厂模式主要在生成类时使用，它解决的是类的创建问题。<br>比如一个计算器类，使用加减乘除的哪一个取决于输入的操作符，写一个生成操作类的工厂可以灵活选择所需要的类，并且可以方便添加新的操作而不需要改变旧的操作的代码，这也是可扩展的体现。</p>
+<p>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OperationFactory</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">''' factory class to generate operation function '''</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, operation)</span>:</span></span><br><span class="line">        self.operation = operation</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">createOperation</span><span class="params">(self)</span>:</span></span><br><span class="line">        oper = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">if</span> self.operation == <span class="string">'+'</span>:</span><br><span class="line">            oper = OperationAdd()</span><br><span class="line">        <span class="keyword">elif</span> self.operation == <span class="string">'-'</span>:</span><br><span class="line">            oper = OperationSub()</span><br><span class="line">        <span class="keyword">elif</span> self.operation == <span class="string">'*'</span>:</span><br><span class="line">            oper = OperationMul()</span><br><span class="line">        <span class="keyword">elif</span> self.operation == <span class="string">'/'</span>:</span><br><span class="line">            oper = OperationDiv()</span><br><span class="line">        <span class="keyword">elif</span> self.operation == <span class="string">'**'</span>:</span><br><span class="line">            oper = OperationPow()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> Exception, <span class="string">'No correct operation.'</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> oper</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Operation</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">''' base class operation '''</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.numA = <span class="number">0</span></span><br><span class="line">        self.numB = <span class="number">0</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Init Operation class'</span>, self.numA, self.numB</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getResult</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Call Operation function'</span>, self.numA, self.numB</span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OperationAdd</span><span class="params">(Operation)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        Operation.__init__(self)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Init OperationAdd class'</span>, self.numA, self.numB</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getResult</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Call OperationAdd function'</span>, self.numA, self.numB</span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">        result = self.numA + self.numB</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">            </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OperationSub</span><span class="params">(Operation)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        Operation.__init__(self)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Init OperationSub class'</span>, self.numA, self.numB</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getResult</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Call OperationSub function'</span>, self.numA, self.numB</span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">        result = self.numA - self.numB</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OperationMul</span><span class="params">(Operation)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        Operation.__init__(self)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Init OperationMul class'</span>, self.numA, self.numB</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getResult</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Call OperationMul function'</span>, self.numA, self.numB</span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">        result = self.numA * self.numB</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OperationDiv</span><span class="params">(Operation)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        Operation.__init__(self)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Init OperationDiv class'</span>, self.numA, self.numB</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getResult</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Call OperationDiv function'</span>, self.numA, self.numB</span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            result = self.numA / self.numB</span><br><span class="line">        <span class="keyword">except</span> ZeroDivisionError, e:</span><br><span class="line">            <span class="keyword">raise</span> e</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OperationPow</span><span class="params">(Operation)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        Operation.__init__(self)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Init OperationPow class'</span>, self.numA, self.numB</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getResult</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Call OperationPow function'</span>, self.numA, self.numB</span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">        result = self.numA ** self.numB</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) != <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Please enter two number and one operation like 3 + 2'</span></span><br><span class="line">        sys.exit(<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">    numA = int(sys.argv[<span class="number">1</span>])</span><br><span class="line">    <span class="comment"># if cmd has *, it will search all files in current dir, so replace * with '*'</span></span><br><span class="line">    operation = sys.argv[<span class="number">2</span>]</span><br><span class="line">    numB = int(sys.argv[<span class="number">3</span>])</span><br><span class="line"></span><br><span class="line">    oper = OperationFactory(operation).createOperation()</span><br><span class="line">    oper.numA = numA</span><br><span class="line">    oper.numB = numB</span><br><span class="line">    result = oper.getResult()</span><br><span class="line">    <span class="keyword">print</span> result</span><br><span class="line"></span><br><span class="line">    <span class="comment"># test OperationAdd</span></span><br><span class="line">    <span class="comment"># oper = OperationAdd()</span></span><br><span class="line">    <span class="comment"># oper.numA = numA</span></span><br><span class="line">    <span class="comment"># oper.numB = numB</span></span><br><span class="line">    <span class="comment"># oper.getResult()</span></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<p>测试结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$python</span> simpleFactory.py</span><br><span class="line">Please enter two number and one operation like 3 + 2</span><br><span class="line"></span><br><span class="line"><span class="variable">$python</span> simpleFactory.py 3 + 2</span><br><span class="line">Init Operation class 0 0</span><br><span class="line">Init OperationAdd class 0 0</span><br><span class="line">Call OperationAdd <span class="keyword">function</span> 3 2</span><br><span class="line">5</span><br><span class="line"></span><br><span class="line">lisp@lisp-PC /cygdrive/h</span><br><span class="line"><span class="variable">$python</span> simpleFactory.py 3 - 2</span><br><span class="line">Init Operation class 0 0</span><br><span class="line">Init OperationSub class 0 0</span><br><span class="line">Call OperationSub <span class="keyword">function</span> 3 2</span><br><span class="line">1</span><br><span class="line"></span><br><span class="line">lisp@lisp-PC /cygdrive/h</span><br><span class="line"><span class="variable">$python</span> simpleFactory.py 3 <span class="string">'*'</span> 2</span><br><span class="line">Init Operation class 0 0</span><br><span class="line">Init OperationMul class 0 0</span><br><span class="line">Call OperationMul <span class="keyword">function</span> 3 2</span><br><span class="line">6</span><br><span class="line"></span><br><span class="line">lisp@lisp-PC /cygdrive/h</span><br><span class="line"><span class="variable">$python</span> simpleFactory.py 3 / 2</span><br><span class="line">Init Operation class 0 0</span><br><span class="line">Init OperationDiv class 0 0</span><br><span class="line">Call OperationDiv <span class="keyword">function</span> 3 2</span><br><span class="line">1</span><br><span class="line"></span><br><span class="line">lisp@lisp-PC /cygdrive/h</span><br><span class="line"><span class="variable">$python</span> simpleFactory.py 3 <span class="string">'**'</span> 2</span><br><span class="line">Init Operation class 0 0</span><br><span class="line">Init OperationPow class 0 0</span><br><span class="line">Call OperationPow <span class="keyword">function</span> 3 2</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+
+
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2015/12/06/windows%E5%85%8D%E5%AF%86%E7%A0%81ssh%E7%99%BB%E5%BD%95linux/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/03/27/linux%E6%9B%B4%E6%94%B9%E9%94%AE%E7%9B%98%E6%98%A0%E5%B0%84/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

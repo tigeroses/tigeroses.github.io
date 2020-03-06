@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>python服务器客户端通信 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="python,flask," />
+  
+
+  <meta name="description" content="这里主要使用python的flask框架搭建一个简易服务器端，然后使用httplib库作为客户端与服务端进行通信，传输json数据并统计打包，网络传输，解包的时间。 代码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152##### http_server.py">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python服务器客户端通信">
+<meta property="og:url" content="http://yoursite.com/2016/05/03/python%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="这里主要使用python的flask框架搭建一个简易服务器端，然后使用httplib库作为客户端与服务端进行通信，传输json数据并统计打包，网络传输，解包的时间。 代码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152##### http_server.py">
+<meta property="article:published_time" content="2016-05-03T13:37:21.000Z">
+<meta property="article:modified_time" content="2020-03-05T14:43:27.300Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="flask">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-text">代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行结果"><span class="toc-text">运行结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结果说明"><span class="toc-text">结果说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#原理"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-python服务器客户端通信" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">python服务器客户端通信</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.05.03</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>这里主要使用python的flask框架搭建一个简易服务器端，然后使用httplib库作为客户端与服务端进行通信，传输json数据并统计打包，网络传输，解包的时间。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##### http_server.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask.ext.restful <span class="keyword">import</span> Resource, Api</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> request, make_response</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">api = Api(app)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">data</span><span class="params">(Resource)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></span><br><span class="line">        start_time = datetime.datetime.now()</span><br><span class="line"></span><br><span class="line">        data = &#123;&#125;</span><br><span class="line">        tmp_data = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1000</span>):</span><br><span class="line">            tmp_data[i] = &#123;&#125;</span><br><span class="line">            tmp_data[i][<span class="string">"name"</span>] = <span class="string">"tigerrose"</span></span><br><span class="line">            tmp_data[i][<span class="string">"tag"</span>] = <span class="string">"cool"</span></span><br><span class="line">        data[<span class="string">'data'</span>] = tmp_data</span><br><span class="line">        data = json.dumps(data)</span><br><span class="line"></span><br><span class="line">        end_time = datetime.datetime.now()</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Size: %s'</span> % len(data)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Time: %s'</span> % (end_time - start_time)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self)</span>:</span></span><br><span class="line">        data = request.stream.read()</span><br><span class="line">        json_data = json.loads(data)</span><br><span class="line"></span><br><span class="line">        start_time = datetime.datetime.now()</span><br><span class="line">        tmp_data = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> d <span class="keyword">in</span> json_data:</span><br><span class="line">            tmp_data[d] = json_data[d]</span><br><span class="line"></span><br><span class="line">        end_time = datetime.datetime.now()</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Data Size: %s'</span> % len(data)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Unpack Time: %s'</span> % (end_time - start_time)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> make_response(<span class="string">'sucess'</span>)</span><br><span class="line"></span><br><span class="line">api.add_resource(data, <span class="string">'/data/'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##### http_client.py    </span></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> httplib</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">import</span> multiprocessing</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getData</span><span class="params">()</span>:</span></span><br><span class="line">    url = <span class="string">'http://127.0.0.1:5000/data/'</span></span><br><span class="line">    conn = httplib.HTTPConnection(<span class="string">'127.0.0.1'</span>, port=<span class="number">5000</span>)</span><br><span class="line"></span><br><span class="line">    start_time = datetime.datetime.now()</span><br><span class="line">    conn.request(method=<span class="string">"GET"</span>, url=url)</span><br><span class="line">    response = conn.getresponse()</span><br><span class="line">    res = response.read()</span><br><span class="line"></span><br><span class="line">    end_time = datetime.datetime.now()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Size: %s'</span> % len(res)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Time: %s'</span> % (end_time-start_time)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendData</span><span class="params">()</span>:</span></span><br><span class="line">    url = <span class="string">'http://127.0.0.1:5000/data/'</span></span><br><span class="line">    conn = httplib.HTTPConnection(<span class="string">'127.0.0.1'</span>, port=<span class="number">5000</span>)</span><br><span class="line"></span><br><span class="line">    start_time = datetime.datetime.now()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># prepare the data</span></span><br><span class="line">    data = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">100000</span>):</span><br><span class="line">        data[i] = &#123;<span class="string">'name'</span>: <span class="string">'tigerrose'</span>&#125;</span><br><span class="line">    data = json.dumps(data)</span><br><span class="line"></span><br><span class="line">    data_time = datetime.datetime.now()</span><br><span class="line"></span><br><span class="line">    conn.request(<span class="string">"POST"</span>, url, data)</span><br><span class="line">    response = conn.getresponse()</span><br><span class="line"></span><br><span class="line">    end_time = datetime.datetime.now()</span><br><span class="line">    res = response.read()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Data Size: %s'</span> % len(data)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Pack Time: %s'</span> % (data_time-start_time)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Transform Time: %s'</span> % (end_time-data_time)</span><br><span class="line">    <span class="keyword">print</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="comment"># 测试 POST 方法</span></span><br><span class="line">    sendData()</span><br></pre></td></tr></table></figure>
+
+<h2 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$python</span> http_server.py </span><br><span class="line">* Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)</span><br><span class="line">* Restarting with <span class="built_in">stat</span></span><br><span class="line">* Debugger is active!</span><br><span class="line">* Debugger pin code: 328-155-210</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$python</span> http_cilent.py </span><br><span class="line">Data Size: 3188890</span><br><span class="line">Pack Time: 0:00:00.368087</span><br><span class="line">Transform Time: 0:00:01.012829</span><br><span class="line">sucess</span><br></pre></td></tr></table></figure>
+
+<p>此时，服务器端也多了几行输出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Data Size: 3188890</span><br><span class="line">Unpack Time: 0:00:00.106405</span><br><span class="line">127.0.0.1 - - [03/May/2016 22:00:58] <span class="string">"POST http://127.0.0.1:5000/data/ HTTP/1.1"</span> 200 -</span><br></pre></td></tr></table></figure>
+
+<h2 id="结果说明"><a href="#结果说明" class="headerlink" title="结果说明"></a>结果说明</h2><p>首先运行http_server, 开启服务，然后运行http_client, 运行客户端，发送数据给服务端并获取返回值，可以看到结果显示了数据打包，解包和网络传输以及数据大小的具体数值。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>1 服务端的搭建。服务端用的是flask restful做的简易app， 其中，api.add_resource(data, ‘/data/‘) 就是将继承自Resource并实现来get或者post方法的类映射到<code>http://host:port/data/</code>这个网络资源上。<br>  app.run()方法是开启服务，debug参数为True代表是debug模式，好处是输出一些调试信息，并且当你修改http_server代码后它会自动重启服务，但是注意不要在实际项目中使用，会有安全隐患，默认的host地址是127.0.0.1, 端口是5000，可以传参数修改。</p>
+<p>2 客户端搭建。 客户端使用httplib的HTTPConnection进行创建连接, request函数发送POST请求，如果是get请求将method改成GET即可。</p>
+<p>3 数据传输。 我个人理解的数据传输就是发送POST请求到获取response返回结果的时间，而打包时间是生成json数据串的时间，解包是将传输的json数据读取到内存的过程。使用datetime.datetime.now()来获取当前时间，两个时间相减即是一段python代码所运行的时间。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://dormousehole.readthedocs.io/en/latest/" target="_blank" rel="noopener">http://dormousehole.readthedocs.io/en/latest/</a><br><a href="http://www.pythondoc.com/Flask-RESTful/quickstart.html" target="_blank" rel="noopener">http://www.pythondoc.com/Flask-RESTful/quickstart.html</a><br><a href="http://www.jb51.net/article/66763.htm" target="_blank" rel="noopener">http://www.jb51.net/article/66763.htm</a><br><a href="http://www.tuicool.com/articles/J3maU3F" target="_blank" rel="noopener">http://www.tuicool.com/articles/J3maU3F</a><br><a href="http://www.01happy.com/python-httplib-get-and-post/" target="_blank" rel="noopener">http://www.01happy.com/python-httplib-get-and-post/</a></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/04/05/bash-map/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter01-more/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

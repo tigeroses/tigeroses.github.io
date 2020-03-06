@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>python-ConfigParser | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="python," />
+  
+
+  <meta name="description" content="几乎所有的应用程序真正运行起来的时候，都会读取一个或多个配置文件。配置文件的作用是：用户不需要修改代码，就可以改变应用程序的行为，让它更好的为应用服务。本篇主要介绍python中ConfigParser模块的API以及使用示例。 ConfigParser - 解析配置文件此模块定义类 ConfigParser. 它实现了一个基本的配置文件解析语言，提供一个类似微软INI文件的结构。使用它可以更容易">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python-ConfigParser">
+<meta property="og:url" content="http://yoursite.com/2015/06/14/python-ConfigParser/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="几乎所有的应用程序真正运行起来的时候，都会读取一个或多个配置文件。配置文件的作用是：用户不需要修改代码，就可以改变应用程序的行为，让它更好的为应用服务。本篇主要介绍python中ConfigParser模块的API以及使用示例。 ConfigParser - 解析配置文件此模块定义类 ConfigParser. 它实现了一个基本的配置文件解析语言，提供一个类似微软INI文件的结构。使用它可以更容易">
+<meta property="article:published_time" content="2015-06-14T12:33:43.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.828Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ConfigParser-解析配置文件"><span class="toc-text">ConfigParser - 解析配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RawConfigParser-Objects"><span class="toc-text">RawConfigParser Objects</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ConfigParser-Objects"><span class="toc-text">ConfigParser Objects</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码示例"><span class="toc-text">代码示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新建config文件"><span class="toc-text">新建config文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取config文件内容"><span class="toc-text">获取config文件内容</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-text">参考文献</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-python-ConfigParser" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">python-ConfigParser</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2015.06.14</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>几乎所有的应用程序真正运行起来的时候，都会读取一个或多个配置文件。<br>配置文件的作用是：用户不需要修改代码，就可以改变应用程序的行为，让它更好的为应用服务。<br>本篇主要介绍python中ConfigParser模块的API以及使用示例。</p>
+<h2 id="ConfigParser-解析配置文件"><a href="#ConfigParser-解析配置文件" class="headerlink" title="ConfigParser - 解析配置文件"></a>ConfigParser - 解析配置文件</h2><p>此模块定义类 ConfigParser. 它实现了一个基本的配置文件解析语言，提供一个类似微软INI文件的结构。<br>使用它可以更容易的被用户自定义。<br>在python 3.0中ConfigParser 更名为 configparser<br>配置文件包括由[section] 开头的选项和name: value(name=value)等条目。其中value可以包含格式化字符串。<br>由’#’ ‘;’开头的行被忽略并作为注释。<br>在查找配置项时，如果读取的配置项不在指定的section中，将会在[DEFAULT]中查找</p>
+<h2 id="RawConfigParser-Objects"><a href="#RawConfigParser-Objects" class="headerlink" title="RawConfigParser Objects"></a>RawConfigParser Objects</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">RawConfigParser.defaults()</span><br><span class="line">返回一个包含实例范围默认的字典</span><br><span class="line">RawConfigParser.sections()</span><br><span class="line">返回一个可用section的列表，不包含DEFAULT</span><br><span class="line">RawConfigParser.add_section(section)</span><br><span class="line">增加section</span><br><span class="line">RawConfigParser.has_section(section)</span><br><span class="line">显示是否包含此section</span><br><span class="line">RawConfigParser.options(section)</span><br><span class="line">返回一个在此section中的可用选项的列表</span><br><span class="line">RawConfigParser.has_option(section, option)</span><br><span class="line">如果给定section存在，并包含option，返回<span class="literal">True</span>，否则返回<span class="literal">False</span></span><br><span class="line">RawConfigParser.read(filenames)</span><br><span class="line">试图去读并解析一组文件名，返回被成功解析的文件名列表。</span><br><span class="line">RawConfigParser.readfp(fp)</span><br><span class="line">从文件或者类似文件对象中读取配置数据</span><br><span class="line">RawConfigParser.get(section, option)</span><br><span class="line">获取section的option的值</span><br><span class="line">RawConfigParser.getint(section, option) </span><br><span class="line">            .getfloat(section, option)</span><br><span class="line">            .getboolean(section, option) 可使用<span class="number">0</span>/<span class="number">1</span> yes/no true/false on/off 将会转化为<span class="literal">True</span>, <span class="literal">False</span>，其他值</span><br><span class="line">                            会抛出ValueError异常</span><br><span class="line">                            RawConfigParser.items(section)</span><br><span class="line">返回指定section的(name, value)的列表</span><br><span class="line">RawConfigParser.set(section, option, value)</span><br><span class="line">设置选项及值</span><br><span class="line">RawConfigParser.write(fileobject)</span><br><span class="line">将配置信息写入指定文件对象</span><br><span class="line">RawConfigParser.remove_option(section, option)</span><br><span class="line">删除给定section的option</span><br><span class="line">RawConfigParser.remove_section(section)</span><br><span class="line">删除section</span><br><span class="line">RawConfigParser.optionxform(option)</span><br><span class="line">转换option的形式。如更改选项名称为大小写敏感</span><br></pre></td></tr></table></figure>
+
+<h2 id="ConfigParser-Objects"><a href="#ConfigParser-Objects" class="headerlink" title="ConfigParser Objects"></a>ConfigParser Objects</h2><p>ConfigParser 继承自RawConfigParser,并且扩展了它的接口，加入一些可选参数：<br>ConfigParser.get(section， option， raw, vars)<br>    获取给定section的选项值。raw为0，返回转换后的结果，为1返回原始字符形式, vars是一个字典，用来更改选项值<br>ConfigParser.items(section, option， raw, vars)<br>    返回指定section的(name, value, raw, vars)的列表</p>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><h3 id="新建config文件"><a href="#新建config文件" class="headerlink" title="新建config文件"></a>新建config文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ConfigParser</span><br><span class="line"></span><br><span class="line">config = ConfigParser.RawConfigParser()</span><br><span class="line"></span><br><span class="line">config.add_section(<span class="string">'Section1'</span>)</span><br><span class="line">config.set(<span class="string">'Section1'</span>, <span class="string">'int'</span>, <span class="string">'15'</span>)</span><br><span class="line">config.set(<span class="string">'Section1'</span>, <span class="string">'bool'</span>, <span class="string">'true'</span>)</span><br><span class="line">config.set(<span class="string">'Section1'</span>, <span class="string">'float'</span>, <span class="string">'3.1415'</span>)</span><br><span class="line">config.set(<span class="string">'Section1'</span>, <span class="string">'baz'</span>, <span class="string">'fun'</span>)</span><br><span class="line">config.set(<span class="string">'Section1'</span>, <span class="string">'bar'</span>, <span class="string">'Python'</span>)</span><br><span class="line">config.set(<span class="string">'Section1'</span>, <span class="string">'foo'</span>, <span class="string">'%(bar)s is %(baz)s!'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Writing our configuration file to 'example.cfg'</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'example.cfg'</span>, <span class="string">'wb'</span>) <span class="keyword">as</span> configfile:</span><br><span class="line">    config.write(configfile)</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取config文件内容"><a href="#获取config文件内容" class="headerlink" title="获取config文件内容"></a>获取config文件内容</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ConfigParser</span><br><span class="line"></span><br><span class="line">config = ConfigParser.RawConfigParser()</span><br><span class="line">config.read(<span class="string">'example.cfg'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># getfloat() raises an exception if the value is not a float</span></span><br><span class="line"><span class="comment"># getint() and getboolean() also do this for their respective types</span></span><br><span class="line">float = config.getfloat(<span class="string">'Section1'</span>, <span class="string">'float'</span>)</span><br><span class="line">int = config.getint(<span class="string">'Section1'</span>, <span class="string">'int'</span>)</span><br><span class="line"><span class="keyword">print</span> float + int</span><br><span class="line"></span><br><span class="line"><span class="comment"># Notice that the next output does not interpolate '%(bar)s' or '%(baz)s'.</span></span><br><span class="line"><span class="comment"># This is because we are using a RawConfigParser().</span></span><br><span class="line"><span class="keyword">if</span> config.getboolean(<span class="string">'Section1'</span>, <span class="string">'bool'</span>):</span><br><span class="line">        <span class="keyword">print</span> config.get(<span class="string">'Section1'</span>, <span class="string">'foo'</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ConfigParser</span><br><span class="line"></span><br><span class="line">config = ConfigParser.ConfigParser()</span><br><span class="line">config.read(<span class="string">'example.cfg'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set the third, optional argument of get to 1 if you wish to use raw mode.</span></span><br><span class="line"><span class="keyword">print</span> config.get(<span class="string">'Section1'</span>, <span class="string">'foo'</span>, <span class="number">0</span>) <span class="comment"># -&gt; "Python is fun!"</span></span><br><span class="line"><span class="keyword">print</span> config.get(<span class="string">'Section1'</span>, <span class="string">'foo'</span>, <span class="number">1</span>) <span class="comment"># -&gt; "%(bar)s is %(baz)s!"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The optional fourth argument is a dict with members that will take</span></span><br><span class="line"><span class="comment"># precedence in interpolation.</span></span><br><span class="line"><span class="keyword">print</span> config.get(<span class="string">'Section1'</span>, <span class="string">'foo'</span>, <span class="number">0</span>, &#123;<span class="string">'bar'</span>: <span class="string">'Documentation'</span>,</span><br><span class="line">                                                <span class="string">'baz'</span>: <span class="string">'evil'</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ConfigParser</span><br><span class="line"></span><br><span class="line"><span class="comment"># New instance with 'bar' and 'baz' defaulting to 'Life' and 'hard' each</span></span><br><span class="line">config = ConfigParser.SafeConfigParser(&#123;<span class="string">'bar'</span>: <span class="string">'Life'</span>, <span class="string">'baz'</span>: <span class="string">'hard'</span>&#125;)</span><br><span class="line">config.read(<span class="string">'example.cfg'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> config.get(<span class="string">'Section1'</span>, <span class="string">'foo'</span>) <span class="comment"># -&gt; "Python is fun!"</span></span><br><span class="line">config.remove_option(<span class="string">'Section1'</span>, <span class="string">'bar'</span>)</span><br><span class="line">config.remove_option(<span class="string">'Section1'</span>, <span class="string">'baz'</span>)</span><br><span class="line"><span class="keyword">print</span> config.get(<span class="string">'Section1'</span>, <span class="string">'foo'</span>) <span class="comment"># -&gt; "Life is hard!"</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>python library reference<br>编写高质量代码:改善Python程序的91个建议</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2015/06/02/python-argparse/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2015/12/06/windows%E5%85%8D%E5%AF%86%E7%A0%81ssh%E7%99%BB%E5%BD%95linux/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

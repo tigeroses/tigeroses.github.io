@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>编写界面程序 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="python," />
+  
+
+  <meta name="description" content="在windows 下使用python的tkinter库编写简单的界面，功能是拆分barcode，这样不懂命令行运行程序的同学们就可以通过 ‘点点点’ 的方式来操作了。 tkinter主要使用tkinter的文件查找和按钮控件，以及grid布局方式通过两种方式来调用程序，一是直接import py 来调用，二是调用编译好的exe 将py 打包成exe之前使用py2exe打包，不过记得在64位系统不支">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编写界面程序">
+<meta property="og:url" content="http://yoursite.com/2016/03/31/%E7%BC%96%E5%86%99%E7%95%8C%E9%9D%A2%E7%A8%8B%E5%BA%8F/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="在windows 下使用python的tkinter库编写简单的界面，功能是拆分barcode，这样不懂命令行运行程序的同学们就可以通过 ‘点点点’ 的方式来操作了。 tkinter主要使用tkinter的文件查找和按钮控件，以及grid布局方式通过两种方式来调用程序，一是直接import py 来调用，二是调用编译好的exe 将py 打包成exe之前使用py2exe打包，不过记得在64位系统不支">
+<meta property="article:published_time" content="2016-03-31T12:54:10.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.831Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#tkinter"><span class="toc-text">tkinter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将py-打包成exe"><span class="toc-text">将py 打包成exe</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-编写界面程序" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">编写界面程序</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.03.31</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/tools/">tools</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>在windows 下使用python的tkinter库编写简单的界面，功能是拆分barcode，这样不懂命令行运行程序的同学们就可以通过 ‘点点点’ 的方式来操作了。</p>
+<h2 id="tkinter"><a href="#tkinter" class="headerlink" title="tkinter"></a>tkinter</h2><p>主要使用tkinter的文件查找和按钮控件，以及grid布局方式<br>通过两种方式来调用程序，一是直接import py 来调用，二是调用编译好的exe</p>
+<h2 id="将py-打包成exe"><a href="#将py-打包成exe" class="headerlink" title="将py 打包成exe"></a>将py 打包成exe</h2><p>之前使用py2exe打包，不过记得在64位系统不支持打包成一个exe文件，所以转而使用pyInstaller </p>
+<p>可以使用bat文件,打包为一个无法在命令行启动的带图标的exe</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rem start.bat</span><br><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"></span><br><span class="line">pyinstaller.exe -F -w --icon=img/tools.ico tools.py</span><br></pre></td></tr></table></figure>
+
+<p>windows下运行bat 一般都会开启命令行窗口，为了运行程序更美观，使用vbs脚本封装一下 install.vbs</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createobject(<span class="string">"wscript.shell"</span>).run <span class="string">"start.bat"</span>,0</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/03/28/python-parseXML/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/04/01/%E9%80%92%E5%BD%92%E6%9F%A5%E6%89%BE%E7%9F%A9%E9%98%B5%E8%BF%9E%E9%80%9A%E5%9F%9F/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

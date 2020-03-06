@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unix-Linux编程实践教程-chapter04-pwd | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,C," />
+  
+
+  <meta name="description" content="第四章　文件系统：编写pwdUnix将存储在磁盘中的数据组织成文件系统．文件系统是文件和目录的组合，目录是名字和指针的列表．目录中的每一个入口指向一个文件或目录．目录包含指向父目录和子目录的入口 Unix文件系统包含三个主要部份：超级块，ｉ－节点和数据区域．文件内容存储在数据块．文件属性存储在ｉ－节点．表中ｉ－节点的位置称为文件的ｉ－节点号，ｉ－节点号是文件的唯一标识 相同的i-节点号可能以不同的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix-Linux编程实践教程-chapter04-pwd">
+<meta property="og:url" content="http://yoursite.com/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter04-pwd/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="第四章　文件系统：编写pwdUnix将存储在磁盘中的数据组织成文件系统．文件系统是文件和目录的组合，目录是名字和指针的列表．目录中的每一个入口指向一个文件或目录．目录包含指向父目录和子目录的入口 Unix文件系统包含三个主要部份：超级块，ｉ－节点和数据区域．文件内容存储在数据块．文件属性存储在ｉ－节点．表中ｉ－节点的位置称为文件的ｉ－节点号，ｉ－节点号是文件的唯一标识 相同的i-节点号可能以不同的">
+<meta property="article:published_time" content="2016-07-23T08:31:31.000Z">
+<meta property="article:modified_time" content="2020-03-05T13:31:41.824Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#第四章-文件系统：编写pwd"><span class="toc-text">第四章　文件系统：编写pwd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-text">code</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Unix-Linux编程实践教程-chapter04-pwd" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Unix-Linux编程实践教程-chapter04-pwd</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.07.23</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/programming/">programming</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="第四章-文件系统：编写pwd"><a href="#第四章-文件系统：编写pwd" class="headerlink" title="第四章　文件系统：编写pwd"></a>第四章　文件系统：编写pwd</h2><p>Unix将存储在磁盘中的数据组织成文件系统．文件系统是文件和<br>目录的组合，目录是名字和指针的列表．目录中的每一个入口指向<br>一个文件或目录．目录包含指向父目录和子目录的入口</p>
+<p>Unix文件系统包含三个主要部份：超级块，ｉ－节点和数据区域．<br>文件内容存储在数据块．文件属性存储在ｉ－节点．表中ｉ－节点<br>的位置称为文件的ｉ－节点号，ｉ－节点号是文件的唯一标识</p>
+<p>相同的i-节点号可能以不同的名字出现在若干个目录中．每个入口<br>被称为指向文件的硬链接．符号链接是通过文件名引用文件，而不是<br>i-节点号</p>
+<p>若干个文件系统的目录树可被整合成一棵树．内核将一个文件系统的<br>目录链接到另一个文件系统的根的操作称为装载</p>
+<p>Unix包含若干种系统调用，允许程序员进行创建和删除目录，复制指针<br>删除指针，改变链接和分离其他文件系统等的操作</p>
+<p>目录与文件操作相关的系统调用:<br>创建目录　　mkdir<br>删除目录    rmdir<br>删除文件　　unlink<br>创建文件链接　 link<br>改变文件或目录的名字和位置　　rename<br>改变进程的当前目录　　chdir</p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* spwd.c: a simplified version of pwd</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * starts in current directory and recursively</span></span><br><span class="line"><span class="comment"> * climbs up to root of filesystem, prints top part</span></span><br><span class="line"><span class="comment"> * then prints current part</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * uses readdir() to get info about each thing</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * bug: prints an empty string if run from "/"</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">ino_t</span> <span class="title">get_inode</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printpathto</span><span class="params">(<span class="keyword">ino_t</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inum_to_name</span><span class="params">(<span class="keyword">ino_t</span>, <span class="keyword">char</span> *, <span class="keyword">int</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> ROOT_FLAG = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    printpathto(get_inode(<span class="string">"."</span>));</span><br><span class="line">    <span class="built_in">putchar</span>(<span class="string">'\n'</span>);</span><br><span class="line">    <span class="comment">// printf("\n");</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printpathto</span><span class="params">(<span class="keyword">ino_t</span> this_inode)</span></span></span><br><span class="line"><span class="function"><span class="comment">/*</span></span></span><br><span class="line"><span class="function"><span class="comment"> * prints path leading down to an object with this inode</span></span></span><br><span class="line"><span class="function"><span class="comment"> * kindof recursive</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ino_t</span> my_node;</span><br><span class="line">    <span class="keyword">char</span> its_name[BUFSIZ];</span><br><span class="line">    <span class="keyword">if</span> (get_inode(<span class="string">".."</span>) != this_inode)</span><br><span class="line">    &#123;</span><br><span class="line">        ROOT_FLAG = <span class="number">1</span>;</span><br><span class="line">        chdir(<span class="string">".."</span>);</span><br><span class="line">        inum_to_name(this_inode, its_name, BUFSIZ);</span><br><span class="line">        my_node = get_inode(<span class="string">"."</span>);</span><br><span class="line">        printpathto(my_node);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"/%s"</span>, its_name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (ROOT_FLAG == <span class="number">0</span>)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"/%s"</span>, its_name);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inum_to_name</span><span class="params">(<span class="keyword">ino_t</span> inode_to_find, <span class="keyword">char</span> * namebuf, <span class="keyword">int</span> buflen)</span></span></span><br><span class="line"><span class="function"><span class="comment">/*</span></span></span><br><span class="line"><span class="function"><span class="comment"> * looks through current directory for a file with this inode</span></span></span><br><span class="line"><span class="function"><span class="comment"> * number and copies its name int namebuf</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    DIR * dir_ptr;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> * <span class="title">direntp</span>;</span></span><br><span class="line">    dir_ptr = opendir(<span class="string">"."</span>);</span><br><span class="line">    <span class="keyword">if</span>(dir_ptr == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        perror(<span class="string">"."</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * search directory for a file with specified inum</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">while</span>((direntp = readdir(dir_ptr)) != <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">if</span> (direntp-&gt;d_ino == inode_to_find)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">strncpy</span>(namebuf, direntp-&gt;d_name, buflen);</span><br><span class="line">            namebuf[buflen<span class="number">-1</span>] = <span class="string">'\0'</span>;</span><br><span class="line">            closedir(dir_ptr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"error looking for inum %d\n"</span>, inode_to_find);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">ino_t</span> <span class="title">get_inode</span><span class="params">(<span class="keyword">char</span> * fname)</span></span></span><br><span class="line"><span class="function"><span class="comment">/*</span></span></span><br><span class="line"><span class="function"><span class="comment"> * returns inode number of the file</span></span></span><br><span class="line"><span class="function"><span class="comment"> */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">info</span>;</span></span><br><span class="line">    <span class="keyword">if</span> (stat(fname, &amp;info) == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Cannot stat"</span>);</span><br><span class="line">        perror(fname);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> info.st_ino;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter03-ls/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/07/23/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter05-stty/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
