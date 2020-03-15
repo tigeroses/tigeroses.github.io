@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>在cuda中使用哈希表 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="cuda hash cudpp," />
+  
+
+  <meta name="description" content="关于在cuda中使用哈希表的一些经验总结 cuda中哈希方法目前已知的在cuda中使用哈希的方法:  数组适用于较小的数据规模,如键的范围是int,或者能转化为整型,值类型最长为long等  cudpp可接受的键值范围均为32bit,相比数组好处是占用内存小,不用存储无用数据其内部使用布谷鸟过滤,核心思想是多个hash算法生成多个映射值,如果有一个位置是空的,就将元素放入,否则踢走其中一个,被踢走">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在cuda中使用哈希表">
+<meta property="og:url" content="http://yoursite.com/2020/03/15/use-hash-in-cuda/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="关于在cuda中使用哈希表的一些经验总结 cuda中哈希方法目前已知的在cuda中使用哈希的方法:  数组适用于较小的数据规模,如键的范围是int,或者能转化为整型,值类型最长为long等  cudpp可接受的键值范围均为32bit,相比数组好处是占用内存小,不用存储无用数据其内部使用布谷鸟过滤,核心思想是多个hash算法生成多个映射值,如果有一个位置是空的,就将元素放入,否则踢走其中一个,被踢走">
+<meta property="article:published_time" content="2020-03-15T12:08:38.000Z">
+<meta property="article:modified_time" content="2020-03-15T13:04:19.851Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="cuda hash cudpp">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d4b892153a53af797abac43f46aac4dc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#cuda中哈希方法"><span class="toc-text">cuda中哈希方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cudpp-hash使用"><span class="toc-text">cudpp hash使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题和改进"><span class="toc-text">问题和改进</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cudpp内存泄漏问题"><span class="toc-text">cudpp内存泄漏问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#扩展cudpp哈希表"><span class="toc-text">扩展cudpp哈希表</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-use-hash-in-cuda" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">在cuda中使用哈希表</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.03.15</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp阅读 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>关于在cuda中使用哈希表的一些经验总结</p>
+<h2 id="cuda中哈希方法"><a href="#cuda中哈希方法" class="headerlink" title="cuda中哈希方法"></a>cuda中哈希方法</h2><p>目前已知的在cuda中使用哈希的方法:</p>
+<ol>
+<li><p><strong>数组</strong><br>适用于较小的数据规模,如键的范围是int,或者能转化为整型,值类型最长为long等</p>
+</li>
+<li><p><strong>cudpp</strong><br>可接受的键值范围均为32bit,相比数组好处是占用内存小,不用存储无用数据<br>其内部使用布谷鸟过滤,核心思想是多个hash算法生成多个映射值,如果有一个位置是空的,就将元素放入,否则踢走其中一个,被踢走的再去踢别人,依次类推<br>缺点是无法动态插入,即必须把键值对先准备好;主要用来查询<br><a href="https://github.com/cudpp/cudpp" target="_blank" rel="noopener">cudpp_github</a></p>
+</li>
+<li><p><strong>huge-CTR</strong><br>这是英伟达开发的一个点击率推荐系统的库,其中实现了哈希功能<br>优点是官方文档写了支持动态插入<br><a href="https://github.com/NVIDIA/HugeCTR" target="_blank" rel="noopener">huge-CTR_github</a></p>
+</li>
+</ol>
+<h2 id="cudpp-hash使用"><a href="#cudpp-hash使用" class="headerlink" title="cudpp hash使用"></a>cudpp hash使用</h2><p>使用步骤:</p>
+<ol>
+<li><p>获取GPU卡信息<br>这也是任何cuda程序的第一步,检查有没有卡,以及卡的计算能力等;使用<code>cudaGetDeviceCount() cudaGetDeviceProperties()</code>等API来获取信息</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> deviceCount;</span><br><span class="line">cudaGetDeviceCount(&amp;deviceCount);</span><br><span class="line"><span class="keyword">if</span> (deviceCount == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Error (main): no devices supporting CUDA.\n"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> dev = <span class="number">0</span>;</span><br><span class="line">cudaSetDevice(dev);</span><br><span class="line">cudaDeviceProp prop;</span><br><span class="line"><span class="keyword">if</span> (!quiet &amp;&amp; cudaGetDeviceProperties(&amp;prop, dev) == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Using device %d:\n"</span>, dev);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s; global mem: %uB; compute v%d.%d; clock: %d kHz\n"</span>,</span><br><span class="line">           prop.name, (<span class="keyword">unsigned</span> <span class="keyword">int</span>)prop.totalGlobalMem, (<span class="keyword">int</span>)prop.major,</span><br><span class="line">           (<span class="keyword">int</span>)prop.minor, (<span class="keyword">int</span>)prop.clockRate);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (prop.major &lt; <span class="number">2</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"ERROR: CUDPP hash tables are only supported on "</span></span><br><span class="line">            <span class="string">"devices with compute\n  capability 2.0 or greater; "</span></span><br><span class="line">            <span class="string">"exiting.\n"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建<em>CUDPP Handle</em><br>CUDPPHandle 在每个cuda上下文都要建立一个</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CUDPPHandle theCudpp;</span><br><span class="line">CUDPPResult result = cudppCreate(&amp;theCudpp);</span><br><span class="line"><span class="keyword">if</span> (result != CUDPP_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Error initializing CUDPP Library.\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> retval;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>准备数据<br> 准备两个unsigned int* 数组, 分别存放keys和values<br> 也可以从一个std::unordered_map获取数据<br> 将keys和values从host拷贝到device</p>
+</li>
+<li><p>创建<em>CUDPPHandle</em></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">CUDPPHashTableConfig config;</span><br><span class="line">config.type = CUDPP_BASIC_HASH_TABLE;</span><br><span class="line">config.kInputSize = kInputSize;</span><br><span class="line">config.space_usage = space_usage;<span class="comment">// 测试值有 1.05f, 1.15f, 1.25f, 1.5f, 2.0f</span></span><br><span class="line">CUDPPHandle hash_table_handle;</span><br><span class="line">CUDPPResult result;</span><br><span class="line">result = cudppHashTable(theCudpp, &amp;hash_table_handle, &amp;config);</span><br><span class="line"><span class="keyword">if</span> (result != CUDPP_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Error in cudppHashTable call in"</span></span><br><span class="line">            <span class="string">"testHashTable (make sure your device is at"</span></span><br><span class="line">            <span class="string">"least compute version 2.0\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>插入数据</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">result = cudppHashInsert(hash_table_handle, d_test_keys, d_test_vals, kInputSize);</span><br><span class="line">cudaThreadSynchronize();</span><br><span class="line"><span class="keyword">if</span> (result != CUDPP_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Error in cudppHashInsert call in testHashTable\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用哈希表查询数据</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">result = cudppHashRetrieve(hash_table_handle, d_test_keys, d_test_vals, kInputSize);</span><br><span class="line">cudaThreadSynchronize();</span><br><span class="line"><span class="keyword">if</span> (result != CUDPP_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Error in cudppHashRetrieve call in testHashTable\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证数据<br>将查询的结果由GPU内存拷贝回CPU内存,进行数据的验证</p>
+</li>
+<li><p>释放资源</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">result = cudppDestroyHashTable(theCudpp, hash_table_handle);</span><br><span class="line"><span class="keyword">if</span> (result != CUDPP_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Error in cudppDestroyHashTable call in testHashTable\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line">result = cudppDestroy(theCudpp);</span><br><span class="line"><span class="keyword">if</span> (result != CUDPP_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Error shutting down CUDPP Library.\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="问题和改进"><a href="#问题和改进" class="headerlink" title="问题和改进"></a>问题和改进</h2><h3 id="cudpp内存泄漏问题"><a href="#cudpp内存泄漏问题" class="headerlink" title="cudpp内存泄漏问题"></a>cudpp内存泄漏问题</h3><p>cudpp在更新的cuda版本如cuda10,更新的显卡架构如TitanV下出现内存泄漏问题<br>情况就是只要使用cudpp的lib,代码经过第一个cuda API调用之后就会卡死,内存不断增长,直到内存爆掉<br>经过测试,我发现是计算能力配置问题,新的显卡架构支持更高的计算能力,只要在编译选项中增加<strong>compute_60;compute_70</strong>即可解决问题<br>详见<a href="https://github.com/cudpp/cudpp/issues/187" target="_blank" rel="noopener">cudpp_issues_187</a></p>
+<h3 id="扩展cudpp哈希表"><a href="#扩展cudpp哈希表" class="headerlink" title="扩展cudpp哈希表"></a>扩展cudpp哈希表</h3><blockquote>
+<p>修改CUDPP库中哈希功能支持更长的键类型.</p>
+</blockquote>
+<blockquote>
+<p>原库支持32bit键值对,将其编码在64bit的long long类型中;我实际工作中需要对碱基序列进行哈希查找,每一个碱基可能有ACGTN五种类型,最开始只处理单barcode是10bp,所以有5^10(9765625)种可能序列,不到10M数据,在cuda中使用数组就可以了;后来需要处理双barcode,20bp,有5^20(95367431640625)种可能序列,需要约95T数据,数组显然不够,只能用哈希,因此将键类型从32bit扩展到48bit,可以支持5^20的键,剩下16bit存储值,依然编码到64bit的long long类型,达到最小改动满足需求的目的.</p>
+</blockquote>
+<p><a href="https://github.com/tigeroses/cudpp" target="_blank" rel="noopener">仓库地址</a></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/03/14/2020-plan/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
