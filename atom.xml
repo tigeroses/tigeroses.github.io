@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-03-22T14:23:49.053Z</updated>
+  <updated>2020-03-29T12:41:42.372Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>vim实用技巧</title>
+    <link href="http://yoursite.com/2020/03/29/vim-practical-skills/"/>
+    <id>http://yoursite.com/2020/03/29/vim-practical-skills/</id>
+    <published>2020-03-29T12:35:59.000Z</published>
+    <updated>2020-03-29T12:41:42.372Z</updated>
+    
+    <content type="html"><![CDATA[<p>记录vim实用技巧,会长期更新</p><h2 id="record-回放功能"><a href="#record-回放功能" class="headerlink" title="record 回放功能"></a>record 回放功能</h2><p>使用场景:需要多次进行的有规律但较为复杂的操作<br>步骤:</p><ol><li>q+a 开始录制</li><li>命令完成,按q停止</li><li>@+a 重复执行命令  </li></ol><p>其中a是record名字</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;记录vim实用技巧,会长期更新&lt;/p&gt;
+&lt;h2 id=&quot;record-回放功能&quot;&gt;&lt;a href=&quot;#record-回放功能&quot; class=&quot;headerlink&quot; title=&quot;record 回放功能&quot;&gt;&lt;/a&gt;record 回放功能&lt;/h2&gt;&lt;p&gt;使用场景:需要多次进行
+      
+    
+    </summary>
+    
+    
+    
+      <category term="vim" scheme="http://yoursite.com/tags/vim/"/>
+    
+  </entry>
   
   <entry>
     <title>工作中遇到的压缩方式总结</title>
@@ -503,34 +528,6 @@
       <category term="C" scheme="http://yoursite.com/tags/C/"/>
     
       <category term="Thread" scheme="http://yoursite.com/tags/Thread/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix-Linux编程实践教程-chapter13-udp</title>
-    <link href="http://yoursite.com/2016/09/02/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter13-udp/"/>
-    <id>http://yoursite.com/2016/09/02/Unix-Linux%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B-chapter13-udp/</id>
-    <published>2016-09-01T16:02:37.000Z</published>
-    <updated>2020-03-05T13:31:41.826Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="第13章-基于数据报-Datagram-的编程：编写许可证服务器"><a href="#第13章-基于数据报-Datagram-的编程：编写许可证服务器" class="headerlink" title="第13章　基于数据报(Datagram)的编程：编写许可证服务器"></a>第13章　基于数据报(Datagram)的编程：编写许可证服务器</h2><p>数据报是从一个socket发送到另一个socket的短消息．数据报socket是不连接的，<br>每个消息包含有目的地址．数据报(UDP)socket更加简单，快速，给系统增加的负荷<br>更小．</p><p>许可证服务器是用来对被许可程序实施许可证验证规则的，许可证服务器发布许可，<br>以短消息的形式发送给客户．</p><p>许可证服务器必须记住哪个进程使用了哪个票据，必须维持一个内部的数据库．因此，<br>许可证服务器不同于简单的服务器．</p><p>记录系统状态的服务器必须设计成可以处理服务器和客户端的崩溃事件．</p><p>有些许可证服务器为一个网络上的多个机器提供服务．有几种设计方法，各有优缺点．</p><p>socket可以有两种类型的地址：网络或者本地．本地的socket地址叫做Unix域socket<br>或名字socket.这种socket使用文件名作为地址，只能在一台机器上交互数据．</p><h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * dgram.c</span></span><br><span class="line"><span class="comment"> * support functions for datagram based programs</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HOSTLEN 256</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_internet_address</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_dgram_server_socket</span><span class="params">(<span class="keyword">int</span> portnum)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">saddr</span>;</span></span><br><span class="line">    <span class="keyword">char</span> hostname[HOSTLEN];</span><br><span class="line">    <span class="keyword">int</span> sock_id;</span><br><span class="line"></span><br><span class="line">    sock_id = socket(PF_INET, SOCK_DGRAM, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (sock_id == <span class="number">-1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    gethostname(hostname, HOSTLEN);</span><br><span class="line">    make_internet_address(hostname, portnum, &amp;saddr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bind(sock_id, (struct sockaddr *)&amp;saddr, <span class="keyword">sizeof</span>(saddr)) != <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sock_id;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_dgram_client_socket</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> socket(PF_INET, SOCK_DGRAM, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_internet_address</span><span class="params">(<span class="keyword">char</span> *hostname, <span class="keyword">int</span> port, struct sockaddr_in *addrp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">hostent</span> * <span class="title">hp</span>;</span></span><br><span class="line"></span><br><span class="line">    bzero((<span class="keyword">void</span>*)addrp, <span class="keyword">sizeof</span>(struct sockaddr_in));</span><br><span class="line">    hp = gethostbyname(hostname);</span><br><span class="line">    <span class="keyword">if</span> (hp == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    bcopy((<span class="keyword">void</span>*)hp-&gt;h_addr, (<span class="keyword">void</span>*)&amp;addrp-&gt;sin_addr, hp-&gt;h_length);</span><br><span class="line">    addrp-&gt;sin_port = htons(port);</span><br><span class="line">    addrp-&gt;sin_family = AF_INET;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_internet_address</span><span class="params">(<span class="keyword">char</span> *host, <span class="keyword">int</span> len, <span class="keyword">int</span> *portp, struct sockaddr_in *addrp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">strncpy</span>(host, inet_ntoa(addrp-&gt;sin_addr), len);</span><br><span class="line">    *portp = ntohs(addrp-&gt;sin_port);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;第13章-基于数据报-Datagram-的编程：编写许可证服务器&quot;&gt;&lt;a href=&quot;#第13章-基于数据报-Datagram-的编程：编写许可证服务器&quot; class=&quot;headerlink&quot; title=&quot;第13章　基于数据报(Datagram)的编程：编写许可
-      
-    
-    </summary>
-    
-    
-      <category term="programming" scheme="http://yoursite.com/categories/programming/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="C" scheme="http://yoursite.com/tags/C/"/>
     
   </entry>
   
