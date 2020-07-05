@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>调试JS代码 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JS," />
+  
+
+  <meta name="description" content="记录下近期对JS代码的调试过程 性能分析启动程序之后,打开google浏览器对应页面,按F12或者Ctrl+Shift+I进入 开发者工具页面 目前主要使用的功能有:  Performance. 性能评估,比如我想看下页面刷新的性能瓶颈所在,先点击 Record 按钮,然后进行页面操作,当页面刷新完成,再点击 Stop 按钮,则会生成性能报告,可以看到资源消耗,JS代码的执行逻辑等  Source">
+<meta property="og:type" content="article">
+<meta property="og:title" content="调试JS代码">
+<meta property="og:url" content="http://yoursite.com/2020/07/05/js-debug/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="记录下近期对JS代码的调试过程 性能分析启动程序之后,打开google浏览器对应页面,按F12或者Ctrl+Shift+I进入 开发者工具页面 目前主要使用的功能有:  Performance. 性能评估,比如我想看下页面刷新的性能瓶颈所在,先点击 Record 按钮,然后进行页面操作,当页面刷新完成,再点击 Stop 按钮,则会生成性能报告,可以看到资源消耗,JS代码的执行逻辑等  Source">
+<meta property="article:published_time" content="2020-07-05T14:04:01.000Z">
+<meta property="article:modified_time" content="2020-07-05T14:35:23.784Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="JS">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d4b892153a53af797abac43f46aac4dc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#性能分析"><span class="toc-text">性能分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能调优"><span class="toc-text">性能调优</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-js-debug" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">调试JS代码</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.07.05</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp阅读 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>记录下近期对JS代码的调试过程</p>
+<h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><p>启动程序之后,打开google浏览器对应页面,按F12或者Ctrl+Shift+I进入 <strong>开发者工具页面</strong></p>
+<p>目前主要使用的功能有:</p>
+<ol>
+<li><p>Performance. 性能评估,比如我想看下页面刷新的性能瓶颈所在,先点击 <em>Record</em> 按钮,然后进行页面操作,当页面刷新完成,再点击 <em>Stop</em> 按钮,则会生成性能报告,可以看到资源消耗,JS代码的执行逻辑等</p>
+</li>
+<li><p>Sources. 性能报告页面的 <em>Main</em> 部分,可以通过点击色块查看其所在的js代码文件,如 <em>react-xx.js</em> 点击则会跳转到 <strong>Sources</strong> 功能栏,有了源文件就可以进行断点调试;这里注意部分js文件是压缩后的文件,建议手动修改程序替换成可读性更强的原始代码文件,方便调试</p>
+</li>
+<li><p>Console. 查看程序的打印输出,比如我想知道某个函数的执行时间,可以在js代码中进行修改</p>
+ <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.time(<span class="string">"foo"</span>);</span><br><span class="line">foo();</span><br><span class="line"><span class="built_in">console</span>.timeEnd(<span class="string">"foo"</span>);</span><br></pre></td></tr></table></figure>
+<p> 当js代码执行之后,可以在console输出中看到foo的执行时间</p>
+</li>
+<li><p>Network. 查看文件传输的时间,判断下瓶颈是否在网络带宽,以及是否数据量太大导致数据的转换和传输耗时较久</p>
+</li>
+</ol>
+<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><p>通过性能分析,发现耗时最长的模块的操作是对数据的颜色计算,场景是我有1M个点需要显示,那么需要将它们从一个[2,1,4,10…]的 <em>颜色数组</em> 转换成RGB表示,js代码使用for循环进行操作,也就是线性复杂度,计算耗时随数据量的增大而线性增大</p>
+<p>通过debug观察发现颜色数组会有不少重复的数值,而同样的输入会导致相同的输出,然后对整个数据的1M个点进行统计分析,发现重复率相当高,也就是for循环中有大量的重复计算</p>
+<p>很自然想到增加缓存,用空间换时间来加速,当遇到计算过的数据时,直接返回计算结果,从而大大提高了程序执行的效率</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cache = &#123;&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (cache[colorIn[i]])</span><br><span class="line">    &#123;</span><br><span class="line">        colorOut[i] = cache[colorIn[i]];</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    colori = getColor(colorIn, i);</span><br><span class="line">    opacityi = getOpacity(opacityIn, i);</span><br><span class="line">    colorOut[i] = calculateColor(colori, opacityi);</span><br><span class="line">    cache[colorIn[i]] = colorOut[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/06/07/rank-promotion/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
