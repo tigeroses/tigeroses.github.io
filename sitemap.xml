@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2020/09/05/cpp-optimization/</loc>
+    
+    <lastmod>2020-09-05T12:37:06.415Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/09/05/cpp-compile-error/</loc>
+    
+    <lastmod>2020-09-05T11:17:01.352Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/09/05/vscode-remote-secondary-verification/</loc>
+    
+    <lastmod>2020-09-05T09:29:17.456Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2020/07/05/js-debug/</loc>
     
     <lastmod>2020-07-05T14:35:23.784Z</lastmod>

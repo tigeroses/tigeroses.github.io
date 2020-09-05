@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-07-05T14:35:23.784Z</updated>
+  <updated>2020-09-05T11:17:01.352Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,79 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>c++编译错误汇总</title>
+    <link href="http://yoursite.com/2020/09/05/cpp-compile-error/"/>
+    <id>http://yoursite.com/2020/09/05/cpp-compile-error/</id>
+    <published>2020-09-05T08:52:51.000Z</published>
+    <updated>2020-09-05T11:17:01.352Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="编译错误处理"><a href="#编译错误处理" class="headerlink" title="编译错误处理"></a>编译错误处理</h2><h3 id="gcc"><a href="#gcc" class="headerlink" title="gcc"></a>gcc</h3><p>Q:error C2059: 语法错误:”&lt;class-head&gt;“<br>A:全局变量没有加分号,可能是复制粘贴导致的</p><p>Q:error: passing ‘const xx’ as ‘this’ argument discards qualifiers [-fpermissive]<br>A:调用const对象的非const方法报错,需要在方法声明和定义加const限定符<br>如<code>string InetAddress::ip_ntoa() const {}</code> 好的编程习惯,get类方法返回都加双重const</p><p>Q:Error: no such instruction: `shlx %rdx,(%r12),%rax’<br>A:shlx是新的intel指令,需要能支持这类新指令的汇编器,即binutils,centos6.x不行,而7.x版本可以支持<br>参考链接<br><a href="https://blog.csdn.net/superbfly/article/details/59514207" target="_blank" rel="noopener">https://blog.csdn.net/superbfly/article/details/59514207</a><br><a href="https://blog.csdn.net/wang_xijue/article/details/47128649" target="_blank" rel="noopener">https://blog.csdn.net/wang_xijue/article/details/47128649</a></p><p>Q:switch语句 jump to case label<br>A:作用域问题,不要在case下定义语句或者将每个case语句块用{} 包起来</p><p>Q:编译gcc9报错config.log “unrecognized command line option ‘-V’”<br>A:原因是较高版本的gcc不支持-V参数,修改环境变量,设置默认gcc为系统版本4.x,重新编译</p><p>Q:g++: unrecognized option ‘-static-libstdc++’<br>A:gcc4.5才引入此选项,所以必须得gcc 4.8了;而centos 6.9默认的是4.4,所以只好换centos7.x来搞,默认4.8.5;最终使用的有效指令 <code>../configure --disable-checking --enable-languages=c,c++ --disable-multilib --prefix=/path/to/software/gcc9 --enable-threads=posix</code></p><p>Q:gcc9.1编译测试报错 /usr/bin/ld: unrecognized option ‘-plugin’<br>A:原因是binutils库太旧了(负责ld链接),升级binutils</p><p>Q:gcc9编译cpp报错 test.cpp:(.text+0xa): undefined reference to `std::cout’<br>A:换成g++ 或者gcc -lstdc++</p><p>Q:list-initializer for non-class type must not be parenthesized<br>A:发生在结构体构造函数对成员变量数组进行 ({0}) 初始化,改成 {} 会按照0来初始化</p><p>Q:Error: invalid operands of types ‘const char [35]’ and ‘const char [2]’ to binary ‘operator+’<br>A:不能直接对 const char* 相加,使用string将最左侧的 char* 转换为string即可</p><h3 id="cmake"><a href="#cmake" class="headerlink" title="cmake"></a>cmake</h3><p>Q:Clock skew detected.  Your build may be incomplete<br>A:make报错,make clean &amp; make</p><h2 id="编译警告处理"><a href="#编译警告处理" class="headerlink" title="编译警告处理"></a>编译警告处理</h2><h3 id="Wreorder"><a href="#Wreorder" class="headerlink" title="[-Wreorder]"></a>[-Wreorder]</h3><p>规则:构造函数时,初始化成员变量顺序要与类声明中顺序对应</p><h3 id="warning-backslash-and-newline-separated-by-space"><a href="#warning-backslash-and-newline-separated-by-space" class="headerlink" title="warning: backslash and newline separated by space"></a>warning: backslash and newline separated by space</h3><p>\ 连接字符串,\后面多了空格</p><h3 id="Wunused-parameter"><a href="#Wunused-parameter" class="headerlink" title="[-Wunused-parameter]"></a>[-Wunused-parameter]</h3><p>有些变量声明了但暂时未使用</p><p>可以注释掉;如果要保留,使用C++17语法 <code>[[maybe_unused]] int a;</code></p><p>部分情况遇到  ‘mayebe_unused’ attribute directive ignored [-Wattributes]</p><h3 id="Wsign-compare"><a href="#Wsign-compare" class="headerlink" title="[-Wsign-compare]"></a>[-Wsign-compare]</h3><p>两种不同类型比较,主要是有符号无符号</p><p>解决方法比较多:</p><ul><li>手动修改某一个类型</li><li>decltype. 如 <code>decltype(s.size()) len;</code></li></ul><h3 id="Wnarrowing"><a href="#Wnarrowing" class="headerlink" title="[-Wnarrowing]"></a>[-Wnarrowing]</h3><p>类型转换,降级,如从int到short</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;编译错误处理&quot;&gt;&lt;a href=&quot;#编译错误处理&quot; class=&quot;headerlink&quot; title=&quot;编译错误处理&quot;&gt;&lt;/a&gt;编译错误处理&lt;/h2&gt;&lt;h3 id=&quot;gcc&quot;&gt;&lt;a href=&quot;#gcc&quot; class=&quot;headerlink&quot; title=&quot;gcc
+      
+    
+    </summary>
+    
+    
+    
+      <category term="c++" scheme="http://yoursite.com/tags/c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>程序优化总结分享</title>
+    <link href="http://yoursite.com/2020/09/05/cpp-optimization/"/>
+    <id>http://yoursite.com/2020/09/05/cpp-optimization/</id>
+    <published>2020-09-05T08:51:44.000Z</published>
+    <updated>2020-09-05T12:37:06.415Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="来由"><a href="#来由" class="headerlink" title="来由"></a>来由</h2><p>目前主要的工作任务就是对软件进行加速,即在不影响(少影响)精度的前提下,提高程序的执行速度,降低资源的消耗</p><p>对近期工作进行总结,并编写ppt在组内分享,这里再记录一下</p><h2 id="优化理论"><a href="#优化理论" class="headerlink" title="优化理论"></a>优化理论</h2><ul><li><strong>不要优化</strong>. 不成熟的优化是万恶之源,提高代码效率的同时一般会降低其可读性,可维护及可扩展性,需要仔细权衡,在无法确定真的需要的情况下不要进行盲目的优化</li><li><strong>先实现,再优化</strong>. 其一是就算计算再快,结果不正确也没有任何意义;其二是提前优化缺乏前瞻性,即你无法知道其全局的瓶颈在哪里,此时进行优化最好的情况也只能获得局部最优解</li><li><strong>20/80定律</strong>. 在这里就是少部分代码占据大部分的时间和资源消耗</li><li><strong>找到热点,迭代实验</strong>. 通过增加时间打印或者利用性能剖析工具,找到最耗时的模块,针对性进行优化,完成之后则另一个模块成为新的瓶颈,如此迭代测试,方能见成效</li><li><strong>实践是检验真理的唯一标准</strong>. 很多时候理论是可行,但实际往往是另一回事,在程序优化方面,只有亲自实践才能确定你的思路是否有效</li></ul><h2 id="优化策略"><a href="#优化策略" class="headerlink" title="优化策略"></a>优化策略</h2><p>主要从六个方面来进行优化</p><h3 id="程序设计"><a href="#程序设计" class="headerlink" title="程序设计"></a>程序设计</h3><p>设计框架时优先考虑整体性能,然后再为单个的子系统和类设置要达到的资源占用目标<br>如考虑并行设计,每一个线程处理的数据量是否平均,其耗时与资源占用如何,需要在编码前有一定的了解</p><h3 id="类和子程序设计"><a href="#类和子程序设计" class="headerlink" title="类和子程序设计"></a>类和子程序设计</h3><blockquote><p>针对问题选择合适的数据结构和算法</p></blockquote><p>数据类型决定了程序内存消耗,算法决定了程序的执行速度</p><ul><li>示例1: 基因注释功能中查找overlap,即对bam文件中每条reads,在基因注释文件gtf中查找与之相交的基因,再进行其他处理;一般对gtf文件构建线段树,线段树的具体实现 二叉搜索树 VS 红黑树,由于二叉搜索树是非平衡的,极端情况下甚至会退化成链表,查找最坏需要O(N)的时间复杂度,而红黑树是自平衡的,平均时间复杂度为O(log(N)),因此数据结构选择红黑树能达到更好的效率</li><li>示例2: barcode序列编码成整型,如长度为10的ACGT序列可以编码成int32,只要4个字节,而使用string来存储至少需要32字节</li><li>示例3: 计算一组数的中值,即50分位点的数值,可采用以下三种方式<ol><li><em>vector + sort()</em> 使用数组存储数据,排序之后取中间的数值,由于排序需要O(NlogN),这也是整个算法的时间复杂度</li><li><em>vector + nth_element()</em> 使用标准库中的 nth_element 方法,可以降低时间复杂度到O(N)</li><li><em>map + for</em> 假如数据有不少重复,可采用条形图的方式,使用 map(有序) 来统计个数,一次for循环遍历个数即可,空间复杂度比存储全部数据要低不少,时间复杂度虽为O(N),但此处的N为 map 的key的个数,比前面的总数N要小很多</li></ol></li></ul><h3 id="与操作系统的交互"><a href="#与操作系统的交互" class="headerlink" title="与操作系统的交互"></a>与操作系统的交互</h3><p>包括磁盘IO,网络IO,动态库,外部设备等</p><p>主要考虑磁盘IO问题</p><ul><li><strong>尽量使用内存</strong>. 能不读写磁盘就不读写,数据量不大的情况全部放入内存,毕竟读内存比读磁盘要快1000倍</li><li><strong>纯文本转二进制,减小写盘数据量</strong>. 如果确实需要输出一些中间文件,可考虑将纯文本转成二进制,或采用序列化/反序列化方案来降低数据量</li><li><strong>考虑异步/多线程读写</strong>. 如多线程并行读写,异步主要指在数据计算的时候进行拷贝操作,典型的如GPU编程中多流的应用,在处理第二批数据时,将第一批已经处理结束的数据拷贝回CPU,同时将第三批数据拷贝至GPU,达到掩盖数据IO的目的</li><li><strong>更换硬盘</strong></li></ul><h3 id="代码编译"><a href="#代码编译" class="headerlink" title="代码编译"></a>代码编译</h3><ul><li>选择优秀的编译器软件</li><li>设置合适的编译优化参数. 如gcc的优化参数 O1 O2 O3的选择</li><li>编写出编译器能够有效转化以转换成高效可执行代码的源码. 需要对编译器原理有一定了解</li><li>编译器的局限性. 如C指针的内存别名问题(可使用restrict限定符来解决)</li></ul><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编译器不敢进行优化,只能次序执行两条指令,原因就是假如xp yp指向同一地址,</span></span><br><span class="line"><span class="comment">// 那么非次序执行的情况下结果会出现异常</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">twiddle</span><span class="params">(<span class="keyword">long</span>* xp, <span class="keyword">long</span>* yp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    *xp += *yp;</span><br><span class="line">    *xp += *yp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h3 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h3><ul><li><strong>购买新的硬件设备</strong>. 如固态硬盘替换机械硬盘,百兆光纤升级为千兆,采购更高主频和核数的CPU等</li><li><strong>GPU/TPU/FPGA/ASIC</strong>. 假如CPU能力已经达到饱和,可以考虑使用硬件加速</li></ul><h3 id="代码调整"><a href="#代码调整" class="headerlink" title="代码调整"></a>代码调整</h3><ul><li><strong>调整判断次序</strong>. 在if-then-else/switch case 中将最可能出现的情况放到前面,减少判断次数</li><li><strong>知道答案后提前退出</strong></li><li><strong>查询表代替复杂表达式</strong>. 使用查询表而非临时计算,有时候可以作为降维打击了</li><li><strong>循环</strong><ol><li>将判断外提</li><li>合并多个循环</li><li>展开. 如 k * 1 展开, k * k 展开(引入k个临时变量)</li><li>哨兵值. 如在数组中查找某个值,则每次循环都需要检查数组是否越界,那么在数组末尾添加想要查找的值,则无需判断越界问题,因为肯定会返回,当然最后需要对结果所在的索引位置进行额外的判断</li><li>削减强度. 用多次轻量级运算代替一次代价高额的运算,如移位代替整数的 *2 /2</li></ol></li><li><strong>尽量减少数组引用,引入临时变量</strong>. 很多时候内存访问开销很大,引入临时变量,当全部计算完再写入内存</li><li><strong>删除公共子表达式</strong>. 提前计算好,直接使用</li><li><strong>减少过程调用</strong>. 这里主要指函数调用的开销,可以使用 inline</li><li><strong>使用低级语言重写代码</strong>. C++对应的低级语言就是汇编,python对应的就是C了</li><li><strong>理解现代处理器,利用指令级并行</strong>. 现在主流的CPU都是SIMD模式,即单指令多数据,每条指令可以操作多个数据,如intel的SSE指令集AVX,其向量长度为32字节,意味着一条指令同时可以操作8个int32数据,利用好可以达到很高的加速比</li></ul><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>使用缓存,以空间换时间</p><ul><li>示例1: 注释模块处理 bam 文件,由于bam已序,我发现不少相邻的reads 注释的结果是一样的,通过使用缓存可以降低计算量</li><li>示例2: 可视化库plotly.js 中计算color,它将输入color计算为输出color,当需要显示的点数达到几M时,它的for 循环需要10s才能完成,通过简单的统计分析,我发现几M个点真正不重复的只有几百个,而相同的输入导致相同的输出,这里增加缓存可以将耗时降低到几百毫秒,可谓优秀;不过这是针对我们特定的数据集,它作为一个通用的库,自然要考虑更全面一些</li></ul><p>优化前</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(isArrayColorIn || isArrayOpacityIn) &#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        colori = getColor(colorIn, i);</span><br><span class="line">        opacityi = getOpacity(opacityIn, i);</span><br><span class="line">        colorOut[i] = calculateColor(colori, opacityi);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> colorOut = calculateColor(rgba(colorIn), opacityIn);</span><br></pre></td></tr></table></figure><p>优化后</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(isArrayColorIn || isArrayOpacityIn) &#123;</span><br><span class="line">    <span class="keyword">var</span> cache = &#123;&#125;;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (cache[colorIn[i]])</span><br><span class="line">        &#123;</span><br><span class="line">            colorOut[i] = cache[colorIn[i]];</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        colori = getColor(colorIn, i);</span><br><span class="line">        opacityi = getOpacity(opacityIn, i);</span><br><span class="line">        colorOut[i] = calculateColor(colori, opacityi);</span><br><span class="line">        cache[colorIn[i]] = colorOut[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> colorOut = calculateColor(rgba(colorIn), opacityIn);</span><br></pre></td></tr></table></figure><h3 id="性能剖析工具"><a href="#性能剖析工具" class="headerlink" title="性能剖析工具"></a>性能剖析工具</h3><p>win下vs的性能探查器, linux下可使用 gprof/valgrind</p><p>可以清晰的看到函数调用层次,时间占比等,帮助我们定位瓶颈所在</p><h3 id="降内存"><a href="#降内存" class="headerlink" title="降内存"></a>降内存</h3><ul><li><strong>削弱运算强度</strong>. 如double转float</li><li><strong>对数据进行编码</strong>. 如ACGT每字符可编码为2bit</li><li><strong>预留内存</strong>. 如果可以提前知道数据的长度,可使用 reserve/resize 提前预留内存</li><li><strong>传值 vs 传引用</strong>. 函数调用时,如果传值,则会发生内存拷贝</li><li><strong>警惕内存泄漏</strong></li><li><strong>内存复用</strong>. 内存的频繁申请和释放是很耗时的,因为需要操作系统去查找合适的内存空间,特别是实时计算过程,最好在程序或服务启动时分配好需要的内存</li></ul><h3 id="常见的低效之源"><a href="#常见的低效之源" class="headerlink" title="常见的低效之源"></a>常见的低效之源</h3><ul><li><strong>不必要的输入输出</strong>. 如磁盘IO,而这些设备是我们无法控制的</li><li><strong>分页</strong>. 一般页面大小是4k,考虑二维数组的访问,假如是行存储方式,且每行长度超过4k数据,如果每次按列访问元素,则每次都需要加载新的内存页,这无疑会导致低效率</li><li><strong>系统调用</strong>. 考虑一个第三方库,它虽然实现了你想要的功能,但也有可能其进行了一些对你来说不必要的操作,如对输入数据的判断,一些异常情况的处理等,假如可以保证我们的数据没有问题,那么这些操作就是可以避免的,此时可以手动实现我们想要的功能,来替换一些库的调用</li><li><strong>错误</strong>. 如数据库没有建立索引导致查询低效,编译器没有开启优化等操作</li></ul><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li>&lt;代码大全&gt;第25,26章</li><li>&lt;深入理解计算机系统&gt;第6章</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;来由&quot;&gt;&lt;a href=&quot;#来由&quot; class=&quot;headerlink&quot; title=&quot;来由&quot;&gt;&lt;/a&gt;来由&lt;/h2&gt;&lt;p&gt;目前主要的工作任务就是对软件进行加速,即在不影响(少影响)精度的前提下,提高程序的执行速度,降低资源的消耗&lt;/p&gt;
+&lt;p&gt;对近期工作进行总结
+      
+    
+    </summary>
+    
+    
+    
+      <category term="c++" scheme="http://yoursite.com/tags/c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>vscode连接远程服务器</title>
+    <link href="http://yoursite.com/2020/09/05/vscode-remote-secondary-verification/"/>
+    <id>http://yoursite.com/2020/09/05/vscode-remote-secondary-verification/</id>
+    <published>2020-09-05T08:51:13.000Z</published>
+    <updated>2020-09-05T09:29:17.456Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>vscode有远程开发功能,即可以在windows打开vscode,连接上linux服务器写代码<br>但由于公司集群登录节点是centos6,官方表示centos6需要升级glibc和libstdc++,没有管理员权限,只能找一台centos7的计算节点,想办法跳过登录节点</p><h2 id="使用ssh-tunnel"><a href="#使用ssh-tunnel" class="headerlink" title="使用ssh tunnel"></a>使用ssh tunnel</h2><h3 id="win10安装ssh"><a href="#win10安装ssh" class="headerlink" title="win10安装ssh"></a>win10安装ssh</h3><p>可选择安装openSSH或者通过WSL/cygwin安装SSH<br>参考: <a href="http://www.win10.one/jc/6606.html" target="_blank" rel="noopener">http://www.win10.one/jc/6606.html</a></p><h3 id="建立ssh-tunnel"><a href="#建立ssh-tunnel" class="headerlink" title="建立ssh tunnel"></a>建立ssh tunnel</h3><p>运行命令 <code>ssh -NfL PRIVATE_PORT​:TARGET_SERVER​:22 USER_NAME​@LOGIN_SERVER​​</code><br>示例 <code>ssh -NfL 8888:10.225.1.1:22 zhangsan@10.225.2.2</code><br>解释:  </p><ol><li>PRIVATE_PORT​ 端口号,注意不能重复,可以尽量给大一点</li><li>TARGET_SERVER​ 目标centos7机器的地址,vscode连接后将在此服务器运行</li><li>LOGIN_SERVER​​ 版本为centos6的登录节点的地址,仅作为跳板使用</li></ol><h3 id="vscode配置"><a href="#vscode配置" class="headerlink" title="vscode配置"></a>vscode配置</h3><p>在Remote插件进行配置</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Host login</span><br><span class="line">  HostName localhost</span><br><span class="line">  Port 8888</span><br><span class="line">  User zhangsan</span><br><span class="line">  IdentityFile C:\Users\zhangsan\.ssh\id_rsa</span><br></pre></td></tr></table></figure><p>这样就可以通过输入login这个代号进行远程连接了</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;起因&quot;&gt;&lt;a href=&quot;#起因&quot; class=&quot;headerlink&quot; title=&quot;起因&quot;&gt;&lt;/a&gt;起因&lt;/h2&gt;&lt;p&gt;vscode有远程开发功能,即可以在windows打开vscode,连接上linux服务器写代码&lt;br&gt;但由于公司集群登录节点是centos
+      
+    
+    </summary>
+    
+    
+    
+      <category term="vscode" scheme="http://yoursite.com/tags/vscode/"/>
+    
+  </entry>
   
   <entry>
     <title>调试JS代码</title>
@@ -441,77 +514,6 @@
     </summary>
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>读《期货市场技术分析》</title>
-    <link href="http://yoursite.com/2018/03/05/%E8%AF%BB%E6%9C%9F%E8%B4%A7%E5%B8%82%E5%9C%BA%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/"/>
-    <id>http://yoursite.com/2018/03/05/%E8%AF%BB%E6%9C%9F%E8%B4%A7%E5%B8%82%E5%9C%BA%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/</id>
-    <published>2018-03-05T14:23:24.000Z</published>
-    <updated>2020-03-05T13:31:41.831Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><p>本书是期货分析的一本很好的入门书，读此书是为了了解交易及期货技术分析的一些名词概念</p><p>主要读的章节部分有图表和趋势分析，趋势分析的主要部分是价格形态，有反转型和持续型，交易量和持仓兴趣作为次要指标为趋势的佐证；常用工具有移动平均线和摆动指数，分别适用于趋势明朗和无趋势区间；艾略特波浪曲线是成熟的模型来分析趋势；最后是根据趋势的预测，资金管理和交易策略来进行实际的交易</p><h2 id="基础部分"><a href="#基础部分" class="headerlink" title="基础部分"></a>基础部分</h2><p><strong>技术分析</strong>是以预测市场价格变化的未来趋势为目的，以图表为主要手段对市场行为进行分析的研究</p><p><strong>市场行为</strong>包括价格，交易量和持仓兴趣</p><p><strong>理论基础</strong>：市场行为包容消化一切；价格以趋势方式演变；历史会重演。如果这三个假设不成立，技术分析也就失去意义</p><p><strong>基础分析</strong>或称价值分析，是集中考察导致价格涨，落或持平的供求关系；根据分析得来的商品的内在价值与当前价格，判断是买入还是卖出。而技术分析主要研究市场行为</p><p><strong>道氏理论</strong>是技术分析理论的起源，其基本原则：</p><ol><li>平均价格包容消化一切因素</li><li>市场具有三种趋势（主要趋势，次要趋势，短暂趋势；其趋势定义：只要相继的上冲价格波峰和波谷都对应的高过前一个波峰，波谷，那么市场就处于上升趋势中）</li><li>大趋势可分为三个阶段（积累阶段，上升阶段，见顶阶段）</li><li>各种平均价格必须相互验证</li><li>交易量必须验证趋势</li><li>市场会沿着既定趋势一直运行，直到发生确凿的反转信号</li></ol><h2 id="图表"><a href="#图表" class="headerlink" title="图表"></a>图表</h2><p>图表类型有点数图，单线图，日线图</p><p><strong>日线图</strong>做法：X轴时间，Y轴价格，将每日最高价和最低价用线段连接，并在右边引出一截为收市价；图表下方标出交易量和持仓兴趣</p><p><strong>交易量</strong>为当日在某商品市场发生的交易总额</p><p><strong>持仓兴趣</strong>为所有交易商到当日收市为止累计的未平仓合约的总数目</p><p>要做短线交易，可以使用日内线图，如5分钟线图，1小时线图等；做长期趋势分析，必须用周线图及月线图</p><h2 id="趋势"><a href="#趋势" class="headerlink" title="趋势"></a>趋势</h2><p><strong>趋势</strong>就是市场何去何从的方向，有三种方向：上升，下降和横向延伸；交易商有三种对应选择：做多，做空，不交易</p><p><strong>趋势类型</strong>：主要趋势（大于六个月）次要趋势（三个星期到数月）短暂趋势（短于三个星期）；一般来说，期货市场顺应的趋势焦点是次要趋势，短暂趋势用来选择入市的时间，如在上升趋势的回撤中建立多头头寸</p><p><strong>支撑</strong>：波谷，向上反弹低点；在此价格下方，买方兴趣强大，足以撑拒卖方形成的压力</p><p><strong>阻挡</strong>：波峰；卖方势大，价格转跌</p><p>上升趋势中，阻挡水平意味上升势头将再次稍息，迟早会被向上穿越；下降趋势中，支撑水平也不能长久；因此会出现反弹回撤，形成一系列的波；只要支撑或阻挡被穿越了，他们就会互换角色</p><p><strong>趋势线</strong>是图表分析师使用的最简便也是最有价值的基本技术工具之一；上升趋势线是沿着相继的向上反弹低点联结而成的一条直线，位于价格图像下侧，下降趋势线是沿着相继的上冲高点联结而成，位于价格上侧；要画出趋势线，至少有两个反弹点，要验证趋势线，要价格第三次触线反弹</p><p>使用趋势线：在上升趋势中，趋势线在市场下方提供的支撑边界，可以用作买进区域；下降趋势线可以用作阻挡区，达成卖出目的；假如趋势线被突破，则发出趋势生变信号，要平仓了结当前趋势建立的头寸</p><p><strong>扇形原理</strong>：当原有趋势线被突破后，做出新的趋势线，当第三条趋势线被突破，构成反转信号</p><p>趋势线的陡峭程度：倾斜角度45的趋势线最有意义；过于陡峭，表明价格上升太快无法持久，过于平缓表明趋势不太可靠</p><p><strong>管道线</strong>：在上升或下降趋势中，两个峰及两个谷画出的线组成管道线；可以进行短期平仓获利；当价格无力到达管道线，这是趋势即将有变的警讯</p><p><strong>百分比回撤</strong>：在每次重大的市场运动之后，价格总要回撤其中的一部分，然后再按照既有趋势方向继续发展</p><p><strong>速度阻挡线</strong>：测绘趋势上升或者下降的速率</p><p><strong>反转日</strong>：反转日发生在市场顶部或底部；顶部反转日：上升趋势中，某日价格达到了新的高位，但当天收市价格却低于前一天收市价</p><p><strong>价格跳空</strong>：指线图上没有发生交易的区域</p><h2 id="价格形态"><a href="#价格形态" class="headerlink" title="价格形态"></a>价格形态</h2><p>价格形态分为反转型和持续型</p><p><strong>反转形态要领</strong>：</p><ol><li>市场上事先确实有趋势存在</li><li>现行趋势即将反转的第一个信号，经常是重要的趋势线被突破</li><li>形态的规模越大，则随之而来的市场动作越大</li><li>顶部形态所经历的时间通常短于底部形态，但其波动性较强</li><li>底部形态的价格范围通常较小，但其酝酿时间较长</li><li>交易量在验证向上突破信号的可靠性方面，更具参考价值</li></ol><p>下面简要介绍常见的反转形态：</p><p><strong>头肩型</strong>：一个头，两个肩；两个肩高度近似，头比两肩高；两个波谷画出一条颈线，当收市价低于颈线，形态完成</p><p><strong>倒头肩型</strong>：头肩型底，与头肩型顶互为镜像</p><p><strong>三重顶，三重底</strong>：头肩型的变体，区别是头与肩高度近似</p><p><strong>双重顶，双重底</strong>：类似头肩型，只是只有两个峰</p><p>过滤器：过滤错误信号，以判断突破是否成立</p><p><strong>圆顶，圆底</strong>：趋势平缓的，逐渐地从下降转为横向，再由横向转为上升</p><p><strong>V形</strong>：又叫长钉形；剧烈的市场反转</p><p>接下来是持续形态，其通常用时较短暂:</p><p><strong>三角形</strong>：分为三类：对称，上升和下降；对称三角形具有两条逐渐聚拢的趋势线，上面的直线下倾，下面的直线上升，左侧做垂直线，称为底，两条直线的交点称为顶点；上升三角形下边线上倾，上边线水平；下降三角形上边线下降，下边线水平；三角形中至少有四个转折点</p><p>对称三角形结束之后通常延续既有趋势；上升三角形属于看涨形态；下降三角形属于看跌形态</p><p><strong>喇叭形</strong>：与三角形形态相反，两条线逐渐分离，为扩大三角形；此形态代表交易活动非常积极，属于看跌形态</p><p><strong>钻石形态</strong>：由扩大三角形和对称三角形组成</p><p><strong>旗形和三角旗形</strong>：通常发生在市场剧烈运动之后，代表趋势的短暂休整</p><p><strong>楔形</strong>：与三角形相似，但是其有明显的倾角；下降楔形看涨，上升楔形看跌</p><p><strong>矩形</strong>：价格在两条平行的水平直线之间横向伸展，属于趋势的修正状态</p><p>相互验证：指我们把所有技术信号和指标都加以比较参考，从而保证他们中的大部分相互验证，指向共同的方向</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;总览&quot;&gt;&lt;a href=&quot;#总览&quot; class=&quot;headerlink&quot; title=&quot;总览&quot;&gt;&lt;/a&gt;总览&lt;/h2&gt;&lt;p&gt;本书是期货分析的一本很好的入门书，读此书是为了了解交易及期货技术分析的一些名词概念&lt;/p&gt;
-&lt;p&gt;主要读的章节部分有图表和趋势分析，趋势分析
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>读Effective C++</title>
-    <link href="http://yoursite.com/2018/02/04/read-effective-cpp/"/>
-    <id>http://yoursite.com/2018/02/04/read-effective-cpp/</id>
-    <published>2018-02-04T12:04:46.000Z</published>
-    <updated>2020-03-05T13:31:41.829Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="读Effective-C"><a href="#读Effective-C" class="headerlink" title="读Effective C++"></a>读Effective C++</h1><p>2018年一月份读书：《Effective C++：改善程序与设计的55个具体做法》</p><p>一月份利用晚上的时间粗读本书，算是对C++基础知识的复习与学习；按照章节顺序来读，前面部分较基础，后边涉及到泛型编程，看不太懂。</p><p>读完之后写下本篇，是对一月份学习的一个简要总结，督促后边继续学习，也是对本书内容进行索引总结，方便遇到具体问题快速查阅，以节省时间。</p><h2 id="内容索引"><a href="#内容索引" class="headerlink" title="内容索引"></a>内容索引</h2><p>本书共介绍C++程序设计的55个准则，作者已按照类型划分不同分类：</p><h3 id="1-基础介绍"><a href="#1-基础介绍" class="headerlink" title="1 基础介绍"></a>1 基础介绍</h3><p>通用的也是常用的准则：</p><ol><li><strong>了解C++组成</strong>。四部分：基础C, Object-Oriented C++, Template C++(泛型编程), STL(程序库)</li><li>用<strong>const, enum, inline</strong>替换#define</li><li><strong>尽可能使用const</strong>。</li><li><strong>对象被使用前先初始化</strong>。比如声明变量时就赋初值，构造函数使用成员初值列表，而不要在函数内进行赋值</li></ol><h3 id="2-类的基础方法"><a href="#2-类的基础方法" class="headerlink" title="2 类的基础方法"></a>2 类的基础方法</h3><p>主要是这几个编译器会默认给你生成的类方法：默认构造函数，析构函数，拷贝构造函数，拷贝赋值操作符</p><ol><li><strong>如果不要编译器生成的，要明确拒绝</strong>。如将方法声明为private，并且不实现</li><li><strong>为多态基类声明virtual析构函数</strong></li><li><strong>别让异常逃离析构函数</strong>。析构函数要捕获异常，要么吞下它们，要么结束程序</li><li><strong>不在构造和析构过程调用virtual函数</strong>。</li><li>*<em>令operate＝返回一个reference to *this *</em>。为了支持连等赋值</li><li><strong>在operate＝中处理自我赋值</strong>。因为可能出现删除自己，再取自己内容的情况</li><li><strong>复制对象时勿忘其每一部分</strong>。</li></ol><h3 id="3-资源管理"><a href="#3-资源管理" class="headerlink" title="3 资源管理"></a>3 资源管理</h3><p>资源包括动态内存分配，以及文件描述符，互斥锁，数据库连接，sockets等。当你不再使用它时，必须还给系统，否则会导致内存泄漏。</p><p>使用对象来管理内存，主要是使用类的构造函数，析构函数，拷贝函数。如在构造函数中获得资源，并在析构函数中释放资源。</p><ol><li><strong>小心拷贝行为</strong>。禁止拷贝，使用引用计数法</li><li><strong>提供对原始资源的访问</strong>。设计时要保留访问原始数据的接口</li><li><strong>new和delete要采用相同形式</strong>。如new delete/ new[] delete[]</li><li><strong>以独立对象将newed对象置入智能指针</strong>。智能指针会自动释放资源</li></ol><h3 id="4-设计与声明"><a href="#4-设计与声明" class="headerlink" title="4 设计与声明"></a>4 设计与声明</h3><p>作者说，软件设计是令软件作出你希望它做出的事情，以一般性的构想开始，最终演变成十足的细节，以允许特殊接口的开发。</p><p>接口的设计，要易用，不易误用。应该向开源库学习，提供的接口清晰无歧义，并尽可能考虑各种输入与异常安全。</p><ol><li><strong>设计class犹如设计type</strong>。作者提出一系列问题，是在设计高效classes时需要考虑的</li><li><strong>使用传引用替换传值</strong>。传值涉及对象的拷贝，这就需要时间与空间成本；不过对内置类型，传值可能更好</li><li><strong>必须返回对象时，不要返回reference</strong>。最怕引用指向local stack对象</li><li><strong>将成员变量声明为private</strong>。封装，划分访问控制更安全</li><li><strong>宁以non-member non-friend替换member函数</strong>。增加封装性</li><li><strong>若所有参数皆需要类型转换，请采用non-member函数</strong></li><li><strong>考虑写不抛出异常的swap函数</strong>。</li></ol><h3 id="5-实现"><a href="#5-实现" class="headerlink" title="5 实现"></a>5 实现</h3><p>设计部分完成之后就该实现了，实现部分要多考虑一些细节问题，避免降低效率，代码膨胀，过度耦合，资源泄漏等问题。</p><ol><li><strong>尽可能延后变量定义式的出现时间</strong>。防止程序提前结束，导致不必要的构造和析构</li><li><strong>少做转型动作</strong>。也是会影响效率；尽量使用新式转换(四种)</li><li><strong>避免返回handles指向对象内部成分</strong>。</li><li><strong>为异常安全努力是值得的</strong>。不泄漏资源，不允许数据败坏</li><li><strong>了解inline</strong>。会被编译器替换，免除函数调用开销，但是可能会导致代码膨胀</li><li><strong>将文件间的编译依存关系降至最低</strong>。</li></ol><h3 id="6-继承和面向对象设计"><a href="#6-继承和面向对象设计" class="headerlink" title="6 继承和面向对象设计"></a>6 继承和面向对象设计</h3><p>我感觉这是C++的精华部分，也挺重要。</p><ol><li><strong>public继承表示is－a关系</strong>。</li><li><strong>避免遮掩继承而来的名称</strong>。作用域的遮掩行为；可使用using声明式使用基类的名称</li><li><strong>区分接口继承和实现继承</strong>。选择派生类是继承基类的接口，还是接口加实现</li><li><strong>考虑virtual函数以外的其他选择</strong>。作者提供了几个方案来替代虚函数</li><li><strong>绝不重新定义继承而来的non-virtual函数以及缺省参数值</strong>。virtual函数是动态绑定</li><li><strong>通过复合塑模出has-a或根据某物实现出</strong>。</li><li><strong>明智而审慎地使用private继承和多重继承</strong>。</li></ol><h3 id="7-模板和泛型编程"><a href="#7-模板和泛型编程" class="headerlink" title="7 模板和泛型编程"></a>7 模板和泛型编程</h3><p>关于模板和泛型编程，看的不是很懂，也没仔细看，这里就先直接拷贝作者的条款，以后再看有新的理解再修改补充。</p><ol><li><strong>了解隐式接口和编译器多态</strong></li><li><strong>了解typename的双重意义</strong></li><li><strong>学习处理模板化基类内的名称</strong></li><li><strong>将与参数无关的代码抽离templates</strong></li><li><strong>运用成员函数模板接受所有兼容类型</strong></li><li><strong>需要类型转换时请为模板定义非成员函数</strong></li><li><strong>请使用traits classes表现类型信息</strong></li><li><strong>认识template元编程</strong></li></ol><h3 id="8-定制new和delete"><a href="#8-定制new和delete" class="headerlink" title="8 定制new和delete"></a>8 定制new和delete</h3><p>手动管理内存，才能获得最佳的效率。</p><ol><li><strong>了解new－handler的行为</strong>。指定函数处理分配内存失败的情况</li><li><strong>了解new delete的合理替换时机</strong>。有许多理由需要定制，包括改善效能，对heap运用错误进行调试，收集heap使用信息</li><li><strong>编写new delete时需固守常规</strong>。包括一些固有的程式，以及异常情况的处理</li><li><strong>写了placement new也要写placement delete</strong>。placement版本的new是一个特定位置上的new，一般接受一个void*,指向对象被构造之处，防止出现内存分配成功，但构造函数失败导致的内存泄漏问题</li></ol><h3 id="9-杂项"><a href="#9-杂项" class="headerlink" title="9 杂项"></a>9 杂项</h3><ol><li><strong>不要轻忽编译器的警告</strong>。有可能因为错过警告而导致复杂的调试情况</li><li><strong>熟悉标准程序库</strong>。熟悉标准程序库，相当于在编写代码时拥有各种工具组件可以挑选，方便快速开发出程序，当然可能对部分对速度有更高要求的程序不太适用，但是通用性还是很高</li><li><strong>熟悉Boost</strong>。因为标准程序库多数是从Boost中取来，Boost功能也更强一些</li></ol><h2 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h2><p>本书非常经典，只读一遍还远无法掌握其精髓，之后需要多看，可能不同的时期看收获也是不一样的。</p><p>接下来准备粗读下《C++标准程序库》，了解标准程序库有哪些组件，将常用的记熟，不常用的需要的时候可以快速找到即可。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;读Effective-C&quot;&gt;&lt;a href=&quot;#读Effective-C&quot; class=&quot;headerlink&quot; title=&quot;读Effective C++&quot;&gt;&lt;/a&gt;读Effective C++&lt;/h1&gt;&lt;p&gt;2018年一月份读书：《Effective C++：
-      
-    
-    </summary>
-    
-    
-    
-      <category term="C++" scheme="http://yoursite.com/tags/C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>指针的引用</title>
-    <link href="http://yoursite.com/2017/11/23/%E6%8C%87%E9%92%88%E7%9A%84%E5%BC%95%E7%94%A8/"/>
-    <id>http://yoursite.com/2017/11/23/%E6%8C%87%E9%92%88%E7%9A%84%E5%BC%95%E7%94%A8/</id>
-    <published>2017-11-23T13:12:10.000Z</published>
-    <updated>2020-03-05T13:31:41.831Z</updated>
-    
-    <content type="html"><![CDATA[<p>有这么一个场景：程序中某一模块在对数据进行处理，另一个模块想要将其处理的数据写入文件，这时候有两种方案，一个是通过接口将数据拷贝出来，好处是写数据到文件不影响处理数据，缺点是占用内存较大；一个是将数据的地址传递出来，这样写入文件的时候不能对数据进行处理，好处是节省内存，不用重复的分配和释放内存。</p><p>决定采用第二个方案，维护一个指向数据地址的指针，但是在编码时发现，函数直接传递指针进去，然后对指针进行赋值，这样在此函数内指针是没有问题，但函数调用结束指针还是没有指向需要的地址；最后通过传递指针的引用来解决。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdlib.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func_ref_of_pointer</span><span class="params">(<span class="keyword">float</span>* &amp;p, <span class="keyword">float</span>* data)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func_pointer</span><span class="params">(<span class="keyword">float</span>* p, <span class="keyword">float</span>* data)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// init</span></span><br><span class="line">    <span class="keyword">float</span> * data = (<span class="keyword">float</span>*)<span class="built_in">malloc</span>(<span class="number">2</span> * <span class="keyword">sizeof</span>(<span class="keyword">float</span>));</span><br><span class="line">    <span class="built_in">memset</span>(data, <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">float</span>)*<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">float</span> t = <span class="number">1.2</span>;</span><br><span class="line">    <span class="built_in">memcpy</span>(data, &amp;t, <span class="keyword">sizeof</span>(<span class="keyword">float</span>));</span><br><span class="line">    t = <span class="number">3.4</span>;</span><br><span class="line">    <span class="built_in">memcpy</span>(data+<span class="number">1</span>, &amp;t, <span class="keyword">sizeof</span>(<span class="keyword">float</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"data: %f %f\n"</span>, data[<span class="number">0</span>], data[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// test</span></span><br><span class="line">    <span class="keyword">float</span> * p = <span class="literal">NULL</span>;</span><br><span class="line">    &#123;</span><br><span class="line">        func_ref_of_pointer(p, data);</span><br><span class="line">    &#125;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//func_pointer(p, data);</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"p data: %f %f\n"</span>, p[<span class="number">0</span>], p[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func_ref_of_pointer</span><span class="params">(<span class="keyword">float</span>* &amp;p, <span class="keyword">float</span>* data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    p = data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func_pointer</span><span class="params">(<span class="keyword">float</span>* p, <span class="keyword">float</span>* data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    p = data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;有这么一个场景：程序中某一模块在对数据进行处理，另一个模块想要将其处理的数据写入文件，这时候有两种方案，一个是通过接口将数据拷贝出来，好处是写数据到文件不影响处理数据，缺点是占用内存较大；一个是将数据的地址传递出来，这样写入文件的时候不能对数据进行处理，好处是节省内存，不用
-      
-    
-    </summary>
-    
-    
-    
-      <category term="C 指针 引用" scheme="http://yoursite.com/tags/C-%E6%8C%87%E9%92%88-%E5%BC%95%E7%94%A8/"/>
     
   </entry>
   

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>c++编译错误汇总 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="c++," />
+  
+
+  <meta name="description" content="编译错误处理gccQ:error C2059: 语法错误:”&lt;class-head&gt;“A:全局变量没有加分号,可能是复制粘贴导致的 Q:error: passing ‘const xx’ as ‘this’ argument discards qualifiers [-fpermissive]A:调用const对象的非const方法报错,需要在方法声明和定义加const限定符如stri">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c++编译错误汇总">
+<meta property="og:url" content="http://yoursite.com/2020/09/05/cpp-compile-error/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="编译错误处理gccQ:error C2059: 语法错误:”&lt;class-head&gt;“A:全局变量没有加分号,可能是复制粘贴导致的 Q:error: passing ‘const xx’ as ‘this’ argument discards qualifiers [-fpermissive]A:调用const对象的非const方法报错,需要在方法声明和定义加const限定符如stri">
+<meta property="article:published_time" content="2020-09-05T08:52:51.000Z">
+<meta property="article:modified_time" content="2020-09-05T11:17:01.352Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="c++">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d4b892153a53af797abac43f46aac4dc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#编译错误处理"><span class="toc-text">编译错误处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gcc"><span class="toc-text">gcc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cmake"><span class="toc-text">cmake</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译警告处理"><span class="toc-text">编译警告处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Wreorder"><span class="toc-text">[-Wreorder]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#warning-backslash-and-newline-separated-by-space"><span class="toc-text">warning: backslash and newline separated by space</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wunused-parameter"><span class="toc-text">[-Wunused-parameter]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wsign-compare"><span class="toc-text">[-Wsign-compare]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wnarrowing"><span class="toc-text">[-Wnarrowing]</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-cpp-compile-error" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">c++编译错误汇总</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.09.05</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp阅读 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="编译错误处理"><a href="#编译错误处理" class="headerlink" title="编译错误处理"></a>编译错误处理</h2><h3 id="gcc"><a href="#gcc" class="headerlink" title="gcc"></a>gcc</h3><p>Q:error C2059: 语法错误:”&lt;class-head&gt;“<br>A:全局变量没有加分号,可能是复制粘贴导致的</p>
+<p>Q:error: passing ‘const xx’ as ‘this’ argument discards qualifiers [-fpermissive]<br>A:调用const对象的非const方法报错,需要在方法声明和定义加const限定符<br>如<code>string InetAddress::ip_ntoa() const {}</code> 好的编程习惯,get类方法返回都加双重const</p>
+<p>Q:Error: no such instruction: `shlx %rdx,(%r12),%rax’<br>A:shlx是新的intel指令,需要能支持这类新指令的汇编器,即binutils,centos6.x不行,而7.x版本可以支持<br>参考链接<br><a href="https://blog.csdn.net/superbfly/article/details/59514207" target="_blank" rel="noopener">https://blog.csdn.net/superbfly/article/details/59514207</a><br><a href="https://blog.csdn.net/wang_xijue/article/details/47128649" target="_blank" rel="noopener">https://blog.csdn.net/wang_xijue/article/details/47128649</a></p>
+<p>Q:switch语句 jump to case label<br>A:作用域问题,不要在case下定义语句或者将每个case语句块用{} 包起来</p>
+<p>Q:编译gcc9报错config.log “unrecognized command line option ‘-V’”<br>A:原因是较高版本的gcc不支持-V参数,修改环境变量,设置默认gcc为系统版本4.x,重新编译</p>
+<p>Q:g++: unrecognized option ‘-static-libstdc++’<br>A:gcc4.5才引入此选项,所以必须得gcc 4.8了;而centos 6.9默认的是4.4,所以只好换centos7.x来搞,默认4.8.5;最终使用的有效指令 <code>../configure --disable-checking --enable-languages=c,c++ --disable-multilib --prefix=/path/to/software/gcc9 --enable-threads=posix</code></p>
+<p>Q:gcc9.1编译测试报错 /usr/bin/ld: unrecognized option ‘-plugin’<br>A:原因是binutils库太旧了(负责ld链接),升级binutils</p>
+<p>Q:gcc9编译cpp报错 test.cpp:(.text+0xa): undefined reference to `std::cout’<br>A:换成g++ 或者gcc -lstdc++</p>
+<p>Q:list-initializer for non-class type must not be parenthesized<br>A:发生在结构体构造函数对成员变量数组进行 ({0}) 初始化,改成 {} 会按照0来初始化</p>
+<p>Q:Error: invalid operands of types ‘const char [35]’ and ‘const char [2]’ to binary ‘operator+’<br>A:不能直接对 const char* 相加,使用string将最左侧的 char* 转换为string即可</p>
+<h3 id="cmake"><a href="#cmake" class="headerlink" title="cmake"></a>cmake</h3><p>Q:Clock skew detected.  Your build may be incomplete<br>A:make报错,make clean &amp; make</p>
+<h2 id="编译警告处理"><a href="#编译警告处理" class="headerlink" title="编译警告处理"></a>编译警告处理</h2><h3 id="Wreorder"><a href="#Wreorder" class="headerlink" title="[-Wreorder]"></a>[-Wreorder]</h3><p>规则:构造函数时,初始化成员变量顺序要与类声明中顺序对应</p>
+<h3 id="warning-backslash-and-newline-separated-by-space"><a href="#warning-backslash-and-newline-separated-by-space" class="headerlink" title="warning: backslash and newline separated by space"></a>warning: backslash and newline separated by space</h3><p>\ 连接字符串,\后面多了空格</p>
+<h3 id="Wunused-parameter"><a href="#Wunused-parameter" class="headerlink" title="[-Wunused-parameter]"></a>[-Wunused-parameter]</h3><p>有些变量声明了但暂时未使用</p>
+<p>可以注释掉;如果要保留,使用C++17语法 <code>[[maybe_unused]] int a;</code></p>
+<p>部分情况遇到  ‘mayebe_unused’ attribute directive ignored [-Wattributes]</p>
+<h3 id="Wsign-compare"><a href="#Wsign-compare" class="headerlink" title="[-Wsign-compare]"></a>[-Wsign-compare]</h3><p>两种不同类型比较,主要是有符号无符号</p>
+<p>解决方法比较多:</p>
+<ul>
+<li>手动修改某一个类型</li>
+<li>decltype. 如 <code>decltype(s.size()) len;</code></li>
+</ul>
+<h3 id="Wnarrowing"><a href="#Wnarrowing" class="headerlink" title="[-Wnarrowing]"></a>[-Wnarrowing]</h3><p>类型转换,降级,如从int到short</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/09/05/cpp-optimization/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
