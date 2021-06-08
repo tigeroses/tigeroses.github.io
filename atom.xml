@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2021-05-30T10:07:06.230Z</updated>
+  <updated>2021-06-08T14:27:37.627Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>linux相关之系统</title>
+    <link href="http://yoursite.com/2021/06/08/linux-system/"/>
+    <id>http://yoursite.com/2021/06/08/linux-system/</id>
+    <published>2021-06-08T12:36:35.000Z</published>
+    <updated>2021-06-08T14:27:37.627Z</updated>
+    
+    <content type="html"><![CDATA[<p>这里主要是关于 centos7 的总结</p><h2 id="系统版本信息"><a href="#系统版本信息" class="headerlink" title="系统版本信息"></a>系统版本信息</h2><p>查看系统内核版本信息<br><code>cat /proc/version</code><br><code>uname -a</code></p><p>查看centos版本,如centos 7.9<br><code>cat /etc/redhat-release</code></p><p>查看CPU型号及支持的指令集  </p><ul><li><code>gcc -march=native -Q --help=target|grep march</code> </li><li><code>cat /proc/cpuinfo</code>  </li><li><code>cpuid</code> (需安装此命令)</li></ul><h2 id="centos增删用户"><a href="#centos增删用户" class="headerlink" title="centos增删用户"></a>centos增删用户</h2><p>增加用户  </p><ol><li><code>adduser xx</code> 创建用户</li><li><code>passwd xx</code> 按提示设置密码</li><li>修改 /etc/sudoers 文件为可写权限, 添加一行 <code>xx  ALL=(ALL)       ALL</code> ,再改为只读权限</li></ol><p>删除用户<br><code>userdel xx</code> </p><h2 id="交换内存"><a href="#交换内存" class="headerlink" title="交换内存"></a>交换内存</h2><p><code>free -m</code> 查看交换内存情况</p><p>通过swap分区文件增加swap空间</p><ol><li><code>dd if=/dev/zero of=swapfile bs=1M count=1024</code> bs是每个块大小,count是块数量,这里设置共1G</li><li><code>mkswap swapfile</code> 格式化交换分区文件</li><li><code>swapon swapfile</code> 启用</li><li>设置开机自启. 修改/etc/fstab 文件添加一行 <code>swapfile swap swap defaults 0 0</code> 注意使用全路径</li></ol><p>使用文件作为交换内存的好处:</p><ol><li>如果磁盘空间不足,可以删除文件,释放部分磁盘空间,为抢救数据争取时间</li><li>在资源不足时增加虚拟内存</li></ol><h2 id="磁盘性能"><a href="#磁盘性能" class="headerlink" title="磁盘性能"></a>磁盘性能</h2><p>查看磁盘存储空间<br><code>df -h</code></p><p>查看某进程的磁盘读写速度(需执行命令 <code>yum install -y pidstat</code>)<br><code>pidstat -p ${pid} -d 1</code>  </p><p>检测磁盘读写速度,一种不太准确的方式<br>写 <code>dd if=/dev/zero of=test.file bs=1G count=2 oflag=direct</code><br>读 <code>dd if=test.file of=/dev/null  iflag=direct</code></p><h2 id="查询端口"><a href="#查询端口" class="headerlink" title="查询端口"></a>查询端口</h2><p>在win下查看linux的端口是否打开(需开启telnet服务)<br><code>telnet 172.17.15.12 8000</code></p><p><code>netstat -nlp | grep 8080</code> 查看本机端口  </p><p><code>systemctl start firewalld</code> 开启防火墙<br><code>firewall-cmd --query-port=666/tcp</code> 查看想开的端口是否已开<br><code>firewall-cmd --add-port=666/tcp</code> 开端口号<br><code>firewall-cmd --remove-port=666/tcp</code> 移除端口  </p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;这里主要是关于 centos7 的总结&lt;/p&gt;
+&lt;h2 id=&quot;系统版本信息&quot;&gt;&lt;a href=&quot;#系统版本信息&quot; class=&quot;headerlink&quot; title=&quot;系统版本信息&quot;&gt;&lt;/a&gt;系统版本信息&lt;/h2&gt;&lt;p&gt;查看系统内核版本信息&lt;br&gt;&lt;code&gt;cat /pr
+      
+    
+    </summary>
+    
+    
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+  </entry>
   
   <entry>
     <title>singularity容器使用心得</title>
@@ -487,35 +512,6 @@
     
     
       <category term="CUDA C" scheme="http://yoursite.com/tags/CUDA-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>windows远程桌面连接报错</title>
-    <link href="http://yoursite.com/2020/03/01/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E8%BF%9E%E6%8E%A5%E6%8A%A5%E9%94%99/"/>
-    <id>http://yoursite.com/2020/03/01/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E8%BF%9E%E6%8E%A5%E6%8A%A5%E9%94%99/</id>
-    <published>2020-03-01T12:59:33.000Z</published>
-    <updated>2020-03-05T13:31:41.830Z</updated>
-    
-    <content type="html"><![CDATA[<p>这周遇到windows远程桌面连接报错:</p><blockquote><p>出现内部错误</p></blockquote><p>个人PC与服务器处于一个局域网内,别人可以连接,只有我的不行</p><p>解决方案:经人指点,找到那台服务器,插上显示器,登录自己账号密码没问题,然后回来再使用个人PC远程连接就OK了,直接服务器登录一次就像账号激活一样</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;这周遇到windows远程桌面连接报错:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;出现内部错误&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;个人PC与服务器处于一个局域网内,别人可以连接,只有我的不行&lt;/p&gt;
-&lt;p&gt;解决方案:经人指点,找到那台服务器,插上显示器,登录自己账号
-      
-    
-    </summary>
-    
-    
-    
-      <category term="windows" scheme="http://yoursite.com/tags/windows/"/>
     
   </entry>
   

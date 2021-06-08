@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2021/06/08/linux-system/</loc>
+    
+    <lastmod>2021-06-08T14:27:37.627Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2015/12/06/windows%E5%85%8D%E5%AF%86%E7%A0%81ssh%E7%99%BB%E5%BD%95linux/</loc>
+    
+    <lastmod>2021-06-08T12:35:44.692Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2021/05/30/singularity-container/</loc>
     
     <lastmod>2021-05-30T10:07:06.230Z</lastmod>
@@ -241,13 +255,6 @@
   
   <url>
     <loc>http://yoursite.com/2018/02/04/read-effective-cpp/</loc>
-    
-    <lastmod>2020-03-05T13:31:41.829Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2015/12/06/windows%E5%85%8D%E5%AF%86%E7%A0%81ssh%E7%99%BB%E5%BD%95linux/</loc>
     
     <lastmod>2020-03-05T13:31:41.829Z</lastmod>
     
