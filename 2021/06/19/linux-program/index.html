@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>linux相关之程序 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="linux," />
+  
+
+  <meta name="description" content="获取进程ID$! 获取上一条命令的进程ID,一般用来监控后台进程,举例: 1234567891011# 后台启动redis服务,当脚本退出时通过检测进程ID来杀掉redis进程.&#x2F;redis-server &amp;PID&#x3D;$!...PID_EXIST&#x3D;$(ps aux | awk &#39;&amp;#123;print $2&amp;#125;&#39; | grep -w $PID)if [ ! $PID_EXIST ];">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux相关之程序">
+<meta property="og:url" content="http://yoursite.com/2021/06/19/linux-program/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="获取进程ID$! 获取上一条命令的进程ID,一般用来监控后台进程,举例: 1234567891011# 后台启动redis服务,当脚本退出时通过检测进程ID来杀掉redis进程.&#x2F;redis-server &amp;PID&#x3D;$!...PID_EXIST&#x3D;$(ps aux | awk &#39;&amp;#123;print $2&amp;#125;&#39; | grep -w $PID)if [ ! $PID_EXIST ];">
+<meta property="article:published_time" content="2021-06-19T12:55:13.000Z">
+<meta property="article:modified_time" content="2021-06-19T13:13:48.884Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d4b892153a53af797abac43f46aac4dc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#获取进程ID"><span class="toc-text">获取进程ID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dev-shm-的使用"><span class="toc-text">&#x2F;dev&#x2F;shm 的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看依赖库"><span class="toc-text">查看依赖库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#监控程序"><span class="toc-text">监控程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成-core文件用于debug"><span class="toc-text">生成.core文件用于debug</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cmake"><span class="toc-text">cmake</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译"><span class="toc-text">编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能检测"><span class="toc-text">性能检测</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-linux-program" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">linux相关之程序</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.06.19</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp阅读 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="获取进程ID"><a href="#获取进程ID" class="headerlink" title="获取进程ID"></a>获取进程ID</h2><p><code>$!</code> 获取上一条命令的进程ID,一般用来监控后台进程,举例:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 后台启动redis服务,当脚本退出时通过检测进程ID来杀掉redis进程</span></span><br><span class="line">./redis-server &amp;</span><br><span class="line">PID=$!</span><br><span class="line">...</span><br><span class="line">PID_EXIST=$(ps aux | awk <span class="string">'&#123;print $2&#125;'</span> | grep -w <span class="variable">$PID</span>)</span><br><span class="line"><span class="keyword">if</span> [ ! <span class="variable">$PID_EXIST</span> ];</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">'No redis server running'</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">kill</span> -9 <span class="variable">$&#123;PID&#125;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="dev-shm-的使用"><a href="#dev-shm-的使用" class="headerlink" title="/dev/shm 的使用"></a>/dev/shm 的使用</h2><p>/dev/shm是系统中内存模拟的目录,因此读写速度很高,超过磁盘</p>
+<p>可以用来进行大型代码仓库的编译(如将cmake的编译路径设置到/dev/shm),以及性能瓶颈测试,排除磁盘IO的影响(如本来要输出到磁盘的内容写到/dev/shm)</p>
+<p>默认大小是ram的一半,因此要注意不要用多了(可以修改大小),会影响其他进程的可用内存;因为是内存,系统重启之后会被清空</p>
+<h2 id="查看依赖库"><a href="#查看依赖库" class="headerlink" title="查看依赖库"></a>查看依赖库</h2><p>当程序报错找不到依赖库,或需要将程序打包移植到其他机器上时,可以使用 ldd 命令查找依赖库</p>
+<p><code>ldd exe/xx.so</code></p>
+<p>查看库/可执行文件的符号信息,可用于排查函数定义冲突,如某些程序对glibc版本的要求与系统安装的版本不同</p>
+<p><code>nm *.lib</code></p>
+<h2 id="监控程序"><a href="#监控程序" class="headerlink" title="监控程序"></a>监控程序</h2><p>查看一个进程的线程数 <code>ps hH p &lt;pid&gt; |wc -l</code></p>
+<p>查看当前bash的所有进程 <code>ps -l</code></p>
+<p>top命令排序</p>
+<ul>
+<li>P 按CPU使用率排序</li>
+<li>M 按内存占用排序</li>
+</ul>
+<h2 id="生成-core文件用于debug"><a href="#生成-core文件用于debug" class="headerlink" title="生成.core文件用于debug"></a>生成.core文件用于debug</h2><ul>
+<li><code>ulimit -c unlimited</code> 当发生段错误,设置生成dump文件</li>
+<li><code>ulimit -c 0</code> 取消dump文件</li>
+<li><code>ulimit -a</code> 查看当前设置</li>
+</ul>
+<h2 id="cmake"><a href="#cmake" class="headerlink" title="cmake"></a>cmake</h2><p>cmake指定gcc的版本,在shell中设置</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CC=/usr/<span class="built_in">local</span>/bin/gcc</span><br><span class="line"><span class="built_in">export</span> CXX=/usr/<span class="built_in">local</span>/bin/g++</span><br></pre></td></tr></table></figure>
+
+<p>cmake编译软件指定安装路径,多用于非管理员权限编译安装软件<br><code>cmake -DCMAKE_INSTALL_PREFIX=/usr ..</code></p>
+<p>Q: 编译安装cmake <code>./bootstrap --prefix=xx &amp;&amp; make &amp;&amp; make install</code> 报错 <code>The C++ compiler does not support C++11 (e.g.  std::unique_ptr).</code><br>A: 原因是源代码目录是挂载目录,换个地址如/dev/shm <a href="https://stackoverflow.com/questions/50764046/c11-stdunique-ptr-error-cmake-3-11-3-bootstrap" target="_blank" rel="noopener">stackoverflow</a></p>
+<p>Q: find_package()找不到库<br>A: 可以set(name_DIR xxx) 指定包含库的cmake的路径,会去下面查找Findname.cmake文件</p>
+<p>清除缓存<br>cmake 没有提供clean目录的指令,通常做法是创建 build 目录,直接删除build下所有文件和文件夹来清除缓存 <code>cmake .. -B build</code></p>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>编译后去可执行文件的当前目录查找动态链接库,需要增加选项 <code>-Wl,-rpath,&#39;$ORIGIN&#39;</code></p>
+<h2 id="性能检测"><a href="#性能检测" class="headerlink" title="性能检测"></a>性能检测</h2><p>valgrind –tool=callgrind –separate-threads=yes ./exproxy<br>为每个线程单独生成一个性能分析文件</p>
+<p><a href="https://blog.csdn.net/sunmenggmail/article/details/10543483" target="_blank" rel="noopener">linux下利用valgrind工具进行内存泄露检测和性能分析</a></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/06/08/linux-system/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2021-06-08T14:27:37.627Z</updated>
+  <updated>2021-06-19T13:13:48.884Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>linux相关之程序</title>
+    <link href="http://yoursite.com/2021/06/19/linux-program/"/>
+    <id>http://yoursite.com/2021/06/19/linux-program/</id>
+    <published>2021-06-19T12:55:13.000Z</published>
+    <updated>2021-06-19T13:13:48.884Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="获取进程ID"><a href="#获取进程ID" class="headerlink" title="获取进程ID"></a>获取进程ID</h2><p><code>$!</code> 获取上一条命令的进程ID,一般用来监控后台进程,举例:</p><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 后台启动redis服务,当脚本退出时通过检测进程ID来杀掉redis进程</span></span><br><span class="line">./redis-server &amp;</span><br><span class="line">PID=$!</span><br><span class="line">...</span><br><span class="line">PID_EXIST=$(ps aux | awk <span class="string">'&#123;print $2&#125;'</span> | grep -w <span class="variable">$PID</span>)</span><br><span class="line"><span class="keyword">if</span> [ ! <span class="variable">$PID_EXIST</span> ];</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">'No redis server running'</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">kill</span> -9 <span class="variable">$&#123;PID&#125;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure><h2 id="dev-shm-的使用"><a href="#dev-shm-的使用" class="headerlink" title="/dev/shm 的使用"></a>/dev/shm 的使用</h2><p>/dev/shm是系统中内存模拟的目录,因此读写速度很高,超过磁盘</p><p>可以用来进行大型代码仓库的编译(如将cmake的编译路径设置到/dev/shm),以及性能瓶颈测试,排除磁盘IO的影响(如本来要输出到磁盘的内容写到/dev/shm)</p><p>默认大小是ram的一半,因此要注意不要用多了(可以修改大小),会影响其他进程的可用内存;因为是内存,系统重启之后会被清空</p><h2 id="查看依赖库"><a href="#查看依赖库" class="headerlink" title="查看依赖库"></a>查看依赖库</h2><p>当程序报错找不到依赖库,或需要将程序打包移植到其他机器上时,可以使用 ldd 命令查找依赖库</p><p><code>ldd exe/xx.so</code></p><p>查看库/可执行文件的符号信息,可用于排查函数定义冲突,如某些程序对glibc版本的要求与系统安装的版本不同</p><p><code>nm *.lib</code></p><h2 id="监控程序"><a href="#监控程序" class="headerlink" title="监控程序"></a>监控程序</h2><p>查看一个进程的线程数 <code>ps hH p &lt;pid&gt; |wc -l</code></p><p>查看当前bash的所有进程 <code>ps -l</code></p><p>top命令排序</p><ul><li>P 按CPU使用率排序</li><li>M 按内存占用排序</li></ul><h2 id="生成-core文件用于debug"><a href="#生成-core文件用于debug" class="headerlink" title="生成.core文件用于debug"></a>生成.core文件用于debug</h2><ul><li><code>ulimit -c unlimited</code> 当发生段错误,设置生成dump文件</li><li><code>ulimit -c 0</code> 取消dump文件</li><li><code>ulimit -a</code> 查看当前设置</li></ul><h2 id="cmake"><a href="#cmake" class="headerlink" title="cmake"></a>cmake</h2><p>cmake指定gcc的版本,在shell中设置</p><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CC=/usr/<span class="built_in">local</span>/bin/gcc</span><br><span class="line"><span class="built_in">export</span> CXX=/usr/<span class="built_in">local</span>/bin/g++</span><br></pre></td></tr></table></figure><p>cmake编译软件指定安装路径,多用于非管理员权限编译安装软件<br><code>cmake -DCMAKE_INSTALL_PREFIX=/usr ..</code></p><p>Q: 编译安装cmake <code>./bootstrap --prefix=xx &amp;&amp; make &amp;&amp; make install</code> 报错 <code>The C++ compiler does not support C++11 (e.g.  std::unique_ptr).</code><br>A: 原因是源代码目录是挂载目录,换个地址如/dev/shm <a href="https://stackoverflow.com/questions/50764046/c11-stdunique-ptr-error-cmake-3-11-3-bootstrap" target="_blank" rel="noopener">stackoverflow</a></p><p>Q: find_package()找不到库<br>A: 可以set(name_DIR xxx) 指定包含库的cmake的路径,会去下面查找Findname.cmake文件</p><p>清除缓存<br>cmake 没有提供clean目录的指令,通常做法是创建 build 目录,直接删除build下所有文件和文件夹来清除缓存 <code>cmake .. -B build</code></p><h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>编译后去可执行文件的当前目录查找动态链接库,需要增加选项 <code>-Wl,-rpath,&#39;$ORIGIN&#39;</code></p><h2 id="性能检测"><a href="#性能检测" class="headerlink" title="性能检测"></a>性能检测</h2><p>valgrind –tool=callgrind –separate-threads=yes ./exproxy<br>为每个线程单独生成一个性能分析文件</p><p><a href="https://blog.csdn.net/sunmenggmail/article/details/10543483" target="_blank" rel="noopener">linux下利用valgrind工具进行内存泄露检测和性能分析</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;获取进程ID&quot;&gt;&lt;a href=&quot;#获取进程ID&quot; class=&quot;headerlink&quot; title=&quot;获取进程ID&quot;&gt;&lt;/a&gt;获取进程ID&lt;/h2&gt;&lt;p&gt;&lt;code&gt;$!&lt;/code&gt; 获取上一条命令的进程ID,一般用来监控后台进程,举例:&lt;/p&gt;
+&lt;figur
+      
+    
+    </summary>
+    
+    
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+  </entry>
   
   <entry>
     <title>linux相关之系统</title>
@@ -486,32 +511,6 @@
     
     
       <category term="C++ CLI11 命令行解析" scheme="http://yoursite.com/tags/C-CLI11-%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CUDA C/C++总结</title>
-    <link href="http://yoursite.com/2020/03/01/CUDA-C-CPP/"/>
-    <id>http://yoursite.com/2020/03/01/CUDA-C-CPP/</id>
-    <published>2020-03-01T13:51:37.000Z</published>
-    <updated>2020-03-05T13:31:41.823Z</updated>
-    
-    <content type="html"><![CDATA[<p>本篇为学习笔记,学习内容为2019年参加英伟达GTC会议的课程</p><p>需要提下学习CUDA的目的,就是为了加速自己的应用,相比于CPU-only的应用程序,可以用GPU实现较大加速,当然程序首先是计算密集型而非IO密集型</p><h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>GPU加速系统,又被称<strong>异构系统</strong>(Heterogeneous),由CPU和GPU组成</p><p>如果熟悉C编程,可以很快上手CUDA编程,两者在代码形式上有很多类似地方,一个比较重要概念是GPU的<em>launch kernel</em></p><p>C代码用gcc编译,cuda代码用<em>nvcc</em>编译,nvcc内部会调用gcc</p><p>启动核函数的配置 &lt;&lt;&lt;blocks,threads&gt;&gt;&gt; thread是最小执行单位,由threads组成block,多个block组成grid;kernel只能运行在一个grid</p><p>一般最简单的加速示例就是一个CPU的循环,执行简单的算术运算;主要是暗示我们什么类型的程序适合GPU加速</p><p>关于threads:</p><ul><li>每个block中的threads个数上限是1024</li><li>一个block中的threads个数由内置变量<em>blockDim.x<em>给出,多个block中计算thread索引公式为:</em>threadIdx.x + blockIdx.x * blockDim.x</em></li><li>grid中block的个数<em>gridDim.x</em>,因此一个grid的线程总数就是<em>gridDim.x * blockDim.x</em></li><li>一般一个thread一次处理一个数据</li><li>注意数据与threads个数很多时候都不是一一对应的,所以要特别注意索引越界问题;一般方式是将数组长度N传入kernel,算出thread索引,与N比较</li><li>block中的threads个数为32的倍数时最优化</li><li>当多个block的threads总数依然无法覆盖待处理数据长度时,在kernel中用loop来重复利用threads处理后续数据;如数据有2048个,线程总数只有1024,则每一个线程处理两个数据</li></ul><p>cuda6之后的版本可以分配出CPU/GPU都能访问的内存,API接口为:<em>cudaMallocManaged</em></p><p>关于异常处理:</p><ul><li>一些cuda函数的返回值类型为cudaError_t, 可用来检查错误<em>cudaGetErrorString(err)</em></li><li>无返回值的kernel, 使用<em>cudaGetLastError()</em> 返回cudaError_t类型</li><li>另外,如果有一组kernel出错,因为kernel执行是异步的,为了排查错误,可以调用同步函数如cudaDeviceSynchronize() 会返回kernel执行的错误</li><li>自己封装一个宏来进行错误检查是有必要的</li></ul><h1 id="统一内存管理"><a href="#统一内存管理" class="headerlink" title="统一内存管理"></a>统一内存管理</h1><p>迭代设计过程:</p><p>APOD:Assess Parallelize Optimize Deploy</p><p>评估-&gt;并行-&gt;优化-&gt;部署</p><p>使用Nsight命令行工具<strong>nsys</strong>来评估性能,确定优化机会</p><p>nsys基本用法: nsys profile –stats=true exe</p><p>它会生成qdrep报告,包含诸多信息:API统计,kernel执行统计,内存拷贝的大小和时间等</p><p>程序优化方法之一:更改kernel launch的<strong>配置参数</strong></p><p>Streaming Multiprocessor 流处理单元SM</p><ul><li>一个block中的threads被调度到SM上执行;多个block可以被调度到同一个SM上</li><li>为了尽可能并行,提高性能:将grid size设置为给定GPU上的SM个数的倍数,防止不对齐导致的资源浪费</li><li>SMs创建,管理,调度和执行的单位是一个block中的一组32个threads,叫做wraps;由有half-wrap的概念,16个线程为一组,更细粒度的并行</li></ul><p>为了获取SM的数量,调用API:</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> deviceId;</span><br><span class="line">cudaGetDevice(&amp;deviceId);</span><br><span class="line">cudaDeviceProp props;</span><br><span class="line">cudaGetDeviceProperties(&amp;props, deviceId);</span><br><span class="line">SMs = props.multiProcessorCount;</span><br></pre></td></tr></table></figure><p>基础知识:CUDA’s Unified Memory</p><ul><li>关于Unified Memory,当UM分配之后,不管host还是device都无法访问,访问时会发生page fault,然后触发内存的迁移,将需要的数据按batches迁移</li><li>使用UM要注意避免不必要的时间开销,比如需要大的连续内存块,避免页错误</li></ul><p>Asynchronous Memory Prefetching<br>异步内存预取:减小页错误和按需内存迁移的间接开销的技术,提高性能</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cudaMemPrefetchAsync(pointerToSomeUMData, <span class="built_in">size</span>, deviceId);        <span class="comment">// Prefetch to GPU device.</span></span><br><span class="line">cudaMemPrefetchAsync(pointerToSomeUMData, <span class="built_in">size</span>, cudaCpuDeviceId); <span class="comment">// Prefetch to host. `cudaCpuDeviceId`</span></span><br></pre></td></tr></table></figure><h1 id="流异步和性能分析"><a href="#流异步和性能分析" class="headerlink" title="流异步和性能分析"></a>流异步和性能分析</h1><p>Nsight Systems 可视化的性能分析工具,其可以直接打开nsys生成的qdrep文件</p><p>Concurrent CUDA Streams 并发流;流是一系列顺序执行的命令,kernel的执行,和许多内存迁移都是发生在流内,不指定的情况下使用default stream</p><p>关于控制流的几个规则:</p><ul><li>流内的操作是顺序的</li><li>不同流内的操作相互之间不保证有任何顺序,即可认为不相关</li><li>默认流执行前会阻塞直到其他所有流都执行完成,反之亦然,默认流执行的时候其他流也被阻塞</li></ul><p>API:</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cudaStream_t stream;       <span class="comment">// CUDA streams are of type `cudaStream_t`.</span></span><br><span class="line">cudaStreamCreate(&amp;stream); <span class="comment">// Note that a pointer must be passed to `cudaCreateStream`.</span></span><br><span class="line"></span><br><span class="line">someKernel&lt;&lt;&lt;number_of_blocks, threads_per_block, <span class="number">0</span>, stream&gt;&gt;&gt;(); <span class="comment">// `stream` is passed as 4th EC argument.</span></span><br><span class="line"></span><br><span class="line">cudaStreamDestroy(stream); <span class="comment">// Note that a value, not a pointer, is passed to `cudaDestroyStream`.</span></span><br></pre></td></tr></table></figure><p>第三个参数是每个block允许使用的shared memory的bytes,默认为0</p><p>profile driven and iterative 配置文件驱动和迭代</p><p>当确定数据只在device使用,最好只分配device的内存,减小数据迁移的开销,API:</p><ul><li>cudaMalloc()  only GPU</li><li>cudaMallocHost() only CPU 锁页内存,允许异步拷贝到GPU;过多的锁页内存会影响CPU性能,使用 cudaFreeHost()来释放</li><li>cudaMemcpy() device与host相互拷贝</li></ul><p>Using Streams to Overlap data transfers and code execution</p><p>只要CPU内存是锁页内存,就可以使用cudaMemcpyAsync()来进行异步拷贝,另一个条件就是使用非默认流</p><p>默认情况下GPU函数执行时对CPU函数是异步的,而异步拷贝,不仅对CPU,对GPU的kernel也是异步的,可以达到边计算边拷贝数据的目的,从而掩盖数据传输时间,尽量挖掘GPU计算能力</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;本篇为学习笔记,学习内容为2019年参加英伟达GTC会议的课程&lt;/p&gt;
-&lt;p&gt;需要提下学习CUDA的目的,就是为了加速自己的应用,相比于CPU-only的应用程序,可以用GPU实现较大加速,当然程序首先是计算密集型而非IO密集型&lt;/p&gt;
-&lt;h1 id=&quot;基础&quot;&gt;&lt;a hre
-      
-    
-    </summary>
-    
-    
-    
-      <category term="CUDA C" scheme="http://yoursite.com/tags/CUDA-C/"/>
     
   </entry>
   
