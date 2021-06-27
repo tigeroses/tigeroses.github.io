@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>linux相关之文本处理 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="linux," />
+  
+
+  <meta name="description" content="awk使用正则匹配多个数字跟G加tab并输出awk &#39;&#x2F;[0-9]+G\t&#x2F;{print}&#39; filename 正则提取字符串,存储()中的内容为数组,并通过索引获取   12awk &#39;&amp;#123;match($0,&#x2F;[0-9]+.[0-9]+&#x2F;,a);print a[0]&amp;#125;&#39; linesawk &#39;&amp;#123;match($0,&#x2F;.+is([^,]+).+not(.+)&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux相关之文本处理">
+<meta property="og:url" content="http://yoursite.com/2021/06/27/linux-text-process/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="awk使用正则匹配多个数字跟G加tab并输出awk &#39;&#x2F;[0-9]+G\t&#x2F;{print}&#39; filename 正则提取字符串,存储()中的内容为数组,并通过索引获取   12awk &#39;&amp;#123;match($0,&#x2F;[0-9]+.[0-9]+&#x2F;,a);print a[0]&amp;#125;&#39; linesawk &#39;&amp;#123;match($0,&#x2F;.+is([^,]+).+not(.+)&#x2F;">
+<meta property="article:published_time" content="2021-06-27T09:59:01.000Z">
+<meta property="article:modified_time" content="2021-06-27T10:13:32.301Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d4b892153a53af797abac43f46aac4dc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#awk"><span class="toc-text">awk</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sed"><span class="toc-text">sed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#paste-split"><span class="toc-text">paste&#x2F;split</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#find"><span class="toc-text">find</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#diff"><span class="toc-text">diff</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#grep"><span class="toc-text">grep</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vim"><span class="toc-text">vim</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xargs"><span class="toc-text">xargs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell脚本"><span class="toc-text">shell脚本</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-linux-text-process" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">linux相关之文本处理</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.06.27</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp阅读 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h2><p>使用正则匹配多个数字跟G加tab并输出<br><code>awk &#39;/[0-9]+G\t/{print}&#39; filename</code></p>
+<p>正则提取字符串,存储()中的内容为数组,并通过索引获取  </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">awk <span class="string">'&#123;match($0,/[0-9]+.[0-9]+/,a);print a[0]&#125;'</span> lines</span><br><span class="line">awk <span class="string">'&#123;match($0,/.+is([^,]+).+not(.+)/,a);print a[1],a[2]&#125;'</span> <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h2><p>sed 双引号支持变量引用/转义符</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 消除文件^M</span></span><br><span class="line">sed <span class="string">'s/\r//g'</span> filename</span><br><span class="line"></span><br><span class="line"><span class="comment"># 同时替换多个</span></span><br><span class="line">sed -e <span class="string">""</span> -e <span class="string">""</span> filename </span><br><span class="line"></span><br><span class="line"><span class="comment"># 原地替换 </span></span><br><span class="line">sed -i <span class="string">'s/ /\n/g'</span> filename</span><br></pre></td></tr></table></figure>
+
+<h2 id="paste-split"><a href="#paste-split" class="headerlink" title="paste/split"></a>paste/split</h2><p>将多个文件作为多列来拼接<br><code>paste file1 file2 -d &#39;,&#39;</code></p>
+<p>split分割文件</p>
+<ul>
+<li><p>按行数分割 <code>split -l 1000 file -d -a 4 prefix</code> 分割后文件前缀为prefix,文件名后缀是数字而非默认的字母,后缀系数为4位</p>
+</li>
+<li><p>按大小分割 <code>split -b 10m file</code></p>
+</li>
+</ul>
+<h2 id="find"><a href="#find" class="headerlink" title="find"></a>find</h2><p>查找多个条件<br>统计c++项目源代码行数<br><code>find . -regex &quot;.*\(\.cpp\|\.h\|\.hpp\|\.c\)$&quot; -exec wc -l {} \; | awk &#39;{s+=$1}END{print s}&#39;</code></p>
+<h2 id="diff"><a href="#diff" class="headerlink" title="diff"></a>diff</h2><p>比较文件异同</p>
+<p>diff 默认普通模式 -c 上下文模式 -u 合并模式</p>
+<p>vimdiff 相当于vim -d</p>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><p>grep如何匹配转义字符如\t<br><code>grep &quot;prefix&quot;$&#39;\t&#39; filename</code></p>
+<p>grep进行正则的提取<br><code>grep -P &#39;\(.*\)&#39; -o</code></p>
+<h2 id="vim"><a href="#vim" class="headerlink" title="vim"></a>vim</h2><p>遇到vim写py缩进问题,一般是tab和空格混用,可以 <code>%s/\t/    /g</code> 将所有tab转成空格</p>
+<p>报错 vim  E667: Fsync failed<br>无法编辑和保存home目录下文件,但是nano可以编辑<br>一般是磁盘空间满了,或者有空间但是系统限制了配额,如集群会限制每人home目录如100M的配额,而很多库及软件的缓存目录都默认在home目录,可以使用软连接将目录链接到其他磁盘,空出home目录的磁盘空间</p>
+<p>反撤销 ctrl+r</p>
+<h2 id="xargs"><a href="#xargs" class="headerlink" title="xargs"></a>xargs</h2><p>xargs主要用于将标准输入转换为参数,适用于部分命令不支持标准输入的情况<br><code>cat arg.txt | xargs -I {} ./test.sh -p {} -l</code></p>
+<h2 id="shell脚本"><a href="#shell脚本" class="headerlink" title="shell脚本"></a>shell脚本</h2><p>获取上一条命令执行结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if [[ $? == 0 ]];</span><br><span class="line">then</span><br><span class="line">    xxx</span><br><span class="line">else</span><br><span class="line">    xxx</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>判断路径是否存在</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if [ ! -e "$binPath" ];</span><br><span class="line">then</span><br><span class="line">    mkdir $binPath</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>test 命令<br><code>test -z a</code> 检查字符串a是否为null,如果为null,返回true</p>
+<p>参数：</p>
+<ul>
+<li>$# 参数个数</li>
+<li>$* 所有参数,一个单字符串显示</li>
+<li>$$ 脚本运行的当前进程ID</li>
+<li>$! 后台运行的最后一个进程ID</li>
+<li>$@ 所有参数，每个参数加引号</li>
+<li>$? 命令的推出状态，0表示无错</li>
+<li>$1 第一个参数</li>
+</ul>
+<p>生成序列 for</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> &#123;0..2&#125;;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$i</span>;</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/06/19/linux-program/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
