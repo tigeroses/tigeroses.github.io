@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>常用git操作 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="git," />
+  
+
+  <meta name="description" content="tag新建taggit tag -a v1.0 -m “new tag” tag重命名 git tag new old git tag -d old git push origin :refs&#x2F;tags&#x2F;old git push –tags  删除tag 删除本地 git tag -d v1.0 推送远端 git push origin :refs&#x2F;tags&#x2F;v1.0  回滚场景,需要回滚某分支,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用git操作">
+<meta property="og:url" content="http://yoursite.com/2021/07/09/git/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="tag新建taggit tag -a v1.0 -m “new tag” tag重命名 git tag new old git tag -d old git push origin :refs&#x2F;tags&#x2F;old git push –tags  删除tag 删除本地 git tag -d v1.0 推送远端 git push origin :refs&#x2F;tags&#x2F;v1.0  回滚场景,需要回滚某分支,">
+<meta property="article:published_time" content="2021-07-09T15:23:31.000Z">
+<meta property="article:modified_time" content="2021-07-09T15:36:32.309Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d4b892153a53af797abac43f46aac4dc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#tag"><span class="toc-text">tag</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新建tag"><span class="toc-text">新建tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tag重命名"><span class="toc-text">tag重命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除tag"><span class="toc-text">删除tag</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#回滚"><span class="toc-text">回滚</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分支操作"><span class="toc-text">分支操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#推送分支到远程"><span class="toc-text">推送分支到远程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#拉取远程分支"><span class="toc-text">拉取远程分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#覆盖分支"><span class="toc-text">覆盖分支</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#仓库操作"><span class="toc-text">仓库操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#同步仓库"><span class="toc-text">同步仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#本地仓库推到远端空仓库"><span class="toc-text">本地仓库推到远端空仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改仓库地址"><span class="toc-text">修改仓库地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-push-免密码"><span class="toc-text">git push 免密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#下载仓库某分支"><span class="toc-text">下载仓库某分支</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#生成文件"><span class="toc-text">生成文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用文件"><span class="toc-text">使用文件</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-git" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">常用git操作</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.07.09</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp阅读 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="tag"><a href="#tag" class="headerlink" title="tag"></a>tag</h2><h3 id="新建tag"><a href="#新建tag" class="headerlink" title="新建tag"></a>新建tag</h3><p>git tag -a v1.0 -m “new tag”</p>
+<h3 id="tag重命名"><a href="#tag重命名" class="headerlink" title="tag重命名"></a>tag重命名</h3><ol>
+<li>git tag new old</li>
+<li>git tag -d old</li>
+<li>git push origin :refs/tags/old</li>
+<li>git push –tags</li>
+</ol>
+<h3 id="删除tag"><a href="#删除tag" class="headerlink" title="删除tag"></a>删除tag</h3><ol>
+<li>删除本地 git tag -d v1.0</li>
+<li>推送远端 git push origin :refs/tags/v1.0</li>
+</ol>
+<h2 id="回滚"><a href="#回滚" class="headerlink" title="回滚"></a>回滚</h2><p>场景,需要回滚某分支,并且已经提交到remote</p>
+<ol>
+<li>git reset –hard commit_id</li>
+<li>git push origin branch_name –force</li>
+</ol>
+<h2 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h2><h3 id="推送分支到远程"><a href="#推送分支到远程" class="headerlink" title="推送分支到远程"></a>推送分支到远程</h3><p>远程没有的分支,本地创建之后要推送到远程</p>
+<ol>
+<li>git checkout -b dev</li>
+<li>git push origin dev:dev</li>
+</ol>
+<h3 id="拉取远程分支"><a href="#拉取远程分支" class="headerlink" title="拉取远程分支"></a>拉取远程分支</h3><p>拉取远程分支到本地</p>
+<ol>
+<li>git fetch origin branch</li>
+<li>git checkout -b branch origin/branch</li>
+</ol>
+<h2 id="覆盖分支"><a href="#覆盖分支" class="headerlink" title="覆盖分支"></a>覆盖分支</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout master // 切换到旧的分支</span><br><span class="line">git reset --hard develop // 将本地的旧分支 master 重置成 develop</span><br><span class="line">git push origin master --force // 再推送到远程仓库</span><br></pre></td></tr></table></figure>
+
+<h2 id="仓库操作"><a href="#仓库操作" class="headerlink" title="仓库操作"></a>仓库操作</h2><h3 id="同步仓库"><a href="#同步仓库" class="headerlink" title="同步仓库"></a>同步仓库</h3><p>fork之后的仓库保持同步  </p>
+<ul>
+<li>进入fork之后的本地仓库</li>
+<li>git remote add upstream <a href="https://xxx/yyy.git" target="_blank" rel="noopener">https://xxx/yyy.git</a></li>
+<li>git remote -v 检查upstream设置成功</li>
+<li>git fetch upstream</li>
+<li>git merge upstream/master</li>
+<li>git push</li>
+</ul>
+<p><a href="https://github.com/selfteaching/the-craft-of-selfteaching/issues/67" target="_blank" rel="noopener">参考</a></p>
+<h3 id="本地仓库推到远端空仓库"><a href="#本地仓库推到远端空仓库" class="headerlink" title="本地仓库推到远端空仓库"></a>本地仓库推到远端空仓库</h3><ul>
+<li>git remote add origin <a href="https://xxx/yyy.git" target="_blank" rel="noopener">https://xxx/yyy.git</a></li>
+<li>git push -u origin master</li>
+</ul>
+<h3 id="修改仓库地址"><a href="#修改仓库地址" class="headerlink" title="修改仓库地址"></a>修改仓库地址</h3><p>修改远程仓库地址之后,本地仓库设置:</p>
+<p>git remote set-url origin ssh://xxx/yyy.git</p>
+<h2 id="git-push-免密码"><a href="#git-push-免密码" class="headerlink" title="git push 免密码"></a>git push 免密码</h2><ol>
+<li>首先生成密钥,并添加到github的ssh</li>
+<li>git remote rm origin</li>
+<li>git remote add origin <a href="mailto:git@github.com">git@github.com</a>:account/repository.git</li>
+<li>git push –set-upstream origin master</li>
+</ol>
+<h2 id="下载仓库某分支"><a href="#下载仓库某分支" class="headerlink" title="下载仓库某分支"></a>下载仓库某分支</h2><p>requirements.txt文件将对py包的依赖整理到一个文件,方便配置依赖包</p>
+<p>可以将某个需要指定分支或tag的代码仓库配置在依赖文件中</p>
+<h3 id="生成文件"><a href="#生成文件" class="headerlink" title="生成文件"></a>生成文件</h3><p>正常每行格式如下</p>
+<p><code>pep8==1.7.1</code></p>
+<p>使用 <code>pip freeze &gt; requirements.txt</code> 将环境中所有的库都输出</p>
+<p><code>sudo pip3 install pipreqs &amp;&amp; pipreqs .</code> 命令自动生成项目依赖</p>
+<h3 id="使用文件"><a href="#使用文件" class="headerlink" title="使用文件"></a>使用文件</h3><p><code>pip3 install -r requirements.txt</code></p>
+<p>如果要安装github上的某个分支,文件要按如下格式:</p>
+<p><code>-e git+https://xxx/yyy.git#dev@egg=name</code></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/06/27/linux-text-process/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

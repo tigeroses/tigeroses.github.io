@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2021-06-27T10:13:32.301Z</updated>
+  <updated>2021-07-09T15:36:32.309Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>常用git操作</title>
+    <link href="http://yoursite.com/2021/07/09/git/"/>
+    <id>http://yoursite.com/2021/07/09/git/</id>
+    <published>2021-07-09T15:23:31.000Z</published>
+    <updated>2021-07-09T15:36:32.309Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="tag"><a href="#tag" class="headerlink" title="tag"></a>tag</h2><h3 id="新建tag"><a href="#新建tag" class="headerlink" title="新建tag"></a>新建tag</h3><p>git tag -a v1.0 -m “new tag”</p><h3 id="tag重命名"><a href="#tag重命名" class="headerlink" title="tag重命名"></a>tag重命名</h3><ol><li>git tag new old</li><li>git tag -d old</li><li>git push origin :refs/tags/old</li><li>git push –tags</li></ol><h3 id="删除tag"><a href="#删除tag" class="headerlink" title="删除tag"></a>删除tag</h3><ol><li>删除本地 git tag -d v1.0</li><li>推送远端 git push origin :refs/tags/v1.0</li></ol><h2 id="回滚"><a href="#回滚" class="headerlink" title="回滚"></a>回滚</h2><p>场景,需要回滚某分支,并且已经提交到remote</p><ol><li>git reset –hard commit_id</li><li>git push origin branch_name –force</li></ol><h2 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h2><h3 id="推送分支到远程"><a href="#推送分支到远程" class="headerlink" title="推送分支到远程"></a>推送分支到远程</h3><p>远程没有的分支,本地创建之后要推送到远程</p><ol><li>git checkout -b dev</li><li>git push origin dev:dev</li></ol><h3 id="拉取远程分支"><a href="#拉取远程分支" class="headerlink" title="拉取远程分支"></a>拉取远程分支</h3><p>拉取远程分支到本地</p><ol><li>git fetch origin branch</li><li>git checkout -b branch origin/branch</li></ol><h2 id="覆盖分支"><a href="#覆盖分支" class="headerlink" title="覆盖分支"></a>覆盖分支</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout master // 切换到旧的分支</span><br><span class="line">git reset --hard develop // 将本地的旧分支 master 重置成 develop</span><br><span class="line">git push origin master --force // 再推送到远程仓库</span><br></pre></td></tr></table></figure><h2 id="仓库操作"><a href="#仓库操作" class="headerlink" title="仓库操作"></a>仓库操作</h2><h3 id="同步仓库"><a href="#同步仓库" class="headerlink" title="同步仓库"></a>同步仓库</h3><p>fork之后的仓库保持同步  </p><ul><li>进入fork之后的本地仓库</li><li>git remote add upstream <a href="https://xxx/yyy.git" target="_blank" rel="noopener">https://xxx/yyy.git</a></li><li>git remote -v 检查upstream设置成功</li><li>git fetch upstream</li><li>git merge upstream/master</li><li>git push</li></ul><p><a href="https://github.com/selfteaching/the-craft-of-selfteaching/issues/67" target="_blank" rel="noopener">参考</a></p><h3 id="本地仓库推到远端空仓库"><a href="#本地仓库推到远端空仓库" class="headerlink" title="本地仓库推到远端空仓库"></a>本地仓库推到远端空仓库</h3><ul><li>git remote add origin <a href="https://xxx/yyy.git" target="_blank" rel="noopener">https://xxx/yyy.git</a></li><li>git push -u origin master</li></ul><h3 id="修改仓库地址"><a href="#修改仓库地址" class="headerlink" title="修改仓库地址"></a>修改仓库地址</h3><p>修改远程仓库地址之后,本地仓库设置:</p><p>git remote set-url origin ssh://xxx/yyy.git</p><h2 id="git-push-免密码"><a href="#git-push-免密码" class="headerlink" title="git push 免密码"></a>git push 免密码</h2><ol><li>首先生成密钥,并添加到github的ssh</li><li>git remote rm origin</li><li>git remote add origin <a href="mailto:git@github.com">git@github.com</a>:account/repository.git</li><li>git push –set-upstream origin master</li></ol><h2 id="下载仓库某分支"><a href="#下载仓库某分支" class="headerlink" title="下载仓库某分支"></a>下载仓库某分支</h2><p>requirements.txt文件将对py包的依赖整理到一个文件,方便配置依赖包</p><p>可以将某个需要指定分支或tag的代码仓库配置在依赖文件中</p><h3 id="生成文件"><a href="#生成文件" class="headerlink" title="生成文件"></a>生成文件</h3><p>正常每行格式如下</p><p><code>pep8==1.7.1</code></p><p>使用 <code>pip freeze &gt; requirements.txt</code> 将环境中所有的库都输出</p><p><code>sudo pip3 install pipreqs &amp;&amp; pipreqs .</code> 命令自动生成项目依赖</p><h3 id="使用文件"><a href="#使用文件" class="headerlink" title="使用文件"></a>使用文件</h3><p><code>pip3 install -r requirements.txt</code></p><p>如果要安装github上的某个分支,文件要按如下格式:</p><p><code>-e git+https://xxx/yyy.git#dev@egg=name</code></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;tag&quot;&gt;&lt;a href=&quot;#tag&quot; class=&quot;headerlink&quot; title=&quot;tag&quot;&gt;&lt;/a&gt;tag&lt;/h2&gt;&lt;h3 id=&quot;新建tag&quot;&gt;&lt;a href=&quot;#新建tag&quot; class=&quot;headerlink&quot; title=&quot;新建tag&quot;&gt;&lt;/a&gt;
+      
+    
+    </summary>
+    
+    
+    
+      <category term="git" scheme="http://yoursite.com/tags/git/"/>
+    
+  </entry>
   
   <entry>
     <title>linux相关之文本处理</title>
@@ -484,32 +508,6 @@
     
     
       <category term="plan" scheme="http://yoursite.com/tags/plan/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>解决hexo博客文章太长导致的显示不全问题</title>
-    <link href="http://yoursite.com/2020/03/06/resolve-long-page-display-error/"/>
-    <id>http://yoursite.com/2020/03/06/resolve-long-page-display-error/</id>
-    <published>2020-03-06T10:10:51.000Z</published>
-    <updated>2020-03-06T10:28:27.581Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>前两天准备发布上一篇介绍<em>CLI11</em>的文章,结果写好markdown之后本地测试发现问题:</p><ul><li>文章最后内容突然缺失</li><li>导航栏,底部的返回顶部按钮均异常</li><li>查看网页源代码,发现内容消失的地方之后内容全部是空格</li></ul><p>尝试解决问题,发现文章变短显示就正常,使用hexo新建blog,测试长文显示OK,换上同样的主题也没问题,说明是我的环境配置哪里出错.</p><h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>折腾几天,重装hexo-xx相关库,更新hexo版本,库版本,拿出错的配置和正常的去比较,终于发现问题出现在<br><em>package.json</em>的<strong>“hexo-browsersync”: “^0.3.0”,</strong> 将这一行注释掉或者删除就OK<br>然后来到这个库的github的issues,发现不少人也遇到了这个问题,可惜我是找了好久才发现<br><a href="https://github.com/hexojs/hexo-browsersync/issues/15" target="_blank" rel="noopener">https://github.com/hexojs/hexo-browsersync/issues/15</a></p><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>另外总结下其他遇到的问题</p><h3 id="hexo-server报错"><a href="#hexo-server报错" class="headerlink" title="hexo server报错"></a>hexo server报错</h3><blockquote><p>Cannot GET /</p></blockquote><p>解决方案:<code>npm audit fix</code> 查看缺少哪些模块,<code>npm install xxx</code> 安装</p><h3 id="hexo-generate报错"><a href="#hexo-generate报错" class="headerlink" title="hexo generate报错"></a>hexo generate报错</h3><blockquote><p>FATAL Something’s wrong. Maybe you can find the solution here:<a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">https://hexo.io/docs/troubleshooting.html</a><br>TypeError [ERR_INVALID_URL]: Invalid URL: <code>http://host:port/data/</code>这个网络资源上。</p></blockquote><p>经测试是某篇文章出现了<code>http://host:port/data/</code>字段,在某些版本hexo库下格式不对,<br>将其当作代码引起来就可以了.</p><h3 id="检查hexo-相关库"><a href="#检查hexo-相关库" class="headerlink" title="检查hexo 相关库"></a>检查hexo 相关库</h3><ul><li>npm install -g npm-check</li><li>npm-check</li><li>npm install -g npm-upgrade</li><li>npm-upgrade</li><li>npm install hexo –save</li></ul>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;问题&quot;&gt;&lt;a href=&quot;#问题&quot; class=&quot;headerlink&quot; title=&quot;问题&quot;&gt;&lt;/a&gt;问题&lt;/h2&gt;&lt;p&gt;前两天准备发布上一篇介绍&lt;em&gt;CLI11&lt;/em&gt;的文章,结果写好markdown之后本地测试发现问题:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;文章最
-      
-    
-    </summary>
-    
-    
-    
-      <category term="blog" scheme="http://yoursite.com/tags/blog/"/>
     
   </entry>
   
