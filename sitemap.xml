@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2021/09/05/unittest/</loc>
+    
+    <lastmod>2021-09-05T07:22:01.428Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2021/08/30/monitor-process-cpu/</loc>
     
     <lastmod>2021-08-30T13:19:24.634Z</lastmod>

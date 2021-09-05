@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2021-08-30T13:19:24.634Z</updated>
+  <updated>2021-09-05T07:22:01.428Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>编写单元测试</title>
+    <link href="http://yoursite.com/2021/09/05/unittest/"/>
+    <id>http://yoursite.com/2021/09/05/unittest/</id>
+    <published>2021-09-05T07:14:51.000Z</published>
+    <updated>2021-09-05T07:22:01.428Z</updated>
+    
+    <content type="html"><![CDATA[<p>单元测试用来对一个模块,一个函数或一个类进行正确性检验</p><p>以测试为驱动的开发模式最大好处是确保一个程序模块的行为符合我们设计的测试用例;在将来修改的时候,可以极大程度地保证该模块行为依然是正确的</p><p>单元测试可以提高代码质量</p><p>单元测试可以使我们放心重构</p><h2 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h2><p>单元测试的测试用例要覆盖常用的输入组合,边界条件和异常</p><p>单元测试代码要简单</p><p>单元测试通过不代表没有bug</p><h2 id="金字塔模型"><a href="#金字塔模型" class="headerlink" title="金字塔模型"></a>金字塔模型</h2><p>测试是需要分层的,从下到上可分为单元/服务/UI</p><ul><li>编写不同粒度的测试</li><li>层次越高,编写的测试应该越少</li></ul><h2 id="代码覆盖率"><a href="#代码覆盖率" class="headerlink" title="代码覆盖率"></a>代码覆盖率</h2><p>代码覆盖率高,表示bug概率低</p><h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><ul><li>函数覆盖率. 多少比例函数经过了测试</li><li>语句覆盖率. 多少比例语句经过了测试</li><li>分支覆盖率. 多少比例的分支经过了测试,如<code>if(flag) a else b</code></li><li>条件覆盖率. 多少比例的可能性经过了测试,如<code>if (a &amp; b)</code></li></ul><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul><li>gcov. 好处是gcc自带,缺点是结果是文本形式</li><li>lcov. 需要安装<code>yum install -y lcov</code>,结果可转换为html<ol><li>增加编译选项. <code>–fprofile-arcs –ftest-coverage</code>,编译后生成gcda文件;或者 <code>set(CMAKE_CXX_FLAGS &quot;${CMAKE_CXX_FLAGS} --coverage&quot;)</code></li><li>运行lcov生成覆盖率统计文件. <code>lcov -d src_dir -t &#39;test&#39; -o &#39;test.info&#39; -b . -c</code><ol><li>-d 待测试的源码目录</li><li>-t 目标名称</li><li>-o 生成的覆盖率文件</li><li>-b 相对目录的起始位置</li><li>-c 采集覆盖率</li></ol></li><li>运行程序. 在源码目录会生成gcno文件</li><li>生成报告. <code>genhtml -o result test.info</code></li></ol></li></ul><p>注意: gcc9版本必须使用lcov1.5版本,低版本会报错:</p><p>geninfo: WARNING: xxx/main.gcno: Overlong record at end of file!<br>geninfo: WARNING: cannot find an entry for main.cpp.gcov in .gcno file, skipping file!</p><p>脚本示例:</p><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ lcov --rc lcov_branch_coverage=1 -d . -c -o info_tmp</span><br><span class="line">$ lcov --rc lcov_branch_coverage=1 -e info_tmp <span class="string">"*libx/include*"</span> -o info</span><br><span class="line">$ genhtml --rc lcov_branch_coverage=1 -o libx_coverage info</span><br></pre></td></tr></table></figure><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li><a href="https://blog.csdn.net/hs_err_log/article/details/78024739" target="_blank" rel="noopener">https://blog.csdn.net/hs_err_log/article/details/78024739</a></li><li><a href="https://blog.csdn.net/u011724566/article/details/79160345" target="_blank" rel="noopener">https://blog.csdn.net/u011724566/article/details/79160345</a></li><li><a href="https://www.cnblogs.com/zhaoxd07/p/5608177.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhaoxd07/p/5608177.html</a></li><li><a href="https://paul.pub/gtest-and-coverage/#id-gcov" target="_blank" rel="noopener">C++语言的单元测试与代码覆盖率</a></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;单元测试用来对一个模块,一个函数或一个类进行正确性检验&lt;/p&gt;
+&lt;p&gt;以测试为驱动的开发模式最大好处是确保一个程序模块的行为符合我们设计的测试用例;在将来修改的时候,可以极大程度地保证该模块行为依然是正确的&lt;/p&gt;
+&lt;p&gt;单元测试可以提高代码质量&lt;/p&gt;
+&lt;p&gt;单元测试可以
+      
+    
+    </summary>
+    
+    
+    
+      <category term="unittest" scheme="http://yoursite.com/tags/unittest/"/>
+    
+  </entry>
   
   <entry>
     <title>监控进程CPU利用率</title>
@@ -481,31 +508,6 @@
     
     
       <category term="爬虫 python" scheme="http://yoursite.com/tags/%E7%88%AC%E8%99%AB-python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>vim实用技巧</title>
-    <link href="http://yoursite.com/2020/03/29/vim-practical-skills/"/>
-    <id>http://yoursite.com/2020/03/29/vim-practical-skills/</id>
-    <published>2020-03-29T12:35:59.000Z</published>
-    <updated>2020-03-29T12:41:42.372Z</updated>
-    
-    <content type="html"><![CDATA[<p>记录vim实用技巧,会长期更新</p><h2 id="record-回放功能"><a href="#record-回放功能" class="headerlink" title="record 回放功能"></a>record 回放功能</h2><p>使用场景:需要多次进行的有规律但较为复杂的操作<br>步骤:</p><ol><li>q+a 开始录制</li><li>命令完成,按q停止</li><li>@+a 重复执行命令  </li></ol><p>其中a是record名字</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;记录vim实用技巧,会长期更新&lt;/p&gt;
-&lt;h2 id=&quot;record-回放功能&quot;&gt;&lt;a href=&quot;#record-回放功能&quot; class=&quot;headerlink&quot; title=&quot;record 回放功能&quot;&gt;&lt;/a&gt;record 回放功能&lt;/h2&gt;&lt;p&gt;使用场景:需要多次进行
-      
-    
-    </summary>
-    
-    
-    
-      <category term="vim" scheme="http://yoursite.com/tags/vim/"/>
     
   </entry>
   
