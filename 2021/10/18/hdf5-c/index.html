@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>hdf5库使用 | tigerose&#39;s site</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="c hdf5," />
+  
+
+  <meta name="description" content="本篇记录在centos下hdf5的C语言接口使用,包括读写h5文件,创建属性,组,数据集合等,以及使用python的h5py库来读取h5文件 准备安装hdf5库 代码示例引入头文件 #include &quot;hdf5.h&quot; 声明可复用的变量 12hid_t file_id, group_id, dataspace_id, dataset_id;herr_t status;  file">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hdf5库使用">
+<meta property="og:url" content="http://yoursite.com/2021/10/18/hdf5-c/index.html">
+<meta property="og:site_name" content="tigerose&#39;s site">
+<meta property="og:description" content="本篇记录在centos下hdf5的C语言接口使用,包括读写h5文件,创建属性,组,数据集合等,以及使用python的h5py库来读取h5文件 准备安装hdf5库 代码示例引入头文件 #include &quot;hdf5.h&quot; 声明可复用的变量 12hid_t file_id, group_id, dataspace_id, dataset_id;herr_t status;  file">
+<meta property="article:published_time" content="2021-10-18T12:26:53.000Z">
+<meta property="article:modified_time" content="2021-10-31T13:49:14.496Z">
+<meta property="article:author" content="tigerose">
+<meta property="article:tag" content="c hdf5">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d4b892153a53af797abac43f46aac4dc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="tigerose's site" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备"><span class="toc-text">准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码示例"><span class="toc-text">代码示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#file"><span class="toc-text">file</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#group"><span class="toc-text">group</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dataset"><span class="toc-text">dataset</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#普通数据集合"><span class="toc-text">普通数据集合</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#组合数据集合"><span class="toc-text">组合数据集合</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#attribute"><span class="toc-text">attribute</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译和运行"><span class="toc-text">编译和运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#h5py读取h5文件"><span class="toc-text">h5py读取h5文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-hdf5-c" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">hdf5库使用</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.10.18</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>tigerose</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp阅读 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>本篇记录在centos下hdf5的C语言接口使用,包括读写h5文件,创建属性,组,数据集合等,以及使用python的h5py库来读取h5文件</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>安装hdf5库</p>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><p>引入头文件 <code>#include &quot;hdf5.h&quot;</code></p>
+<p>声明可复用的变量</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">hid_t</span> file_id, group_id, dataspace_id, dataset_id;</span><br><span class="line"><span class="keyword">herr_t</span> status;</span><br></pre></td></tr></table></figure>
+
+<h3 id="file"><a href="#file" class="headerlink" title="file"></a>file</h3><p>基础的打开文件和关闭文件操作,注意一个文件在未关闭的状态下勿重复打开,否则会报错</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建文件</span></span><br><span class="line"><span class="built_in">string</span> filename;</span><br><span class="line"><span class="keyword">hid_t</span> file_id = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);</span><br><span class="line"><span class="comment">// 关闭文件</span></span><br><span class="line"><span class="keyword">hid_t</span> status = H5Fclose(file_id);</span><br></pre></td></tr></table></figure>
+
+<h3 id="group"><a href="#group" class="headerlink" title="group"></a>group</h3><p>组等价于目录的概念,组支持嵌套,即一个组下面可以包含别的组或数据集合</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">group_id = H5Gcreate(file_id, <span class="string">"/myGroup"</span>, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);</span><br><span class="line">status = H5Gclose(group_id);</span><br></pre></td></tr></table></figure>
+
+<h3 id="dataset"><a href="#dataset" class="headerlink" title="dataset"></a>dataset</h3><p>数据集为存放数据的集合</p>
+<h4 id="普通数据集合"><a href="#普通数据集合" class="headerlink" title="普通数据集合"></a>普通数据集合</h4><p>将8个整型数作为2*4的结构写入文件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vec&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>&#125;;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> rank = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">hsize_t</span> dims[<span class="number">2</span>] = &#123;<span class="number">2</span>, <span class="number">4</span>&#125;; <span class="comment">// two rows and four columns</span></span><br><span class="line">dataspace_id = H5Screate_simple(rank, dims, <span class="literal">NULL</span>);</span><br><span class="line">dataset_id = H5Dcreate(file_id, <span class="string">"/myGroup/data"</span>, H5T_NATIVE_INT, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);</span><br><span class="line">status = H5Dwrite(dataset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &amp;vec[<span class="number">0</span>]);</span><br><span class="line">status = H5Dclose(dataset_id);</span><br><span class="line">status = H5Sclose(dataspace_id);</span><br></pre></td></tr></table></figure>
+
+<h4 id="组合数据集合"><a href="#组合数据集合" class="headerlink" title="组合数据集合"></a>组合数据集合</h4><p>即C中的结构体,需要进行数据类型从内存到文件的映射</p>
+<p>如果结构体中带有字符串,则需要特殊处理;这里使用固定长度字符串,处理起来稍麻烦些,使用变长类型 H5T_VARIABLE 则更简单</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">size_t</span> char_len = <span class="number">32</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyStruct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    MyStruct(<span class="keyword">const</span> <span class="keyword">char</span>* s, <span class="keyword">unsigned</span> <span class="keyword">int</span> i, <span class="keyword">float</span> f)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> p = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (s[p] != <span class="string">'\0'</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            valStr[p] = s[p];</span><br><span class="line">            ++p;</span><br><span class="line">        &#125;</span><br><span class="line">        valInt = i;</span><br><span class="line">        valFloat = f;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">char</span> valStr[char_len];</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> valInt;</span><br><span class="line">    <span class="keyword">float</span>   valFloat;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">hid_t</span> strtype, memtype, filetype;</span><br><span class="line">strtype = H5Tcopy(H5T_C_S1);</span><br><span class="line">status = H5Tset_size(strtype, char_len);</span><br><span class="line"></span><br><span class="line">memtype = H5Tcreate(H5T_COMPOUND, <span class="keyword">sizeof</span>(MyStruct));</span><br><span class="line">status = H5Tinsert(memtype, <span class="string">"valStr"</span>, HOFFSET(MyStruct, MyStruct::valStr), strtype);</span><br><span class="line">status = H5Tinsert(memtype, <span class="string">"valInt"</span>, HOFFSET(MyStruct, MyStruct::valInt), H5T_NATIVE_UINT);</span><br><span class="line">status = H5Tinsert(memtype, <span class="string">"valFloat"</span>, HOFFSET(MyStruct, MyStruct::valFloat), H5T_NATIVE_FLOAT);</span><br><span class="line"></span><br><span class="line">filetype = H5Tcreate(H5T_COMPOUND, char_len + <span class="number">4</span> + <span class="number">4</span>);</span><br><span class="line">status = H5Tinsert(filetype, <span class="string">"valStr"</span>, <span class="number">0</span>, strtype);</span><br><span class="line">status = H5Tinsert(filetype, <span class="string">"valInt"</span>, char_len, H5T_STD_U32LE);</span><br><span class="line">status = H5Tinsert(filetype, <span class="string">"valFloat"</span>, char_len+<span class="number">4</span>, H5T_IEEE_F32LE);</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;MyStruct&gt; compoundDatas;</span><br><span class="line">compoundDatas.push_back(&#123;<span class="string">"abc"</span>, <span class="number">123</span>, <span class="number">66.88</span>&#125;);</span><br><span class="line">compoundDatas.push_back(&#123;<span class="string">"this is my test program"</span>, <span class="number">987654321</span>, <span class="number">1.0</span>&#125;);</span><br><span class="line">rank = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">hsize_t</span> compoundDims[rank] = &#123;compoundDatas.size()&#125;;</span><br><span class="line">dataspace_id = H5Screate_simple(rank, compoundDims, <span class="literal">NULL</span>);</span><br><span class="line">dataset_id = H5Dcreate(file_id, <span class="string">"/myGroup/compoundData"</span>, filetype, dataspace_id, H5P_DEFAULT,</span><br><span class="line">    H5P_DEFAULT, H5P_DEFAULT);</span><br><span class="line">status = H5Dwrite(dataset_id, memtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, &amp;compoundDatas[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">status = H5Dclose(dataset_id);</span><br><span class="line">status = H5Sclose(dataspace_id);</span><br><span class="line">status = H5Tclose(strtype);</span><br></pre></td></tr></table></figure>
+
+<h3 id="attribute"><a href="#attribute" class="headerlink" title="attribute"></a>attribute</h3><p>属性可用来描述数据集,如数据的长度,统计结果等</p>
+<p>要创建属性,首先要开辟dataspace,其为待写入数据的空间属性,一般需要设定维度,然后创建属性并写入文件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用属性标识版本号</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> version = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">hsize_t</span> dimsAttr[<span class="number">1</span>] = &#123;<span class="number">1</span>&#125;;</span><br><span class="line">dataspace_id = H5Screate_simple(<span class="number">1</span>, dimsAttr, <span class="literal">NULL</span>);</span><br><span class="line"><span class="keyword">hid_t</span> attr = H5Acreate(file_id, <span class="string">"version"</span>, H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);</span><br><span class="line">status = H5Awrite(attr, H5T_NATIVE_UINT, &amp;version);</span><br><span class="line">H5Sclose(dataspace_id);</span><br><span class="line">H5Aclose(attr);</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译和运行"><a href="#编译和运行" class="headerlink" title="编译和运行"></a>编译和运行</h2><p>注意编译软件时使用的hdf5库必须和使用时的hdf5库版本完全一致,否则可能出现报错</p>
+<p>注意替换为自己安装的库路径</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hdf5Path=/root/lib/hdf5-1.12.1</span><br><span class="line">g++ -std=c++17 -O2 hdf5_c.cpp -o test_hdf5 \</span><br><span class="line">    -I <span class="variable">$hdf5Path</span>/include \</span><br><span class="line">    -L <span class="variable">$hdf5Path</span>/lib \</span><br><span class="line">    -l hdf5</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$hdf5Path</span>/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line">./test_hdf5</span><br></pre></td></tr></table></figure>
+
+<h2 id="h5py读取h5文件"><a href="#h5py读取h5文件" class="headerlink" title="h5py读取h5文件"></a>h5py读取h5文件</h2><p>使用C库hdf5可以写入h5文件,当然有方法来读取数据,为了方便这里使用python库h5py来读取h5文件</p>
+<p>加载上面生成的h5文件,并依次读取普通数据集合,复合数据集合和属性</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> h5py</span><br><span class="line"></span><br><span class="line">f = h5py.File(<span class="string">"test.h5"</span>, <span class="string">"r"</span>)</span><br><span class="line">print(list(f.keys()))</span><br><span class="line"></span><br><span class="line">d = f[<span class="string">'/myGroup/data'</span>]</span><br><span class="line">print(<span class="string">"dataset: /myGroup/data"</span>)</span><br><span class="line">print(<span class="string">"shape:"</span>, d.shape, <span class="string">" dtype:"</span>, d.dtype)</span><br><span class="line">print(d[...])</span><br><span class="line"></span><br><span class="line">d = f[<span class="string">'/myGroup/compoundData'</span>]</span><br><span class="line">print(<span class="string">"dataset: /myGroup/compoundData"</span>)</span><br><span class="line">print(<span class="string">"shape:"</span>, d.shape, <span class="string">" dtype:"</span>, d.dtype)</span><br><span class="line">print(d[...])</span><br><span class="line"></span><br><span class="line">a = f[<span class="string">'/'</span>].attrs</span><br><span class="line">print(<span class="string">"group attributes: /"</span>)</span><br><span class="line">print(<span class="string">"version:"</span>, a.get(<span class="string">'version'</span>)[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+
+<p>正常情况输出如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[&#39;myGroup&#39;]</span><br><span class="line">dataset: &#x2F;myGroup&#x2F;data</span><br><span class="line">shape: (2, 4)  dtype: int32</span><br><span class="line">[[1 2 3 4]</span><br><span class="line"> [5 6 7 8]]</span><br><span class="line">dataset: &#x2F;myGroup&#x2F;compoundData</span><br><span class="line">shape: (2,)  dtype: [(&#39;valStr&#39;, &#39;S32&#39;), (&#39;valInt&#39;, &#39;&lt;u4&#39;), (&#39;valFloat&#39;, &#39;&lt;f4&#39;)]</span><br><span class="line">[(b&#39;abc&#39;,       123, 66.88) (b&#39;this is my test program&#39;, 987654321,  1.  )]</span><br><span class="line">group attributes: &#x2F;</span><br><span class="line">version: 1</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://portal.hdfgroup.org/display/HDF5" target="_blank" rel="noopener">hdf5官方文档</a></li>
+<li><a href="https://portal.hdfgroup.org/display/HDF5/Examples+by+API" target="_blank" rel="noopener">hdf5使用示例</a></li>
+<li><a href="https://docs.h5py.org/en/stable/" target="_blank" rel="noopener">h5py官方文档</a></li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/09/05/unittest/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
